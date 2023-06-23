@@ -7,7 +7,7 @@
 #ifndef XUZUMI_XUZUMI_HPP
 #define XUZUMI_XUZUMI_HPP
 
-#include "Core/Compiler.hpp"
-#include "Core/CommonTypes.hpp"
+#include "Xuzumi/Core/Compiler.hpp"
+#include "Xuzumi/Core/CommonTypes.hpp"
 
 #endif // XUZUMI_XUZUMI_HPP
