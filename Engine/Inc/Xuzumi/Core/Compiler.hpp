@@ -39,13 +39,13 @@
 #endif
 
 /**
- * @def XZ_CURRENT_COMPILER(compiler)
+ * @def XZ_CURRENT_COMPILER_IS(compiler)
  * 
  * @brief Macro to check if the current compiler matches the specified compiler.
  * 
  * @param compiler The desired compiler to check against (GCC, CLANG, MSVC).
  */
-#define XZ_CURRENT_COMPILER(compiler) XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler
+#define XZ_CURRENT_COMPILER_IS(compiler) XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler
 
 namespace Xuzumi
 {
