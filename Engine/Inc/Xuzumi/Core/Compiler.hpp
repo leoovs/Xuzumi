@@ -4,8 +4,8 @@
  * @brief Compiler identification macros for Xuzumi engine.
  */
 
-#ifndef XUZUMI_CORE_COMPILER_HPP
-#define XUZUMI_CORE_COMPILER_HPP
+#ifndef XUZUMI_CORE_COMPILER_HPP_
+#define XUZUMI_CORE_COMPILER_HPP_
 
 /**
  * @def XZ_COMPILER_ID_GCC
@@ -52,4 +52,4 @@ namespace Xuzumi
 	// TODO: implement GetCompilerName function.
 }
 
-#endif // XUZUMI_CORE_COMPILER_HPP
+#endif // XUZUMI_CORE_COMPILER_HPP_
