@@ -1,14 +1,41 @@
+#include <Xuzumi/Precompiled.hpp>
+#include <Xuzumi/Ownership/SharedFactory.hpp>
+
+#include <cassert>
+
 #include <iostream>
 
-#include <Xuzumi/Xuzumi.hpp>
+class Factory
+{
+public:
+	std::shared_ptr<void> Create()
+	{
+		return std::shared_ptr<void>
+		{
+			CreateResource(),
+			m_Share.MakeDeleter(&Factory::DestroyResource)
+		};
+	}
+
+private:
+	void* CreateResource()
+	{
+		std::cout << "Created\n";
+		return new int{ 105 };
+	}
+
+	void DestroyResource(void* ptr)
+	{
+		delete reinterpret_cast<int*>(ptr);
+		std::cout << "Destoryed\n";
+	}
+
+	Xuzumi::SharedFactory<Factory> m_Share{ this };
+};
 
 int main()
 {
-#if XZ_CURRENT_COMPILER_IS(MSVC)
-	std::cout << "This is MSVC\n";
-#elif XZ_CURRENT_COMPILER_IS(GCC)
-	std::cout << "This is GCC\n";
-#elif XZ_CURRENT_COMPILER_IS(CLANG)
-	std::cout << "This is CLANG\n";
-#endif
+	auto f = std::make_shared<Factory>();
+
+	std::shared_ptr<void> res{ f->Create() };
 }
