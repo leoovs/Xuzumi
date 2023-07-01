@@ -13,5 +13,6 @@
 #include <type_traits>
 #include <utility>
 #include <atomic>
+#include <memory>
 
 #endif // XUZUMI_PRECOMPILED_HPP_
