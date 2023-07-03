@@ -1,4 +1,10 @@
+#include <iostream>
+
+#include <Xuzumi/TypeInfo/TypeName.hpp>
+
+using namespace Xuzumi;
+
 int main()
 {
-	return 0;
+	std::cout << GetTypeName(std::cout) << std::endl;
 }

@@ -1,6 +1,7 @@
 add_library(
 	Xuzumi_Engine
-	"Src/Xuzumi/Dummy.cpp"
+	STATIC
+	"Src/Xuzumi/TypeInfo/TypeID.cpp"
 )
 
 target_include_directories(
