@@ -1,10 +1,3 @@
-/**
- * @file Xuzumi/Core/FuncName.hpp
- * 
- * @brief Defines utility macro for querying
- * current function name.
- */
-
 #ifndef XUZUMI_CORE_FUNCNAME_HPP_
 #define XUZUMI_CORE_FUNCNAME_HPP_
 
