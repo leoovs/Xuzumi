@@ -1,10 +1,3 @@
-/**
- * @file Xuzumi/TypeInfo/TypeID.hpp
- * 
- * @brief Defines common types and functions to
- * work with type identification.
- */
-
 #ifndef XUZUMI_TYPEINFO_TYPEID_HPP_
 #define XUZUMI_TYPEINFO_TYPEID_HPP_
 
