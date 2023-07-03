@@ -1,7 +1,7 @@
 #ifndef XUZUMI_CORE_DELEGATE_HPP_
 #define XUZUMI_CORE_DELEGATE_HPP_
 
-#include <Xuzumi/Precompiled.hpp>
+#include "Xuzumi/Precompiled.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -35,17 +35,17 @@ namespace Xuzumi::Internal
 		using FunctionPtr = typename Traits::FunctionPtr;
 
 		DelegateFunctionCaller(FunctionPtr function)
-			: m_Function{ function }
+			: mFunction(function)
 		{
 		}
 
 		ReturnType Call(ArgsT&&... args) override
 		{
-			return m_Function(std::forward<ArgsT>(args)...);
+			return mFunction(std::forward<ArgsT>(args)...);
 		}
 
 	private:
-		FunctionPtr m_Function{ nullptr };
+		FunctionPtr mFunction = nullptr;
 	};
 
 	template<typename ClassT, typename ReturnT, typename... ArgsT>
@@ -58,19 +58,19 @@ namespace Xuzumi::Internal
 		using ClassPtr = ClassT*;
 
 		DelegateMethodCaller(ClassPtr classInstance, MethodPtr method)
-			: m_ClassInstance{ classInstance }
-			, m_Method{ method }
+			: mClassInstance(classInstance)
+			, mMethod(method)
 		{
 		}
 
 		ReturnType Call(ArgsT&&... args) override
 		{
-			return (m_ClassInstance->*m_Method)(std::forward<ArgsT>(args)...);
+			return (mClassInstance->*mMethod)(std::forward<ArgsT>(args)...);
 		}
 
 	private:
-		ClassPtr m_ClassInstance{ nullptr };
-		MethodPtr m_Method{ nullptr };
+		ClassPtr mClassInstance = nullptr;
+		MethodPtr mMethod = nullptr;
 	};
 }
 
@@ -79,12 +79,6 @@ namespace Xuzumi
 	template<typename>
 	class Delegate;
 
-	/**
-	 * @brief Delegate type for sharing code and data.
-	 * 
-	 * @tparam ReturnT A return value type.
-	 * @tparam ArgsT Argument types.
-	 */
 	template<typename ReturnT, typename... ArgsT>
 	class Delegate<ReturnT(ArgsT...)>
 	{
@@ -97,70 +91,41 @@ namespace Xuzumi
 		template<typename ClassT>
 		using MethodPtr = typename Traits::MethodPtr<ClassT>;
 
-		/**
-		 * @brief Constructs an empty delegate.
-		 */
 		Delegate() = default;
 
-		/**
-		 * @brief Constructs a delegate that references
-		 * non-member function pointer.
-		 * 
-		 * @param function A pointer to the function that delegate should invoke.
-		 */
 		Delegate(FunctionPtr function)
-			: m_Caller
-			{
+			: mCaller(
 				std::make_shared<
 					Internal::DelegateFunctionCaller<ReturnType, ArgsT...>
 				>(function)
-			}
+			)
 		{
 		}
 
-		/**
-		 * @brief Constructs a delegate that references a class instance
-		 * and its member function (method).
-		 * 
-		 * @tparam ClassT A type of the instance.
-		 * 
-		 * @param classInstance A pointer to the instance of ClassT.
-		 * @param method A pointer to the member function that delegate
-		 * should invoke.
-		 */
 		template<typename ClassT>
 		Delegate(ClassT* classInstance, MethodPtr<ClassT> method)
-			: m_Caller
-			{
+			: mCaller(
 				std::make_shared<
 					Internal::DelegateMethodCaller<ClassT, ReturnType, ArgsT...>
 				>(classInstance, method)
-			}
+			)
 		{
 		}
 
-		/**
-		 * @brief Checks if delegate is bound to function or method.
-		 * 
-		 * @return true if delegate is bound, otherwise false.
-		 */
 		explicit operator bool() const
 		{
-			return bool(m_Caller);
+			return bool(mCaller);
 		}
 
-		/**
-		 * @brief Invokes the underlying bound function or method.
-		 */
 		ReturnType operator()(ArgsT... args) const
 		{
-			return m_Caller->Call(std::forward<ArgsT>(args)...);
+			return mCaller->Call(std::forward<ArgsT>(args)...);
 		}
 
 	private:
 		using CallerType = Internal::IDelegateCaller<ReturnType, ArgsT...>;
 
-		std::shared_ptr<CallerType> m_Caller;
+		std::shared_ptr<CallerType> mCaller;
 	};
 }
 

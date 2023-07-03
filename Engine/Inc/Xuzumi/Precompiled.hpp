@@ -1,9 +1,3 @@
-/**
- * @file Xuzumi/Precompiled.hpp
- * 
- * @brief Precompiled header file used publicly in Xuzumi.
- */
-
 #ifndef XUZUMI_PRECOMPILED_HPP_
 #define XUZUMI_PRECOMPILED_HPP_
 

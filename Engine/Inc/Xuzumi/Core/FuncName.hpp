@@ -8,7 +8,7 @@
 #ifndef XUZUMI_CORE_FUNCNAME_HPP_
 #define XUZUMI_CORE_FUNCNAME_HPP_
 
-#include <Xuzumi/Core/Compiler.hpp>
+#include "Xuzumi/Core/Compiler.hpp"
 
 #if XZ_CURRENT_COMPILER_IS(GCC)
 #	define XZ_FUNCNAME __PRETTY_FUNCTION__

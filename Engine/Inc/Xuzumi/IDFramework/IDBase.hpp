@@ -8,7 +8,7 @@
 #ifndef XUZUMI_IDFRAMEWORK_IDBASE_HPP_
 #define XUZUMI_IDFRAMEWORK_IDBASE_HPP_
 
-#include <Xuzumi/Precompiled.hpp>
+#include "Xuzumi/Precompiled.hpp"
 
 namespace Xuzumi
 {

@@ -1,15 +1,9 @@
-/**
- * @file Xuzumi/TypeInfo/TypeName.hpp
- * 
- * @brief Defines functions to query type name as a string.
- */
-
 #ifndef XUZUMI_TYPEINFO_TYPENAME_HPP_
 #define XUZUMI_TYPEINFO_TYPENAME_HPP_
 
-#include <Xuzumi/Precompiled.hpp>
-#include <Xuzumi/Core/Compiler.hpp>
-#include <Xuzumi/Core/FuncName.hpp>
+#include "Xuzumi/Precompiled.hpp"
+#include "Xuzumi/Core/Compiler.hpp"
+#include "Xuzumi/Core/FuncName.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -56,24 +50,12 @@ namespace Xuzumi::Internal
 
 namespace Xuzumi
 {
-	/**
-	 * @brief Retrieves type name and converts it to std::string.
-	 * 
-	 * @tparam ClassT A class to query its type name.
-	 */
 	template<typename ClassT>
 	std::string GetTypeName()
 	{
 		return std::string(Internal::GetStaticTypeName<ClassT>());	
 	}
 
-	/**
-	 * @brief Convenience function that retrieves type name of an object.
-	 * 
-	 * @tparam ClassT A class to parse its type name. Supposed to be implicit.
-	 * 
-	 * @param classInstance A class instance to take its type name.
-	 */
 	template<typename ClassT>
 	std::string GetTypeName(const ClassT& classInstance)
 	{
