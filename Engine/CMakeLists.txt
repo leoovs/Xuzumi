@@ -2,6 +2,12 @@ add_library(
 	Xuzumi_Engine
 	STATIC
 	"Src/Xuzumi/TypeInfo/TypeID.cpp"
+
+	"Src/Xuzumi/Messaging/EventBus.cpp"
+	"Src/Xuzumi/Messaging/EventPublisher.cpp"
+	"Src/Xuzumi/Messaging/EventSubscriber.cpp"
+
+	"Src/Xuzumi/IDFramework/HandleGenerator.cpp"
 )
 
 target_include_directories(

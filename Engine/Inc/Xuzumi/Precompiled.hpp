@@ -6,6 +6,12 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <queue>
+#include <stack>
+#include <initializer_list>
 
 #include <type_traits>
 #include <utility>
