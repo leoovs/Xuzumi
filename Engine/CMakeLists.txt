@@ -24,3 +24,9 @@ set_target_properties(
 	CXX_STANDARD 17
 	CXX_STANDARD_REQUIRED TRUE
 )
+
+target_precompile_headers(
+	Xuzumi_Engine
+	PUBLIC
+	"Inc/Xuzumi/Precompiled.hpp"
+)
