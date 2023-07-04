@@ -72,6 +72,27 @@ namespace Xuzumi::Internal
 		ClassPtr mClassInstance = nullptr;
 		MethodPtr mMethod = nullptr;
 	};
+
+	template<typename FunctorT, typename ReturnT, typename... ArgsT>
+	class DelegateFunctorCaller : public IDelegateCaller<ReturnT, ArgsT...>
+	{
+	public:
+		using typename IDelegateCaller<ReturnT, ArgsT...>::Traits;
+		using ReturnType = typename Traits::ReturnType;
+
+		DelegateFunctorCaller(FunctorT functor)
+			: mFunctor(functor)
+		{
+		}
+
+		ReturnType Call(ArgsT&&... args) override
+		{
+			return mFunctor(std::forward<ArgsT>(args)...);
+		}
+
+	private:
+		FunctorT mFunctor;
+	};
 }
 
 namespace Xuzumi
@@ -110,6 +131,21 @@ namespace Xuzumi
 				>(classInstance, method)
 			)
 		{
+		}
+
+		template<typename FunctorT>
+		Delegate(FunctorT functor)
+			: mCaller(
+				std::make_shared<
+					Internal::DelegateFunctorCaller<FunctorT, ReturnType, ArgsT...>
+				>(functor)
+			)
+		{
+		}
+
+		void Reset()
+		{
+			mCaller.reset();
 		}
 
 		explicit operator bool() const
