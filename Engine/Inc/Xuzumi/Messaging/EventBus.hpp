@@ -141,22 +141,22 @@ namespace Xuzumi
 		std::shared_ptr<Internal::EventDispatcher<EventT>> GetDispatcher()
 		{
 			TypeID eventTypeID = GetTypeID<EventT>();
-			auto routerIt = mDispatchers.find(eventTypeID);
+			auto dispatcherIt = mDispatchers.find(eventTypeID);
 
-			if (mDispatchers.end() == routerIt)
+			if (mDispatchers.end() == dispatcherIt)
 			{
-				auto router = std::make_shared<
+				auto dispatcher = std::make_shared<
 					Internal::EventDispatcher<EventT>
 				>();
 
-				mDispatchers[eventTypeID] = router;
+				mDispatchers[eventTypeID] = dispatcher;
 
-				return router;
+				return dispatcher;
 			}
 
 			return std::static_pointer_cast<
 				Internal::EventDispatcher<EventT>
-			>(routerIt->second);
+			>(dispatcherIt->second);
 		}
 
 		std::unordered_map<
