@@ -39,6 +39,8 @@ namespace Xuzumi::Internal
 	{
 		mCurrentHandleID = 0;
 		mAliveHandleIDs.clear();
-		mRecycledIDs.swap(std::queue<HandleID>());
+		
+		std::queue<HandleID> empty;
+		mRecycledIDs.swap(empty);
 	}
 }
