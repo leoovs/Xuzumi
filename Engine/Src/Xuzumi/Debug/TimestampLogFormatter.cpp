@@ -17,7 +17,7 @@ namespace Xuzumi
 			"ERROR",
 		};
 
-		// TODO: actually display timestamp, which is currenly missing.
+		// TODO: actually display timestamp, which is currently missing.
 
 		mFormattedLog = FormatString(
 			"[%s] :: <%s, %d> :: %s :: %s",
