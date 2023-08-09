@@ -48,14 +48,9 @@ namespace Xuzumi
 		va_start(args, data);
 		data.Message = FormatStringV(data.Message, args);
 		va_end(args);
-	
-		mAssertionDispatcher.Raise(data);
-	
-		return {};
-	}
 
-	AssertionDispatcher& DebugSession::GetAssertionDispatcher()
-	{
-		return mAssertionDispatcher;
+		mAssertionDispatcher.Raise(data);
+
+		return {};
 	}
 }

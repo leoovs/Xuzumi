@@ -55,7 +55,6 @@ namespace Xuzumi
 
 		void ConfigureAssertion(Delegate<void(AssertionConfigurator)> config);
 		bool RaiseAssertionInternal(AssertionData data, ...);
-		AssertionDispatcher& GetAssertionDispatcher();
 
 	private:
 		DebugSession() = default;
