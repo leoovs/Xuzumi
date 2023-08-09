@@ -17,6 +17,8 @@ namespace Xuzumi
 			"ERROR",
 		};
 
+		// TODO: actually display timestamp, which is currenly missing.
+
 		mFormattedLog = FormatString(
 			"[%s] :: <%s, %d> :: %s :: %s",
 			levels[std::size_t(data.Level)],
