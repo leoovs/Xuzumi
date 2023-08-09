@@ -1,6 +1,8 @@
 add_library(
 	Xuzumi_Engine
 	STATIC
+	"Src/Xuzumi/Core/StringUtils.cpp"
+
 	"Src/Xuzumi/TypeInfo/TypeID.cpp"
 
 	"Src/Xuzumi/Messaging/EventBus.cpp"
@@ -8,6 +10,13 @@ add_library(
 	"Src/Xuzumi/Messaging/EventSubscriber.cpp"
 
 	"Src/Xuzumi/IDFramework/HandleGenerator.cpp"
+
+ 	"Src/Xuzumi/Debug/DebugSession.cpp"
+	"Src/Xuzumi/Debug/Logging.cpp"
+	"Src/Xuzumi/Debug/FileLogWriter.cpp"
+	"Src/Xuzumi/Debug/ConsoleLogWriter.cpp"
+	"Src/Xuzumi/Debug/TimestampLogFormatter.cpp"
+	"Src/Xuzumi/Debug/Assertion.cpp"
 )
 
 target_include_directories(
@@ -27,6 +36,6 @@ set_target_properties(
 
 target_precompile_headers(
 	Xuzumi_Engine
-	PUBLIC
+	PRIVATE
 	"Inc/Xuzumi/Precompiled.hpp"
 )

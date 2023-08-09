@@ -1,73 +1,28 @@
-#include <iostream>
-
-#include <Xuzumi/Messaging/EventBus.hpp>
-#include <Xuzumi/Messaging/EventPublisher.hpp>
-#include <Xuzumi/Messaging/EventSubscriber.hpp>
-
-struct AppShutdownEvent : public Xuzumi::Event<AppShutdownEvent> {};
-
-class App
-{
-public:
-	App(Xuzumi::ObserverPtr<Xuzumi::EventBus> bus)
-	{
-		mSubscriber.Subscribe(*bus)
-			.BeginThis(this)
-				.Method(&App::OnShutdown)
-			.EndThis()
-			.Functor<AppShutdownEvent>(
-				[this](auto& event)
-				{
-					CustomOnShutdown();
-					return true;
-				}
-			);
-	}
-
-	bool IsRunning() const
-	{
-		return mRunning;
-	}
-
-	void Quit()
-	{
-		mRunning = false;
-	}
-
-private:
-	bool OnShutdown(const AppShutdownEvent& event)
-	{
-		std::cout << XZ_FUNCNAME << std::endl;
-		Quit();
-		return false;
-	}
-
-	void CustomOnShutdown()
-	{
-		std::cout << XZ_FUNCNAME << std::endl;
-	}
-
-	Xuzumi::EventSubscriber mSubscriber;
-	bool mRunning = true;
-};
+#include <Xuzumi/Debug/DebugSession.hpp>
+#include <Xuzumi/Debug/FileLogWriter.hpp>
+#include <Xuzumi/Debug/ConsoleLogWriter.hpp>
+#include <Xuzumi/Debug/TimestampLogFormatter.hpp>
 
 int main()
 {
-	Xuzumi::EventBus events;
-	Xuzumi::EventPublisher publisher;
+	Xuzumi::DebugSession::Get().ConfigureLogger(
+		[](Xuzumi::LoggerConfigurator configurator)
+		{
+			configurator.SetFormatter<Xuzumi::TimestampLogFormatter>();
+			configurator.AddWriter<Xuzumi::ConsoleLogWriter>();
+			configurator.AddWriter<Xuzumi::FileLogWriter>("Xuzumi.log");
+		}
+	);
 
-	Xuzumi::ObserverPtr<Xuzumi::EventBus> eventsPtr(&events);
+	Xuzumi::DebugSession::Get().ConfigureAssertion(
+		[](Xuzumi::AssertionConfigurator configurator)
+		{
+			configurator.SetLoggerAsHandler();
+		}
+	);
 
-	auto app = new App(eventsPtr);
-	publisher.Connect(eventsPtr);
+	XZ_LOG(Info, "Testing logging system");
 
-	while (app->IsRunning())
-	{
-		publisher.Publish<AppShutdownEvent>();
-		events.Dispatch();
-	}
-	
-	delete app;
-	app = nullptr;
+	XZ_ASSERT(5 == 5.0000001f, "%s )))", "Message");
+	XZ_ASSERT(5 == 5.00001f, "%s )))", "Message");
 }
-

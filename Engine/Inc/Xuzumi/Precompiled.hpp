@@ -3,6 +3,10 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdarg>
+
+#include <fstream>
+#include <iostream>
 
 #include <string>
 #include <string_view>
@@ -17,5 +21,6 @@
 #include <utility>
 #include <atomic>
 #include <memory>
+#include <chrono>
 
 #endif // XUZUMI_PRECOMPILED_HPP_

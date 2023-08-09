@@ -106,7 +106,7 @@ namespace Xuzumi::Internal
 	)
 	{
 		EventSubscription subscription = mSubscriber->GetBus().Subscribe(
-			Internal::EventHandler<EventT>(
+			EventHandler<EventT>(
 				mClassInstance,
 				method
 			)
