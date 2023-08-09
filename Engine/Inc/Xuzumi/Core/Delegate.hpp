@@ -110,7 +110,7 @@ namespace Xuzumi
 		using ReturnType = typename Traits::ReturnType;
 		using FunctionPtr = typename Traits::FunctionPtr;
 		template<typename ClassT>
-		using MethodPtr = typename Traits::MethodPtr<ClassT>;
+		using MethodPtr = typename Traits::template MethodPtr<ClassT>;
 
 		Delegate() = default;
 
