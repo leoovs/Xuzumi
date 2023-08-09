@@ -10,7 +10,7 @@ namespace Xuzumi
 	struct AssertionData
 	{
 		std::string SourceFileName;
-		std::uint32_t Line;
+		std::uint32_t Line = -1;
 		std::string Message;
 		std::string FalseExpression;
 		std::string ScopeName;
