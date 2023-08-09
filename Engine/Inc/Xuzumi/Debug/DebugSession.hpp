@@ -24,7 +24,7 @@
 	)
 #endif
 
-// TODO: introduce custom Xuzumi logging macro (XZ_ASSERT_ENABLED).
+// TODO: introduce custom Xuzumi assertion macro (XZ_ASSERT_ENABLED).
 #ifdef NDEBUG
 #	define XZ_ASSERT(expr, format, ...)
 #else
