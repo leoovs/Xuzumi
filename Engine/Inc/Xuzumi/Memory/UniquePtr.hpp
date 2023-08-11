@@ -169,6 +169,8 @@ namespace Xuzumi
 		{
 			// TODO: should we do the `this == &other` check here???
 		
+			CleanUp();
+
 			mResourcePointer = static_cast<PointerType>(
 				std::exchange(other.mResourcePointer, nullptr)
 			);
