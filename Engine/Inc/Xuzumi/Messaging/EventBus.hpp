@@ -11,7 +11,9 @@ namespace Xuzumi
 	namespace Internal
 	{
 		using EventHandlerID = HandleID;
-		inline constexpr EventHandlerID kInvalidEventHandlerID = EventHandlerID(-1);
+		inline constexpr EventHandlerID kInvalidEventHandlerID = EventHandlerID(
+			kInvalidHandleID
+		);
 	}
 
 	class EventSubscription
