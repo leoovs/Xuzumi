@@ -241,9 +241,10 @@ namespace Xuzumi
 		{
 			UniquePtr<OtherT> other;
 
-			other.mResourcePointer = reinterpret_cast<decltype(other)::PointerType>(
-				std::exchange(mResourcePointer, nullptr)
-			);
+			other.mResourcePointer = reinterpret_cast<
+				typename decltype(other)::PointerType
+			>(std::exchange(mResourcePointer, nullptr));
+
 			other.mControlBlock = std::exchange(mControlBlock, nullptr);
 		
 			return other;
@@ -288,7 +289,7 @@ namespace Xuzumi
 
 		bool operator!=(std::nullptr_t)
 		{
-			return !(=*this == nullptr);
+			return !(*this == nullptr);
 		}
 
 		PointerType operator->() const
