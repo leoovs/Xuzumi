@@ -14,7 +14,7 @@
 	.LogInternal( \
 		{ \
 			::Xuzumi::LogLevel::level, \
-			std::chrono::high_resolution_clock::now(), \
+			std::chrono::system_clock::now(), \
 			__FILE__, \
 			__LINE__, \
 			format, \

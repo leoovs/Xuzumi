@@ -19,7 +19,7 @@ namespace Xuzumi
 	struct LogData
 	{
 		LogLevel Level = LogLevel::Debug;
-		std::chrono::high_resolution_clock::time_point Timestamp;
+		std::chrono::system_clock::time_point Timestamp;
 		std::string SourceFileName;
 		std::uint32_t LineNumber = -1;
 		std::string Message;
@@ -29,7 +29,7 @@ namespace Xuzumi
 
 		LogData(
 			LogLevel level,
-			std::chrono::high_resolution_clock::time_point timestamp,
+			std::chrono::system_clock::time_point timestamp,
 			std::string_view sourceFileName,
 			std::uint32_t lineNumber,
 			std::string_view message,

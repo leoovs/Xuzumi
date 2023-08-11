@@ -15,7 +15,7 @@ add_library(
 	"Src/Xuzumi/Debug/Logging.cpp"
 	"Src/Xuzumi/Debug/FileLogWriter.cpp"
 	"Src/Xuzumi/Debug/ConsoleLogWriter.cpp"
-	"Src/Xuzumi/Debug/TimestampLogFormatter.cpp"
+	"Src/Xuzumi/Debug/TimedLogFormatter.cpp"
 	"Src/Xuzumi/Debug/Assertion.cpp"
 )
 

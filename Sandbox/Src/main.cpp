@@ -1,14 +1,14 @@
 #include <Xuzumi/Debug/DebugSession.hpp>
 #include <Xuzumi/Debug/FileLogWriter.hpp>
 #include <Xuzumi/Debug/ConsoleLogWriter.hpp>
-#include <Xuzumi/Debug/TimestampLogFormatter.hpp>
+#include <Xuzumi/Debug/TimedLogFormatter.hpp>
 
 int main()
 {
 	Xuzumi::DebugSession::Get().ConfigureLogger(
 		[](Xuzumi::LoggerConfigurator configurator)
 		{
-			configurator.SetFormatter<Xuzumi::TimestampLogFormatter>();
+			configurator.SetFormatter<Xuzumi::TimedLogFormatter>();
 			configurator.AddWriter<Xuzumi::ConsoleLogWriter>();
 			configurator.AddWriter<Xuzumi::FileLogWriter>("Xuzumi.log");
 		}
