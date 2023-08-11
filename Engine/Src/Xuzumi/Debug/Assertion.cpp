@@ -39,8 +39,8 @@ namespace Xuzumi
 		mHandler = handler
 			? handler
 			: AssertionHandler(
-				this,
-				&AssertionDispatcher::DefaultAssertionHandler
+					this,
+					&AssertionDispatcher::DefaultAssertionHandler
 			);
 	}
 

@@ -30,7 +30,9 @@ namespace Xuzumi
 		mLogger.Log(data);
 	}
 
-	void DebugSession::ConfigureAssertion(Delegate<void(AssertionConfigurator)> config)
+	void DebugSession::ConfigureAssertion(
+		Delegate<void(AssertionConfigurator)> config
+	)
 	{
 		if (config)
 		{
