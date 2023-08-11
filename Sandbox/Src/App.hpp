@@ -1,5 +1,5 @@
-#ifndef APP_HPP_
-#define APP_HPP_
+#pragma once
+// TODO: replace all include guards with pragmas.
 
 #include <Xuzumi/Xuzumi.hpp>
 
@@ -12,5 +12,3 @@ private:
 	Xuzumi::ObserverPtr<Xuzumi::EventBus> mEvents;
 	Xuzumi::EventSubscriber mEventSubscriber;
 };
-
-#endif // APP_HPP_
