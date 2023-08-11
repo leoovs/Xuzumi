@@ -2,7 +2,7 @@
 #define XUZUMI_DEBUG_LOGGING_HPP_
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Core/ObserverPtr.hpp"
+#include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/TypeMeta/TypeID.hpp"
 
 namespace Xuzumi

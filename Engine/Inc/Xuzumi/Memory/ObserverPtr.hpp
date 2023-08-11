@@ -15,8 +15,8 @@ namespace Xuzumi
 		);
 
 		using ValueType = T;
-		using ReferenceType = ValueType&;
-		using PointerType = ValueType*;
+		using ReferenceType = std::add_lvalue_reference_t<ValueType>;
+		using PointerType = std::add_pointer_t<ValueType>;
 
 		ObserverPtr() = default;
 		

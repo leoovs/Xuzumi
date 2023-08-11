@@ -2,7 +2,7 @@
 #define XUZUMI_MESSAGING_EVENTSUBSCRIBER_HPP_
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Core/ObserverPtr.hpp"
+#include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"
 
 namespace Xuzumi

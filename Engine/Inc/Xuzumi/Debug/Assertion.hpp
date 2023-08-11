@@ -3,7 +3,7 @@
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/Delegate.hpp"
-#include "Xuzumi/Core/ObserverPtr.hpp"
+#include "Xuzumi/Memory/ObserverPtr.hpp"
 
 namespace Xuzumi
 {
