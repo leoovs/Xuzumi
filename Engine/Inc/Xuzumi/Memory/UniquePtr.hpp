@@ -297,7 +297,7 @@ namespace Xuzumi
 		PointerType operator->() const
 		{
 			XZ_ASSERT(*this, "Trying to dereference a nullptr");
-			return mResourcePointer;
+			return Get();
 		}
 
 		ReferenceType operator*() const
