@@ -1,7 +1,6 @@
-#include <Xuzumi/Debug/DebugSession.hpp>
-#include <Xuzumi/Debug/FileLogWriter.hpp>
-#include <Xuzumi/Debug/ConsoleLogWriter.hpp>
-#include <Xuzumi/Debug/TimedLogFormatter.hpp>
+#include <Xuzumi/Xuzumi.hpp>
+
+#include "App.hpp"
 
 int main()
 {
@@ -21,8 +20,8 @@ int main()
 		}
 	);
 
-	XZ_LOG(Info, "Testing logging system");
+	XZ_LOG(Info, "Hello, %s", "World!");
 
-	XZ_ASSERT(5 == 5.0000001f, "%s )))", "Message");
-	XZ_ASSERT(5 == 5.00001f, "%s )))", "Message");
+	Xuzumi::EventBus events;
+	App app((Xuzumi::ObserverPtr<Xuzumi::EventBus>(&events)));
 }
