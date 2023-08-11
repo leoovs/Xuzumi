@@ -3,7 +3,7 @@
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/ObserverPtr.hpp"
-#include "Xuzumi/TypeInfo/TypeID.hpp"
+#include "Xuzumi/TypeMeta/TypeID.hpp"
 
 namespace Xuzumi
 {

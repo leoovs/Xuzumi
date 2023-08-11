@@ -1,8 +1,8 @@
 #ifndef XUZUMI_MESSAGING_EVENT_HPP_
 #define XUZUMI_MESSAGING_EVENT_HPP_
 
-#include "Xuzumi/TypeInfo/TypeID.hpp"
-#include "Xuzumi/TypeInfo/TypeName.hpp"
+#include "Xuzumi/TypeMeta/TypeID.hpp"
+#include "Xuzumi/TypeMeta/TypeName.hpp"
 
 namespace Xuzumi
 {

@@ -1,5 +1,5 @@
-#ifndef XUZUMI_TYPEINFO_TYPEID_HPP_
-#define XUZUMI_TYPEINFO_TYPEID_HPP_
+#ifndef XUZUMI_TYPEMETA_TYPEID_HPP_
+#define XUZUMI_TYPEMETA_TYPEID_HPP_
 
 #include "Xuzumi/IDFramework/IDBase.hpp"
 
@@ -7,7 +7,7 @@ namespace Xuzumi
 {
 	using TypeID = IDType;
 
-	inline constexpr TypeID kInvalidTypeID = TypeID(-1); 
+	inline constexpr TypeID kInvalidTypeID = TypeID(kInvalidID); 
 
 	namespace Internal
 	{
@@ -28,4 +28,4 @@ namespace Xuzumi
 	}
 }
 
-#endif // XUZUMI_TYPEINFO_TYPEID_HPP_
+#endif // XUZUMI_TYPEMETA_TYPEID_HPP_

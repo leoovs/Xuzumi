@@ -1,5 +1,5 @@
-#ifndef XUZUMI_TYPEINFO_TYPENAME_HPP_
-#define XUZUMI_TYPEINFO_TYPENAME_HPP_
+#ifndef XUZUMI_TYPEMETA_TYPENAME_HPP_
+#define XUZUMI_TYPEMETA_TYPENAME_HPP_
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/Compiler.hpp"
@@ -63,4 +63,4 @@ namespace Xuzumi
 	}
 }
 
-#endif // XUZUMI_TYPEINFO_TYPENAME_HPP_
+#endif // XUZUMI_TYPEMETA_TYPENAME_HPP_
