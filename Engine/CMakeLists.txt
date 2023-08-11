@@ -3,7 +3,8 @@ add_library(
 	STATIC
 	"Src/Xuzumi/Core/StringUtils.cpp"
 
-	"Src/Xuzumi/TypeInfo/TypeID.cpp"
+	"Src/Xuzumi/TypeMeta/TypeID.cpp"
+	"Src/Xuzumi/TypeMeta/TypeInfo.cpp"
 
 	"Src/Xuzumi/Messaging/EventBus.cpp"
 	"Src/Xuzumi/Messaging/EventPublisher.cpp"
