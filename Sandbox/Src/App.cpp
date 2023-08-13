@@ -23,7 +23,7 @@ App::App(Xuzumi::ObserverPtr<Xuzumi::EventBus> events)
 	p2->Display();
 
 	p1.Swap(p2);
-	p1 = p2.MimicrySafe<Entity>();
+	p1 = p2.As<Entity[]>();
 
 	p1->Display();
 	*p2;

@@ -2,6 +2,7 @@
 #define XUZUMI_MEMORY_UNIQUEPTR_HPP_
 
 #include "Xuzumi/Precompiled.hpp"
+#include "Xuzumi/Memory/Deleter.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
 #include "Xuzumi/Debug/DebugSession.hpp"
 
@@ -18,11 +19,11 @@ namespace Xuzumi::Internal
 		using ValueType = std::remove_extent_t<T>;
 		using PointerType = std::add_pointer_t<ValueType>;
 		using ReferenceType = std::add_lvalue_reference_t<ValueType>;
-	
+
 		static constexpr bool IsArray()
 		{
 			return std::is_array_v<T>;
-		} 
+		}
 	};
 
 	class IUniquePtrControlBlock
@@ -36,6 +37,7 @@ namespace Xuzumi::Internal
 		virtual TypeInfo GetDeleterTypeInfo() const = 0;
 	};
 
+	// TODO: create wrapper class called UniqueReferencer.
 	template<typename T, typename DeleterT>
 	class UniquePtrControlBlock : public IUniquePtrControlBlock
 	{
@@ -44,7 +46,6 @@ namespace Xuzumi::Internal
 		
 		using ValueType = typename Traits::ValueType;
 		using PointerType = typename Traits::PointerType;
-		using ReferenceType = typename Traits::ReferenceType;
 
 		UniquePtrControlBlock(PointerType resourcePointer, DeleterT deleter)
 			: mResourcePointer(resourcePointer)
@@ -56,7 +57,7 @@ namespace Xuzumi::Internal
 
 		void Delete() override
 		{
-			mDeleter(mResourcePointer);
+			mDeleter(std::exchange(mResourcePointer, nullptr));
 		}
 
 		TypeInfo GetResourceTypeInfo() const override
@@ -72,26 +73,6 @@ namespace Xuzumi::Internal
 	private:
 		PointerType mResourcePointer = nullptr;
 		DeleterT mDeleter;
-	};
-
-	template<typename T>
-	class UniquePtrDefaultDeleter
-	{
-	public:
-		using Traits = UniquePtrTraits<T>;
-		using PointerType = typename Traits::PointerType;
-	
-		void operator()(PointerType resourcePointer)
-		{
-			if (Traits::IsArray())
-			{
-				delete[] resourcePointer;
-			}
-			else
-			{
-				delete resourcePointer;
-			}
-		}
 	};
 }
 
@@ -117,15 +98,32 @@ namespace Xuzumi
 		{
 		}
 
-		explicit UniquePtr(PointerType pointer)
-			: UniquePtr(pointer, Internal::UniquePtrDefaultDeleter<T>())
+		template<typename OtherT>
+		explicit UniquePtr(OtherT* pointer)
 		{
+			if constexpr (Traits::IsArray())
+			{
+				OvertakeResourceOwnership(
+					pointer,
+					DefaultDeleter<OtherT[]>()
+				);
+			}
+			else
+			{
+				OvertakeResourceOwnership(
+					pointer,
+					DefaultDeleter<OtherT>()
+				);
+			}
 		}
 
-		template<typename DeleterT>
-		explicit UniquePtr(PointerType pointer, DeleterT deleter)
+		template<typename OtherT, typename DeleterT>
+		explicit UniquePtr(OtherT* pointer, DeleterT deleter)
 		{
-			OvertakeResourceOwnership(pointer, deleter);
+			OvertakeResourceOwnership(
+				pointer,
+				deleter
+			);
 		}
 
 		UniquePtr(const UniquePtr&) = delete;
@@ -136,7 +134,10 @@ namespace Xuzumi
 		{
 		}
 
-		template<typename OtherT>
+		template<
+			typename OtherT,
+			typename = std::enable_if<std::is_convertible_v<OtherT, ValueType>>
+		>
 		UniquePtr(UniquePtr<OtherT>&& other) noexcept
 			: mResourcePointer(
 				static_cast<PointerType>(
@@ -145,6 +146,11 @@ namespace Xuzumi
 			),
 			mControlBlock(std::exchange(other.mControlBlock, nullptr))
 		{
+		}
+
+		~UniquePtr()
+		{
+			CleanUp();
 		}
 
 		UniquePtr& operator=(const UniquePtr& other) = delete;
@@ -164,11 +170,12 @@ namespace Xuzumi
 			return *this;
 		}
 
-		template<typename OtherT>
+		template<
+			typename OtherT,
+			typename = std::enable_if_t<std::is_convertible_v<OtherT, ValueType>>
+		>
 		UniquePtr& operator=(UniquePtr<OtherT>&& other) noexcept
 		{
-			// TODO: should we do the `this == &other` check here???
-		
 			CleanUp();
 
 			mResourcePointer = static_cast<PointerType>(
@@ -185,16 +192,15 @@ namespace Xuzumi
 			return *this;
 		}
 
-		~UniquePtr()
+		PointerType Release()
 		{
-			CleanUp();
+			PointerType ownedResource = std::exchange(mResourcePointer, nullptr);
+			DeleteControlBlock();
+
+			return ownedResource;
 		}
 
-		PointerType Get() const
-		{
-			return mResourcePointer;
-		}
-
+		// TODO: make Reset take OtherT* pointer. Make Reset contrained.
 		void Reset()
 		{
 			CleanUp();
@@ -202,22 +208,60 @@ namespace Xuzumi
 
 		void Reset(PointerType pointer)
 		{
-			Reset(pointer, Internal::UniquePtrDefaultDeleter<T>());
+			Reset(pointer, DefaultDeleter<T>());
 		}
 
 		template<typename DeleterT>
 		void Reset(PointerType pointer, DeleterT deleter)
 		{
-			Reset();	
-			OvertakeResourceOwnership(pointer, deleter);
+			CleanUp();	
+			OvertakeResourceOwnership(
+				pointer,
+				deleter
+			);
 		}
 
-		PointerType Release()
+		void Swap(UniquePtr& other)
 		{
-			PointerType ownedResource = std::exchange(mResourcePointer, nullptr);
-			DeleteControlBlock();
+			if (this == &other)
+			{
+				return;
+			}
 
-			return ownedResource;
+			std::swap(mResourcePointer, other.mResourcePointer);
+			std::swap(mControlBlock, other.mControlBlock);
+		}
+
+		template<typename OtherT>
+		UniquePtr<OtherT> AsUnsafe()
+		{
+			UniquePtr<OtherT> other;
+
+			other.mResourcePointer = reinterpret_cast<
+				typename decltype(other)::PointerType
+			>(std::exchange(mResourcePointer, nullptr));
+
+			other.mControlBlock = std::exchange(mControlBlock, nullptr);
+
+			return other;
+		}
+
+		template<typename OtherT>
+		UniquePtr<OtherT> As()
+		{
+			using OtherValueType = std::remove_extent_t<OtherT>;
+
+			if (TypeInfo::Get<OtherValueType>() == GetResourceTypeInfo())
+			{
+				return AsUnsafe<OtherT>();
+			}
+
+			return nullptr;
+		}
+
+		PointerType Get() const
+		{
+			return mResourcePointer;
 		}
 
 		TypeInfo GetResourceTypeInfo() const
@@ -237,41 +281,23 @@ namespace Xuzumi
 			}
 			return TypeInfo();
 		}
-
-		template<typename OtherT>
-		UniquePtr<OtherT> Mimicry()
-		{
-			UniquePtr<OtherT> other;
-
-			other.mResourcePointer = reinterpret_cast<
-				typename decltype(other)::PointerType
-			>(std::exchange(mResourcePointer, nullptr));
-
-			other.mControlBlock = std::exchange(mControlBlock, nullptr);
 		
-			return other;
+		ReferenceType operator*() const
+		{
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			return *Get();
 		}
 
-		template<typename OtherT>
-		UniquePtr<OtherT> MimicrySafe()
+		PointerType operator->() const
 		{
-			if (TypeInfo::Get<OtherT>() == GetResourceTypeInfo())
-			{
-				return Mimicry<OtherT>();
-			}
-		
-			return nullptr;
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			return Get();
 		}
 
-		void Swap(UniquePtr& other)
+		ReferenceType operator[](std::ptrdiff_t index) const
 		{
-			if (this == &other)
-			{
-				return;
-			}
-
-			std::swap(mResourcePointer, other.mResourcePointer);
-			std::swap(mControlBlock, other.mControlBlock);
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			return Get()[index];
 		}
 
 		bool operator==(const UniquePtr& other) const
@@ -294,35 +320,26 @@ namespace Xuzumi
 			return !(*this == nullptr);
 		}
 
-		PointerType operator->() const
-		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
-			return Get();
-		}
-
-		ReferenceType operator*() const
-		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
-			return *Get();
-		}
-
-		ReferenceType operator[](std::ptrdiff_t index) const
-		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
-			return Get()[index];
-		}
-
 		explicit operator bool() const
 		{
 			return bool(Get());
 		}
 
 	private:
-		template<typename DeleterT>
-		void OvertakeResourceOwnership(PointerType pointer, DeleterT deleter)
+		template<
+			typename OtherT,
+			typename DeleterT,
+			typename = std::enable_if<std::is_convertible_v<OtherT*, T*>>
+		>
+		void OvertakeResourceOwnership(
+			OtherT* pointer,
+			DeleterT deleter
+		)
 		{
-			mControlBlock = new Internal::UniquePtrControlBlock<T, DeleterT>(
-				mResourcePointer = pointer,
+			mResourcePointer = static_cast<PointerType>(pointer);
+			
+			mControlBlock = new Internal::UniquePtrControlBlock<OtherT, DeleterT>(
+				pointer,
 				deleter
 			);
 		}
@@ -362,7 +379,7 @@ namespace Xuzumi
 		return UniquePtr<T>(new T{ std::forward<ArgsT>(args)... });
 	}
 
-	template<typename T, typename... ArgsT>
+	template<typename T>
 	std::enable_if_t<std::is_array_v<T> && std::extent_v<T> == 0, UniquePtr<T>>
 	MakeUnique(std::size_t size)
 	{
