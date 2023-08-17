@@ -7,6 +7,7 @@
 #include "Xuzumi/Core/Delegate.hpp"
 #include "Xuzumi/Core/FuncName.hpp"
 #include "Xuzumi/Core/StringUtils.hpp"
+#include "Xuzumi/Core/Templates/IsCompatible.hpp"
 
 #include "Xuzumi/Debug/Logging.hpp"
 #include "Xuzumi/Debug/Assertion.hpp"
@@ -18,7 +19,6 @@
 #include "Xuzumi/IDFramework/IDBase.hpp"
 #include "Xuzumi/IDFramework/HandleGenerator.hpp"
 
-#include "Xuzumi/Memory/UniquePtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Memory/SharedFactory.hpp"

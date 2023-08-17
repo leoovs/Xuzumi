@@ -8,20 +8,16 @@ namespace Xuzumi
 	class DefaultDeleter
 	{
 	public:
-		using ValueType = std::remove_extent_t<T>;
-		using PointerType = std::add_pointer_t<ValueType>;
+		using PointerType = std::add_pointer_t<std::remove_extent_t<T>>;
 
-		void operator()(PointerType resourcePointer)
+		void operator()(PointerType ptr)
 		{
 			if constexpr (std::is_array_v<T>)
 			{
-				delete[] resourcePointer;
+				delete[] ptr;
 				return;
 			}
-			else
-			{
-				delete resourcePointer;
-			}
+			delete ptr;
 		}
 	};
 }

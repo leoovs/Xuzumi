@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Memory/Deleter.hpp"
+#include "Xuzumi/Debug/Assertion.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
+#include "Xuzumi/Memory/Deleter.hpp"
+#include "Xuzumi/Memory/ControlBlock.hpp"
+#include "Xuzumi/Core/Templates/IsCompatible.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -11,110 +14,120 @@ namespace Xuzumi::Internal
 	{
 		static_assert(
 			!std::is_reference_v<T>,
-			"Xuzumi: reference type argument for SharedPtr is not allowed"
+			"Xuzumi: reference type is not allowed in SharedPtr typename argument"
 		);
 	
 		using ValueType = std::remove_extent_t<T>;
 		using PointerType = std::add_pointer_t<ValueType>;
 		using ReferenceType = std::add_lvalue_reference_t<ValueType>;
 	
-		static constexpr bool IsArray()
+		template<typename OtherT, bool IsArrayT>
+		struct OtherTypeImpl {};
+	
+		template<typename OtherT>
+		struct OtherTypeImpl<OtherT, true>
 		{
-			return std::is_array_v<T>;
-		}
+			using Type = OtherT[];
+		};
+	
+		template<typename OtherT>
+		struct OtherTypeImpl<OtherT, false>
+		{
+			using Type = OtherT;
+		};
+
+		template<typename OtherT>
+		using OtherType =
+			typename OtherTypeImpl<OtherT, std::is_array_v<T>>::Type;
 	};
 
-	// TODO: create wrapper class called SharedReferencer.
-	class IRefCountedControlBlock
+	class ISharedControlBlock
 	{
 	public:
-		virtual ~IRefCountedControlBlock() = default;
-	
-		virtual void IncrementStrong() = 0;
-		virtual void DecrementStrong() = 0;
-		virtual std::uint32_t GetStrongReferences() const = 0;
-		virtual bool HasSingleStrongReference() const = 0;
+		virtual ~ISharedControlBlock() = default;
 
-		virtual void IncrementWeak() = 0;
-		virtual void DecrementWeak() = 0;
-		virtual bool HasNoWeakReferences() const = 0;
-	
+		virtual std::uint32_t GetStrongRefs() const = 0;
+		virtual void IncrementStrongRefs() = 0;
+		virtual void DecrementStrongRefs() = 0;
+
+		virtual bool HasNoWeakRefs() const = 0;
+		virtual void IncrementWeakRefs() = 0;
+		virtual void DecrementWeakRefs() = 0;
+
+		virtual bool ResourceIsAlive() const = 0;
+
 		virtual TypeInfo GetResourceTypeInfo() const = 0;
 		virtual TypeInfo GetDeleterTypeInfo() const = 0;
-	
-		virtual bool ResourceIsAlive() const = 0;
 	};
 
 	template<typename T, typename DeleterT>
-	class RefCountedControlBlock : public IRefCountedControlBlock
+	class SharedControlBlock : public ISharedControlBlock
 	{
 	public:
-		using Traits = SharedPtrTraits<T>;
+		using PtrTraits = SharedPtrTraits<T>;
+		using PointerType = typename PtrTraits::PointerType;
 
-		using ValueType = typename Traits::ValueType;
-		using PointerType = typename Traits::PointerType;
-
-		RefCountedControlBlock(PointerType resourcePointer, DeleterT deleter)
-			: mResourcePointer(resourcePointer)
+		SharedControlBlock(PointerType pointer, DeleterT deleter)
+			: mResourcePointer(pointer)
 			, mDeleter(deleter)
 		{
-			mStrongReferences.store(1);
-			mWeakReferences.store(0);
+			mStrongRefs.store(1);
+			mWeakRefs.store(0);
 		}
 
-		void IncrementStrong() override
+		std::uint32_t GetStrongRefs() const override
 		{
-			if (ResourceIsAlive())
-			{
-				mStrongReferences.fetch_add(1);
-			}
+			return mStrongRefs.load();
 		}
 
-		void DecrementStrong() override
+		void IncrementStrongRefs() override
 		{
 			if (!ResourceIsAlive())
 			{
 				return;
 			}
 
-			mStrongReferences.fetch_sub(1);
-			
-			if (mStrongReferences.load() == 0)
+			mStrongRefs.fetch_add(1);
+		}
+
+		void DecrementStrongRefs() override
+		{
+			if (!ResourceIsAlive())
 			{
-				mDeleter(std::exchange(mResourcePointer, nullptr));
-				mStrongReferences.store(0);
 				return;
+			}
+
+			mStrongRefs.fetch_sub(1);
+		
+			if (mStrongRefs.load() == 0)
+			{
+				DeleteResource();
 			}
 		}
 
-		std::uint32_t GetStrongReferences() const override
+		bool HasNoWeakRefs() const override
 		{
-			return mStrongReferences.load();
+			return mWeakRefs.load() == 0;
 		}
 
-		bool HasSingleStrongReference() const override
+		void IncrementWeakRefs() override
 		{
-			return mStrongReferences.load() == 1;
-		}
+			mWeakRefs.fetch_add(1);
+		} 
 
-		void IncrementWeak() override
+		void DecrementWeakRefs() override
 		{
-			mWeakReferences.fetch_add(1);
-		}
+			mWeakRefs.fetch_sub(1);
+		} 
 
-		void DecrementWeak() override
+		bool ResourceIsAlive() const override
 		{
-			mWeakReferences.fetch_sub(1);
-		}
-
-		bool HasNoWeakReferences() const override
-		{
-			return mWeakReferences.load() == 0;
+			return bool(mResourcePointer);
 		}
 
 		TypeInfo GetResourceTypeInfo() const override
 		{
-			return TypeInfo::Get<ValueType>();
+			return TypeInfo::Get<T>();
 		}
 
 		TypeInfo GetDeleterTypeInfo() const override
@@ -122,16 +135,17 @@ namespace Xuzumi::Internal
 			return TypeInfo::Get<DeleterT>();
 		}
 
-		bool ResourceIsAlive() const override
+	private:
+		void DeleteResource()
 		{
-			return bool(mResourcePointer);
+			mDeleter(std::exchange(mResourcePointer, nullptr));
 		}
 
-	private:
 		PointerType mResourcePointer = nullptr;
 		DeleterT mDeleter;
-		std::atomic_uint32_t mStrongReferences;
-		std::atomic_uint32_t mWeakReferences;
+	
+		std::atomic_uint32_t mStrongRefs;
+		std::atomic_uint32_t mWeakRefs;
 	};
 }
 
@@ -148,54 +162,53 @@ namespace Xuzumi
 		using ReferenceType = typename Traits::ReferenceType;
 
 		template<typename OtherT>
+		using OtherType = typename Traits::template OtherType<OtherT>;
+
+		template<typename OtherT>
 		friend class SharedPtr;
-		
-		// Constructors.
+
 		SharedPtr() = default;
 
 		SharedPtr(std::nullptr_t)
-			: SharedPtr() 
+			: SharedPtr()
 		{
 		}
 
-		template<typename OtherT>
-		SharedPtr(OtherT* pointer)
+		template<
+			typename OtherT,
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
+		>
+		explicit SharedPtr(OtherT* pointer)
 		{
-			if constexpr (Traits::IsArray())
-			{
-				UndertakeResourceOwnership(pointer, DefaultDeleter<OtherT[]>());		
-			}
-			else
-			{
-				UndertakeResourceOwnership(pointer, DefaultDeleter<OtherT>());		
-			}
+			UndertakeOwnership(pointer, DefaultDeleter<OtherType<OtherT>>());
 		}
 
 		template<
 			typename OtherT,
 			typename DeleterT,
-			typename = std::enable_if_t<std::is_convertible_v<OtherT*, PointerType>>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
-		SharedPtr(OtherT* pointer, DeleterT deleter)
+		explicit SharedPtr(OtherT* pointer, DeleterT deleter)
 		{
-			UndertakeResourceOwnership(pointer, deleter);
+			UndertakeOwnership(pointer, deleter);
 		}
 
 		SharedPtr(const SharedPtr& other)
 			: mResourcePointer(other.mResourcePointer)
 			, mControlBlock(other.mControlBlock)
 		{
-			ShareResourceOwnership();
+			ShareOwnership();
 		}
 
 		template<
 			typename OtherT,
-			typename = std::enable_if_t<std::is_convertible_v<OtherT, ValueType>>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
 		SharedPtr(const SharedPtr<OtherT>& other)
-			: mResourcePointer(static_cast<OtherT*>(other.mResourcePointer))
+			: mResourcePointer(other.mResourcePointer)
 			, mControlBlock(other.mControlBlock)
 		{
+			ShareOwnership();
 		}
 
 		SharedPtr(SharedPtr&& other) noexcept
@@ -206,25 +219,19 @@ namespace Xuzumi
 
 		template<
 			typename OtherT,
-			typename = std::enable_if_t<std::is_convertible_v<OtherT, ValueType>>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
 		SharedPtr(SharedPtr<OtherT>&& other) noexcept
-			: mResourcePointer(
-				static_cast<OtherT*>(
-					std::exchange(other.mResourcePointer, nullptr)
-				)
-			)
+			: mResourcePointer(std::exchange(other.mResourcePointer, nullptr))
 			, mControlBlock(std::exchange(other.mControlBlock, nullptr))
 		{
 		}
 
-		// Destructor.
 		~SharedPtr()
 		{
-			GiveUpResourceOwnership();
+			GiveUpOwnership();
 		}
 
-		// Assignment operators.
 		SharedPtr& operator=(const SharedPtr& other)
 		{
 			if (this == &other)
@@ -232,24 +239,24 @@ namespace Xuzumi
 				return *this;
 			}
 
-			GiveUpResourceOwnership();
+			GiveUpOwnership();
 			mResourcePointer = other.mResourcePointer;
 			mControlBlock = other.mControlBlock;
-			ShareResourceOwnership();
+			ShareOwnership();
 
 			return *this;
 		}
 
 		template<
 			typename OtherT,
-			typename = std::enable_if_t<std::is_convertible_v<OtherT, ValueType>>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
 		SharedPtr& operator=(const SharedPtr<OtherT>& other)
 		{
-			GiveUpResourceOwnership();
-			mResourcePointer = static_cast<PointerType>(other.mResourcePointer);
+			GiveUpOwnership();
+			mResourcePointer = other.mResourcePointer;
 			mControlBlock = other.mControlBlock;
-			ShareResourceOwnership();
+			ShareOwnership();
 
 			return *this;
 		}
@@ -261,7 +268,7 @@ namespace Xuzumi
 				return *this;
 			}
 
-			GiveUpResourceOwnership();
+			GiveUpOwnership();
 			mResourcePointer = std::exchange(other.mResourcePointer, nullptr);
 			mControlBlock = std::exchange(other.mControlBlock, nullptr);
 
@@ -270,23 +277,20 @@ namespace Xuzumi
 
 		template<
 			typename OtherT,
-			typename = std::enable_if_t<std::is_convertible_v<OtherT, ValueType>>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
 		SharedPtr& operator=(SharedPtr<OtherT>&& other) noexcept
 		{
-			GiveUpResourceOwnership();
-			mResourcePointer = static_cast<PointerType>(
-				std::exchange(other.mResourcePointer, nullptr)
-			);
+			GiveUpOwnership();
+			mResourcePointer = std::exchange(other.mResourcePointer, nullptr);
 			mControlBlock = std::exchange(other.mControlBlock, nullptr);
 
 			return *this;
 		}
-		
-		// Modifiers.
+
 		void Reset()
 		{
-			GiveUpResourceOwnership();
+			GiveUpOwnership();
 		}
 
 		void Reset(std::nullptr_t)
@@ -294,33 +298,23 @@ namespace Xuzumi
 			Reset();
 		}
 
-		template<typename OtherT>
+		template<
+			typename OtherT,
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
+		>
 		void Reset(OtherT* pointer)
 		{
-			if constexpr (Traits::IsArray())
-			{
-				Reset(pointer, DefaultDeleter<OtherT[]>());
-			}
-			else
-			{
-				Reset(pointer, DefaultDeleter<OtherT>());
-			}
+			UndertakeOwnership(pointer, DefaultDeleter<OtherType<OtherT>>());
 		}
 
 		template<
 			typename OtherT,
 			typename DeleterT,
-			typename = std::enable_if_t<
-				std::is_convertible_v<OtherT*, PointerType>
-			>
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
 		>
 		void Reset(OtherT* pointer, DeleterT deleter)
 		{
-			GiveUpResourceOwnership();
-			UndertakeResourceOwnership(
-				static_cast<PointerType>(pointer),
-				deleter
-			);
+			UndertakeOwnership(pointer, deleter);
 		}
 
 		void Swap(SharedPtr& other)
@@ -329,59 +323,36 @@ namespace Xuzumi
 			std::swap(mControlBlock, other.mControlBlock);
 		}
 
-		// Observers.
 		PointerType Get() const
 		{
 			return mResourcePointer;
 		}
 
-		std::uint32_t UseCount() const
-		{
-			if (mControlBlock)
-			{
-				return mControlBlock->GetStrongReferences();
-			}
-			return 0;
-		}
-
 		TypeInfo GetResourceTypeInfo() const
 		{
-			if (mControlBlock)
-			{
-				return mControlBlock->GetResourceTypeInfo();
-			}
-			return TypeInfo();
-		}
-
-		TypeInfo GetDeleterTypeInfo() const
-		{
-			if (mControlBlock)
-			{
-				return mControlBlock->GetDeleterTypeInfo();
-			}
-			return TypeInfo();
+			return mControlBlock
+				? mControlBlock->GetResourceTypeInfo()
+				: TypeInfo();
 		}
 
 		template<typename OtherT>
 		SharedPtr<OtherT> AsUnsafe() const
 		{
 			SharedPtr<OtherT> other;
-			
-			other.mControlBlock = mControlBlock;
+
 			other.mResourcePointer = reinterpret_cast<
 				typename decltype(other)::PointerType
 			>(mResourcePointer);
-			other.ShareResourceOwnership();
+			other.mControlBlock = mControlBlock;
+			other.ShareOwnership();
 
 			return other;
 		}
-		
+
 		template<typename OtherT>
 		SharedPtr<OtherT> As() const
 		{
-			using OtherValueType = std::remove_extent_t<OtherT>;
-
-			if (TypeInfo::Get<OtherValueType>() == GetResourceTypeInfo())
+			if (TypeInfo::Get<OtherT>() == GetResourceTypeInfo())
 			{
 				return AsUnsafe<OtherT>();
 			}
@@ -390,17 +361,27 @@ namespace Xuzumi
 
 		ReferenceType operator*() const
 		{
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
 			return *Get();
 		}
 
 		PointerType operator->() const
 		{
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
 			return Get();
 		}
 
 		ReferenceType operator[](std::ptrdiff_t index) const
 		{
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
 			return Get()[index];
+		}
+		
+		std::uint32_t UseCount() const
+		{
+			return mControlBlock
+				? mControlBlock->GetStrongRefs()
+				: 0;
 		}
 
 		explicit operator bool() const
@@ -408,61 +389,65 @@ namespace Xuzumi
 			return bool(Get());
 		}
 
-		// Other operators.
-
 	private:
 		template<typename OtherT, typename DeleterT>
-		void UndertakeResourceOwnership(OtherT* pointer, DeleterT deleter)
+		void UndertakeOwnership(OtherT* pointer, DeleterT deleter)
 		{
-			mResourcePointer = static_cast<PointerType>(pointer);
-			mControlBlock = new Internal::RefCountedControlBlock<OtherT, DeleterT>(
+			GiveUpOwnership();
+
+			mResourcePointer = pointer;
+			mControlBlock = new Internal::ReferencingControlBlock<
+				OtherType<OtherT>,
+				DeleterT
+			>(
 				pointer,
 				deleter
 			);
 		}
 
-		void ShareResourceOwnership()
+		void ShareOwnership()
 		{
 			if (mControlBlock)
 			{
-				mControlBlock->IncrementStrong();
+				mControlBlock->IncrementStrongRefs();
 			}
 		}
 
-		void GiveUpResourceOwnership()
+		void GiveUpOwnership()
 		{
 			mResourcePointer = nullptr;
 			if (mControlBlock)
 			{
-				TryDeleteControlBlock();
+				mControlBlock->DecrementStrongRefs();
+				DeleteControlBlock();
 			}
 		}
 
-		void TryDeleteControlBlock()
+		void DeleteControlBlock()
 		{
-			mControlBlock->DecrementStrong();
-			if (!mControlBlock->ResourceIsAlive()
-				&& mControlBlock->HasNoWeakReferences())
+			if (!mControlBlock->ResourceIsAlive() && mControlBlock->HasNoWeakRefs())
 			{
 				delete mControlBlock;
 				mControlBlock = nullptr;
 			}
-			mControlBlock = nullptr;
 		}
 
+		Internal::IControlBlock* mControlBlock = nullptr;
 		PointerType mResourcePointer = nullptr;
-		Internal::IRefCountedControlBlock* mControlBlock = nullptr;
 	};
 
-	template<typename T,typename... ArgsT>
+	template<
+		typename T,
+		typename... ArgsT
+	>
 	std::enable_if_t<!std::is_array_v<T>, SharedPtr<T>>
-	MakeShared(ArgsT&&... args)
+		MakeShared(ArgsT&&... args)
 	{
-		return SharedPtr<T>(new T{ std::forward<ArgsT>(args)... });	
+		return SharedPtr<T>(new T{ std::forward<ArgsT>(args)... });
 	}
 
 	template<typename T>
-	std::enable_if_t<std::is_array_v<T> && std::extent_v<T> == 0, SharedPtr<T>>
+	std::enable_if_t<std::is_array_v<T>, SharedPtr<T>>
 	MakeShared(std::size_t size)
 	{
 		return SharedPtr<T>(new std::remove_extent_t<T>[size]{});

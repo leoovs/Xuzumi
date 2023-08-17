@@ -15,16 +15,4 @@ App::App(Xuzumi::ObserverPtr<Xuzumi::EventBus> events)
 		.EndThis();
 
 	XZ_LOG(Debug, "Nothing here...");
-	
-	auto p1 = Xuzumi::MakeUnique<Entity>(Xuzumi::IDType(105));
-	auto p2 = Xuzumi::MakeUnique<Entity>(Xuzumi::IDType(501));
-
-	p1->Display();
-	p2->Display();
-
-	p1.Swap(p2);
-	p1 = p2.As<Entity[]>();
-
-	p1->Display();
-	*p2;
 }
