@@ -1,5 +1,6 @@
 #include <Xuzumi/Xuzumi.hpp>
 #include <thread>
+#include <memory>
 
 struct Entity
 {
@@ -30,6 +31,12 @@ struct Person : Entity
 	}
 };
 
+void worker(Xuzumi::SharedPtr<Entity> e)
+{
+	std::cout << e.As<Person>()->Name << std::endl;
+	std::cout << e.UseCount() << std::endl;
+}
+
 int main()
 {
 	Xuzumi::DebugSession::Get().ConfigureLogger(
@@ -48,13 +55,15 @@ int main()
 		}
 	);
 
-	Xuzumi::SharedPtr<Entity> entity;
-	entity = Xuzumi::MakeShared<Person>("Hello");
-	 
-	auto hack = entity.AsUnsafe<std::string>();
-	std::cout
-		<< hack.UseCount()
-		<< " - " << *hack
-		<< " (" << hack->size() << ')'
-		<< std::endl;
+	auto e = Xuzumi::MakeShared<Person>("Vasya");
+	
+	std::thread t1(worker, e);
+	std::thread t2(worker, e);
+
+	std::cout << e.UseCount() << std::endl;
+
+	t1.detach();
+	t2.detach();
+
+	std::this_thread::sleep_for(std::chrono::seconds(3));
 }

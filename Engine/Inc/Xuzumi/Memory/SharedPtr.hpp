@@ -5,6 +5,7 @@
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
 #include "Xuzumi/Memory/Deleter.hpp"
 #include "Xuzumi/Memory/ControlBlock.hpp"
+#include "Xuzumi/Memory/StrongReferencer.hpp"
 #include "Xuzumi/Core/Templates/IsCompatible.hpp"
 
 namespace Xuzumi::Internal
@@ -39,113 +40,6 @@ namespace Xuzumi::Internal
 		template<typename OtherT>
 		using OtherType =
 			typename OtherTypeImpl<OtherT, std::is_array_v<T>>::Type;
-	};
-
-	class ISharedControlBlock
-	{
-	public:
-		virtual ~ISharedControlBlock() = default;
-
-		virtual std::uint32_t GetStrongRefs() const = 0;
-		virtual void IncrementStrongRefs() = 0;
-		virtual void DecrementStrongRefs() = 0;
-
-		virtual bool HasNoWeakRefs() const = 0;
-		virtual void IncrementWeakRefs() = 0;
-		virtual void DecrementWeakRefs() = 0;
-
-		virtual bool ResourceIsAlive() const = 0;
-
-		virtual TypeInfo GetResourceTypeInfo() const = 0;
-		virtual TypeInfo GetDeleterTypeInfo() const = 0;
-	};
-
-	template<typename T, typename DeleterT>
-	class SharedControlBlock : public ISharedControlBlock
-	{
-	public:
-		using PtrTraits = SharedPtrTraits<T>;
-		using PointerType = typename PtrTraits::PointerType;
-
-		SharedControlBlock(PointerType pointer, DeleterT deleter)
-			: mResourcePointer(pointer)
-			, mDeleter(deleter)
-		{
-			mStrongRefs.store(1);
-			mWeakRefs.store(0);
-		}
-
-		std::uint32_t GetStrongRefs() const override
-		{
-			return mStrongRefs.load();
-		}
-
-		void IncrementStrongRefs() override
-		{
-			if (!ResourceIsAlive())
-			{
-				return;
-			}
-
-			mStrongRefs.fetch_add(1);
-		}
-
-		void DecrementStrongRefs() override
-		{
-			if (!ResourceIsAlive())
-			{
-				return;
-			}
-
-			mStrongRefs.fetch_sub(1);
-		
-			if (mStrongRefs.load() == 0)
-			{
-				DeleteResource();
-			}
-		}
-
-		bool HasNoWeakRefs() const override
-		{
-			return mWeakRefs.load() == 0;
-		}
-
-		void IncrementWeakRefs() override
-		{
-			mWeakRefs.fetch_add(1);
-		} 
-
-		void DecrementWeakRefs() override
-		{
-			mWeakRefs.fetch_sub(1);
-		} 
-
-		bool ResourceIsAlive() const override
-		{
-			return bool(mResourcePointer);
-		}
-
-		TypeInfo GetResourceTypeInfo() const override
-		{
-			return TypeInfo::Get<T>();
-		}
-
-		TypeInfo GetDeleterTypeInfo() const override
-		{
-			return TypeInfo::Get<DeleterT>();
-		}
-
-	private:
-		void DeleteResource()
-		{
-			mDeleter(std::exchange(mResourcePointer, nullptr));
-		}
-
-		PointerType mResourcePointer = nullptr;
-		DeleterT mDeleter;
-	
-		std::atomic_uint32_t mStrongRefs;
-		std::atomic_uint32_t mWeakRefs;
 	};
 }
 
@@ -195,9 +89,8 @@ namespace Xuzumi
 
 		SharedPtr(const SharedPtr& other)
 			: mResourcePointer(other.mResourcePointer)
-			, mControlBlock(other.mControlBlock)
+			, mReferencer(other.mReferencer)
 		{
-			ShareOwnership();
 		}
 
 		template<
@@ -206,14 +99,13 @@ namespace Xuzumi
 		>
 		SharedPtr(const SharedPtr<OtherT>& other)
 			: mResourcePointer(other.mResourcePointer)
-			, mControlBlock(other.mControlBlock)
+			, mReferencer(other.mReferencer)
 		{
-			ShareOwnership();
 		}
 
 		SharedPtr(SharedPtr&& other) noexcept
 			: mResourcePointer(std::exchange(other.mResourcePointer, nullptr))
-			, mControlBlock(std::exchange(other.mControlBlock, nullptr))
+			, mReferencer(std::move(other.mReferencer))
 		{
 		}
 
@@ -223,13 +115,8 @@ namespace Xuzumi
 		>
 		SharedPtr(SharedPtr<OtherT>&& other) noexcept
 			: mResourcePointer(std::exchange(other.mResourcePointer, nullptr))
-			, mControlBlock(std::exchange(other.mControlBlock, nullptr))
+			, mReferencer(std::move(other.mReferencer))
 		{
-		}
-
-		~SharedPtr()
-		{
-			GiveUpOwnership();
 		}
 
 		SharedPtr& operator=(const SharedPtr& other)
@@ -239,10 +126,8 @@ namespace Xuzumi
 				return *this;
 			}
 
-			GiveUpOwnership();
 			mResourcePointer = other.mResourcePointer;
-			mControlBlock = other.mControlBlock;
-			ShareOwnership();
+			mReferencer = other.mReferencer;
 
 			return *this;
 		}
@@ -253,10 +138,8 @@ namespace Xuzumi
 		>
 		SharedPtr& operator=(const SharedPtr<OtherT>& other)
 		{
-			GiveUpOwnership();
 			mResourcePointer = other.mResourcePointer;
-			mControlBlock = other.mControlBlock;
-			ShareOwnership();
+			mReferencer = other.mReferencer;
 
 			return *this;
 		}
@@ -268,9 +151,8 @@ namespace Xuzumi
 				return *this;
 			}
 
-			GiveUpOwnership();
 			mResourcePointer = std::exchange(other.mResourcePointer, nullptr);
-			mControlBlock = std::exchange(other.mControlBlock, nullptr);
+			mReferencer = std::move(other.mReferencer);
 
 			return *this;
 		}
@@ -281,16 +163,15 @@ namespace Xuzumi
 		>
 		SharedPtr& operator=(SharedPtr<OtherT>&& other) noexcept
 		{
-			GiveUpOwnership();
 			mResourcePointer = std::exchange(other.mResourcePointer, nullptr);
-			mControlBlock = std::exchange(other.mControlBlock, nullptr);
+			mReferencer = std::move(other.mReferencer);
 
 			return *this;
 		}
 
 		void Reset()
 		{
-			GiveUpOwnership();
+			mReferencer.Reset();	
 		}
 
 		void Reset(std::nullptr_t)
@@ -320,7 +201,7 @@ namespace Xuzumi
 		void Swap(SharedPtr& other)
 		{
 			std::swap(mResourcePointer, other.mResourcePointer);
-			std::swap(mControlBlock, other.mControlBlock);
+			std::swap(mReferencer, other.mReferencer);
 		}
 
 		PointerType Get() const
@@ -330,9 +211,7 @@ namespace Xuzumi
 
 		TypeInfo GetResourceTypeInfo() const
 		{
-			return mControlBlock
-				? mControlBlock->GetResourceTypeInfo()
-				: TypeInfo();
+			return mReferencer.GetResourceTypeInfo();
 		}
 
 		template<typename OtherT>
@@ -343,8 +222,7 @@ namespace Xuzumi
 			other.mResourcePointer = reinterpret_cast<
 				typename decltype(other)::PointerType
 			>(mResourcePointer);
-			other.mControlBlock = mControlBlock;
-			other.ShareOwnership();
+			other.mReferencer = mReferencer;
 
 			return other;
 		}
@@ -352,11 +230,17 @@ namespace Xuzumi
 		template<typename OtherT>
 		SharedPtr<OtherT> As() const
 		{
-			if (TypeInfo::Get<OtherT>() == GetResourceTypeInfo())
+			if (Holds<OtherT>())
 			{
 				return AsUnsafe<OtherT>();
 			}
 			return nullptr;
+		}
+
+		template<typename OtherT>
+		bool Holds() const
+		{
+			return TypeInfo::Get<OtherT>() == GetResourceTypeInfo();
 		}
 
 		ReferenceType operator*() const
@@ -379,9 +263,7 @@ namespace Xuzumi
 		
 		std::uint32_t UseCount() const
 		{
-			return mControlBlock
-				? mControlBlock->GetStrongRefs()
-				: 0;
+			return mReferencer.UseCount();
 		}
 
 		explicit operator bool() const
@@ -393,46 +275,13 @@ namespace Xuzumi
 		template<typename OtherT, typename DeleterT>
 		void UndertakeOwnership(OtherT* pointer, DeleterT deleter)
 		{
-			GiveUpOwnership();
-
 			mResourcePointer = pointer;
-			mControlBlock = new Internal::ReferencingControlBlock<
-				OtherType<OtherT>,
-				DeleterT
-			>(
-				pointer,
-				deleter
-			);
+			mReferencer.Bind<
+				Internal::ReferencingControlBlock<OtherType<OtherT>, DeleterT>
+			>(pointer, deleter);	
 		}
 
-		void ShareOwnership()
-		{
-			if (mControlBlock)
-			{
-				mControlBlock->IncrementStrongRefs();
-			}
-		}
-
-		void GiveUpOwnership()
-		{
-			mResourcePointer = nullptr;
-			if (mControlBlock)
-			{
-				mControlBlock->DecrementStrongRefs();
-				DeleteControlBlock();
-			}
-		}
-
-		void DeleteControlBlock()
-		{
-			if (!mControlBlock->ResourceIsAlive() && mControlBlock->HasNoWeakRefs())
-			{
-				delete mControlBlock;
-				mControlBlock = nullptr;
-			}
-		}
-
-		Internal::IControlBlock* mControlBlock = nullptr;
+		Internal::StrongReferencer mReferencer;
 		PointerType mResourcePointer = nullptr;
 	};
 
