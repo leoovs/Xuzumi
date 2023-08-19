@@ -1,5 +1,4 @@
-#ifndef XUZUMI_DEBUG_LOGGING_HPP_
-#define XUZUMI_DEBUG_LOGGING_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
@@ -111,5 +110,3 @@ namespace Xuzumi
 		ObserverPtr<Logger> mConfiguredLogger;
 	};
 }
-
-#endif // XUZUMI_DEBUG_LOGGING_HPP_

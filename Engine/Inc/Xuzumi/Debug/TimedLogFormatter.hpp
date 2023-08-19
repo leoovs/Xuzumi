@@ -1,5 +1,4 @@
-#ifndef XUZUMI_DEBUG_TIMEDLOGFORMATTER_HPP_
-#define XUZUMI_DEBUG_TIMEDLOGFORMATTER_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Debug/Logging.hpp"
@@ -16,5 +15,3 @@ namespace Xuzumi
 		std::string mFormattedLog;
 	};
 }
-
-#endif // XUZUMI_DEBUG_TIMEDLOGFORMATTER_HPP_

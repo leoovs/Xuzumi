@@ -1,5 +1,4 @@
-#ifndef XUZUMI_XUZUMI_HPP_
-#define XUZUMI_XUZUMI_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 
@@ -32,5 +31,3 @@
 #include "Xuzumi/TypeMeta/TypeID.hpp"
 #include "Xuzumi/TypeMeta/TypeName.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
-
-#endif // XUZUMI_XUZUMI_HPP_

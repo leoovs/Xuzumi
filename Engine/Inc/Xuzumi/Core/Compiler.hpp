@@ -1,5 +1,4 @@
-#ifndef XUZUMI_CORE_COMPILER_HPP_
-#define XUZUMI_CORE_COMPILER_HPP_
+#pragma once
 
 #define XZ_COMPILER_ID_GCC   0u
 #define XZ_COMPILER_ID_CLANG 1u
@@ -21,5 +20,3 @@ namespace Xuzumi
 {
 	// TODO: implement GetCompilerName function.
 }
-
-#endif // XUZUMI_CORE_COMPILER_HPP_

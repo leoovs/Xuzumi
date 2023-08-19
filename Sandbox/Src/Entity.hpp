@@ -1,5 +1,4 @@
-#ifndef ENTITY_HPP_
-#define ENTITY_HPP_
+#pragma once
 
 #include <Xuzumi/Xuzumi.hpp>
 
@@ -30,5 +29,3 @@ public:
 private:
 	Xuzumi::IDType mID = Xuzumi::kInvalidID;
 };
-
-#endif // ENTITY_HPP_

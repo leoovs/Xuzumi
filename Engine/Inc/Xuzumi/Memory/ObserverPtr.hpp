@@ -1,5 +1,4 @@
-#ifndef XUZUMI_CORE_OBSERVERPTR_HPP_
-#define XUZUMI_CORE_OBSERVERPTR_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 
@@ -78,5 +77,3 @@ namespace Xuzumi
 		PointerType mWatchedObject = nullptr;
 	};
 }
-
-#endif // XUZUMI_CORE_OBSERVERPTR_HPP_

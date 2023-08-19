@@ -1,5 +1,4 @@
-#ifndef XUZUMI_CORE_DELEGATE_HPP_
-#define XUZUMI_CORE_DELEGATE_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 
@@ -164,5 +163,3 @@ namespace Xuzumi
 		std::shared_ptr<CallerType> mCaller;
 	};
 }
-
-#endif // XUZUMI_CORE_DELEGATE_HPP_

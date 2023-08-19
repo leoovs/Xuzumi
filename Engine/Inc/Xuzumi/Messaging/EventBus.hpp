@@ -1,5 +1,4 @@
-#ifndef XUZUMI_MESSAGING_EVENTBUS_HPP_
-#define XUZUMI_MESSAGING_EVENTBUS_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/Delegate.hpp"
@@ -167,5 +166,3 @@ namespace Xuzumi
 		> mDispatchers;
 	};
 }
-
-#endif // XUZUMI_MESSAGING_EVENTBUS_HPP_

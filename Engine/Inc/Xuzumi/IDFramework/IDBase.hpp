@@ -1,5 +1,4 @@
-#ifndef XUZUMI_IDFRAMEWORK_IDBASE_HPP_
-#define XUZUMI_IDFRAMEWORK_IDBASE_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 
@@ -9,5 +8,3 @@ namespace Xuzumi
 
 	inline constexpr IDType kInvalidID = IDType(-1);
 }
-
-#endif // XUZUMI_IDFRAMEWORK_IDBASE_HPP_

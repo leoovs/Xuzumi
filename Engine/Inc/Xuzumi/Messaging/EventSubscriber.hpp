@@ -1,5 +1,4 @@
-#ifndef XUZUMI_MESSAGING_EVENTSUBSCRIBER_HPP_
-#define XUZUMI_MESSAGING_EVENTSUBSCRIBER_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
@@ -117,5 +116,3 @@ namespace Xuzumi::Internal
 		return *this;
 	}
 }
-
-#endif // XUZUMI_MESSAGING_EVENTSUBSCRIBER_HPP_

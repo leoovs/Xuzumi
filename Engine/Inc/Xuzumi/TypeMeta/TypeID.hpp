@@ -1,5 +1,4 @@
-#ifndef XUZUMI_TYPEMETA_TYPEID_HPP_
-#define XUZUMI_TYPEMETA_TYPEID_HPP_
+#pragma once
 
 #include "Xuzumi/IDFramework/IDBase.hpp"
 
@@ -27,5 +26,3 @@ namespace Xuzumi
 		return GetTypeID<ClassT>();
 	}
 }
-
-#endif // XUZUMI_TYPEMETA_TYPEID_HPP_

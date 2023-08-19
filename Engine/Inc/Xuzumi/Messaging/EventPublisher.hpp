@@ -1,5 +1,4 @@
-#ifndef XUZUMI_MESSAGING_EVENTPUBLISHER_HPP_
-#define XUZUMI_MESSAGING_EVENTPUBLISHER_HPP_
+#pragma once
 
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"
@@ -24,5 +23,3 @@ namespace Xuzumi
 		ObserverPtr<EventBus> mBus;
 	};
 }
-
-#endif // XUZUMI_MESSAGING_EVENTPUBLISHER_HPP_

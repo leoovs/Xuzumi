@@ -1,5 +1,4 @@
-#ifndef XUZUMI_DEBUG_DEBUGSESSION_HPP_
-#define XUZUMI_DEBUG_DEBUGSESSION_HPP_
+#pragma once
 
 #include "Xuzumi/Core/Delegate.hpp"
 #include "Xuzumi/Core/FuncName.hpp"
@@ -64,5 +63,3 @@ namespace Xuzumi
 		AssertionDispatcher mAssertionDispatcher;
 	};
 }
-
-#endif // XUZUMI_DEBUG_DEBUGSESSION_HPP_

@@ -1,5 +1,4 @@
-#ifndef XUZUMI_TYPEMETA_TYPENAME_HPP_
-#define XUZUMI_TYPEMETA_TYPENAME_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/Compiler.hpp"
@@ -62,5 +61,3 @@ namespace Xuzumi
 		return GetTypeName<ClassT>();
 	}
 }
-
-#endif // XUZUMI_TYPEMETA_TYPENAME_HPP_

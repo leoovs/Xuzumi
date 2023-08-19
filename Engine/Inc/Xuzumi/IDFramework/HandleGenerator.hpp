@@ -1,5 +1,4 @@
-#ifndef XUZUMI_IDFRAMEWORK_HANDLEGENERATOR_HPP_
-#define XUZUMI_IDFRAMEWORK_HANDLEGENERATOR_HPP_
+#pragma once
 
 #include "Xuzumi/IDFramework/IDBase.hpp"
 
@@ -24,5 +23,3 @@ namespace Xuzumi::Internal
 		HandleID mCurrentHandleID = 0;
 	};
 }
-
-#endif // XUZUMI_IDFRAMEWORK_HANDLEGENERATOR_HPP_

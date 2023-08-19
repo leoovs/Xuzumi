@@ -1,5 +1,4 @@
-#ifndef XUZUMI_DEBUG_ASSERTION_HPP_
-#define XUZUMI_DEBUG_ASSERTION_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Core/Delegate.hpp"
@@ -68,5 +67,3 @@ namespace Xuzumi
 		ObserverPtr<AssertionDispatcher> mConfiguredDispatcher;
 	};
 }
-
-#endif // XUZUMI_DEBUG_ASSERTION_HPP_

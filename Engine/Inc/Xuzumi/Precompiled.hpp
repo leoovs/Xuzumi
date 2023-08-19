@@ -1,5 +1,4 @@
-#ifndef XUZUMI_PRECOMPILED_HPP_
-#define XUZUMI_PRECOMPILED_HPP_
+#pragma once
 
 #include <cstddef>
 #include <cstdint>
@@ -22,5 +21,3 @@
 #include <atomic>
 #include <memory>
 #include <chrono>
-
-#endif // XUZUMI_PRECOMPILED_HPP_

@@ -1,5 +1,4 @@
-#ifndef XUZUMI_MESSAGING_EVENT_HPP_
-#define XUZUMI_MESSAGING_EVENT_HPP_
+#pragma once
 
 #include "Xuzumi/TypeMeta/TypeID.hpp"
 #include "Xuzumi/TypeMeta/TypeName.hpp"
@@ -30,5 +29,3 @@ namespace Xuzumi
 		}
 	};
 }
-
-#endif // XUZUMI_MESSAGING_EVENT_HPP_

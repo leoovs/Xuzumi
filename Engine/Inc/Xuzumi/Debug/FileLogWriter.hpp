@@ -1,5 +1,4 @@
-#ifndef XUZUMI_DEBUG_FILELOGWRITER_HPP_
-#define XUZUMI_DEBUG_FILELOGWRITER_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Debug/Logging.hpp"
@@ -18,5 +17,3 @@ namespace Xuzumi
 		std::ofstream mFile;
 	};
 }
-
-#endif // XUZUMI_DEBUG_FILELOGWRITER_HPP_

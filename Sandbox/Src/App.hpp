@@ -1,5 +1,4 @@
 #pragma once
-// TODO: replace all include guards with pragmas.
 
 #include <Xuzumi/Xuzumi.hpp>
 

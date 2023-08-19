@@ -1,5 +1,4 @@
-#ifndef XUZUMI_MEMORY_SHAREDFACTORY_HPP_
-#define XUZUMI_MEMORY_SHAREDFACTORY_HPP_
+#pragma once
 
 #include "Xuzumi/Precompiled.hpp"
 
@@ -42,5 +41,3 @@ namespace Xuzumi
 		std::shared_ptr<FactoryType> mSharedThisPtr;
 	};
 }
-
-#endif // XUZUMI_MEMORY_SHAREDFACTORY_HPP_

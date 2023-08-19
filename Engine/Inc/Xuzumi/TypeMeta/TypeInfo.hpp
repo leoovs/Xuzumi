@@ -1,5 +1,4 @@
-#ifndef XUZUMI_TYPEMETA_TYPEINFO_HPP_
-#define XUZUMI_TYPEMETA_TYPEINFO_HPP_
+#pragma once
 
 #include "Xuzumi/TypeMeta/TypeID.hpp"
 #include "Xuzumi/TypeMeta/TypeName.hpp"
@@ -28,5 +27,3 @@ namespace Xuzumi
 		bool operator!=(const TypeInfo& other) const;
 	};	
 }
-
-#endif // XUZUMI_TYPEMETA_TYPEINFO_HPP_

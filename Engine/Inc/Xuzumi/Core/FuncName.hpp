@@ -1,5 +1,4 @@
-#ifndef XUZUMI_CORE_FUNCNAME_HPP_
-#define XUZUMI_CORE_FUNCNAME_HPP_
+#pragma once
 
 #include "Xuzumi/Core/Compiler.hpp"
 
@@ -12,5 +11,3 @@
 #else
 #	define XZ_FUNCNAME __func__
 #endif
-
-#endif // XUZUMI_CORE_FUNCNAME_HPP_
