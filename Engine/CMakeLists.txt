@@ -42,3 +42,5 @@ target_precompile_headers(
 	PRIVATE
 	"Inc/Xuzumi/Precompiled.hpp"
 )
+
+add_subdirectory(Tests)
