@@ -11,7 +11,7 @@ namespace Xuzumi
 	public:
 		using Traits = Internal::PointerTraits<T>;
 
-		using ReferenceType = typename Traits::ReferencerType;
+		using ReferenceType = typename Traits::ReferenceType;
 		using PointerType = typename Traits::PointerType;
 
 		ObserverPtr() = default;

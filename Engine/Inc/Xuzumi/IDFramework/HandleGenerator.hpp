@@ -6,7 +6,7 @@ namespace Xuzumi::Internal
 {
 	using HandleID = IDType;
 
-	inline constexpr HandleID kInvalidHandleID = HandleID(-1);
+	inline constexpr auto kInvalidHandleID = HandleID(-1);
 
 	class HandleGenerator
 	{

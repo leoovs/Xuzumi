@@ -6,5 +6,5 @@ namespace Xuzumi
 {
 	using IDType = std::uint64_t;
 
-	inline constexpr IDType kInvalidID = IDType(-1);
+	inline constexpr auto kInvalidID = IDType(-1);
 }

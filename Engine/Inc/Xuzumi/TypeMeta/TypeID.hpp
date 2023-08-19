@@ -6,7 +6,7 @@ namespace Xuzumi
 {
 	using TypeID = IDType;
 
-	inline constexpr TypeID kInvalidTypeID = TypeID(kInvalidID); 
+	inline constexpr auto kInvalidTypeID = TypeID(kInvalidID); 
 
 	namespace Internal
 	{
