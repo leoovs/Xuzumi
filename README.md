@@ -8,7 +8,7 @@ APIs, C# scripting, and a user-friendly, convenient editor.
 
 Currently, the latest features are available in and merged into the `dev` branch.
 This is due to the fact that the project lacks documentation and testing.
-The `master` branch will be updated as soon as those issues will are resolved.
+The `master` branch will be updated as soon as those issues are resolved.
 
 ## Build and Run
 ### Prerequisites 
