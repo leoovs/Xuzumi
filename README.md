@@ -37,8 +37,8 @@ https://github.com/leoovs/Xuzumi`.
 2. Create the `build` folder in the repository root.
 3. In the repository root generate project files: `cmake -B "build"` or `cmake -B
 "build" -G "<Preferred Generator>"`. By default, CMake builds a debug version
-of the project. If a release build is required, this should be explicitly stated
-by adding the following flag: `-D CMAKE_BUILD_TYPE=Release`.
+of the project. If a release build is required, explicitly state it by adding
+the following flag: `-D CMAKE_BUILD_TYPE=Release`.
 4. Build the project: `cmake --build "build"`. After executing this command,
 CMake performs an _Out-of-source_ build, so that all the baked stuff goes into
 the `build` folder.
