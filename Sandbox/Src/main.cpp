@@ -31,10 +31,15 @@ struct Person : Entity
 	}
 };
 
-void worker(Xuzumi::SharedPtr<Entity> e)
+void Observe(Xuzumi::WeakPtr<Entity> e)
 {
-	std::cout << e.As<Person>()->Name << std::endl;
-	std::cout << e.UseCount() << std::endl;
+	if (e.Expired())
+	{
+		std::cout << "Weak reference expired\n";
+		return;
+	}
+
+	std::cout << e.Lock().As<Person>()->Name << std::endl;
 }
 
 int main()
@@ -55,15 +60,17 @@ int main()
 		}
 	);
 
-	auto e = Xuzumi::MakeShared<Person>("Vasya");
-	
-	std::thread t1(worker, e);
-	std::thread t2(worker, e);
+	Xuzumi::WeakPtr<Person> p;
+	std::cout << "WeakPtr is uninitialized\n";
+	Observe(p);
 
-	std::cout << e.UseCount() << std::endl;
+	{
+		auto sp = Xuzumi::MakeShared<Person>("Lyosha");
+		p = sp;
+		std::cout << "WeakPtr initialized with SharedPtr\n";
+		Observe(p);
+	}
 
-	t1.detach();
-	t2.detach();
-
-	std::this_thread::sleep_for(std::chrono::seconds(3));
+	std::cout << "SharedPtr has been destructed\n";
+	Observe(p);
 }

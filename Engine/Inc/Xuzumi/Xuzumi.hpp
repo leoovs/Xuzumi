@@ -19,6 +19,7 @@
 #include "Xuzumi/IDFramework/IDBase.hpp"
 #include "Xuzumi/IDFramework/HandleGenerator.hpp"
 
+#include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Memory/SharedFactory.hpp"

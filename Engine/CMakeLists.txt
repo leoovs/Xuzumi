@@ -12,7 +12,7 @@ add_library(
 
 	"Src/Xuzumi/IDFramework/HandleGenerator.cpp"
 
-	"Src/Xuzumi/Memory/StrongReferencer.cpp"
+	"Src/Xuzumi/Memory/Referencer.cpp"
 	
  	"Src/Xuzumi/Debug/DebugSession.cpp"
 	"Src/Xuzumi/Debug/Logging.cpp"

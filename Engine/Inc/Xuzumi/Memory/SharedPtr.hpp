@@ -4,44 +4,10 @@
 #include "Xuzumi/Debug/Assertion.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
 #include "Xuzumi/Memory/Deleter.hpp"
+#include "Xuzumi/Memory/PointerBase.hpp"
 #include "Xuzumi/Memory/ControlBlock.hpp"
-#include "Xuzumi/Memory/StrongReferencer.hpp"
+#include "Xuzumi/Memory/Referencer.hpp"
 #include "Xuzumi/Core/Templates/IsCompatible.hpp"
-
-namespace Xuzumi::Internal
-{
-	template<typename T>
-	struct SharedPtrTraits
-	{
-		static_assert(
-			!std::is_reference_v<T>,
-			"Xuzumi: reference type is not allowed in SharedPtr typename argument"
-		);
-	
-		using ValueType = std::remove_extent_t<T>;
-		using PointerType = std::add_pointer_t<ValueType>;
-		using ReferenceType = std::add_lvalue_reference_t<ValueType>;
-	
-		template<typename OtherT, bool IsArrayT>
-		struct OtherTypeImpl {};
-	
-		template<typename OtherT>
-		struct OtherTypeImpl<OtherT, true>
-		{
-			using Type = OtherT[];
-		};
-	
-		template<typename OtherT>
-		struct OtherTypeImpl<OtherT, false>
-		{
-			using Type = OtherT;
-		};
-
-		template<typename OtherT>
-		using OtherType =
-			typename OtherTypeImpl<OtherT, std::is_array_v<T>>::Type;
-	};
-}
 
 namespace Xuzumi
 {
@@ -49,7 +15,7 @@ namespace Xuzumi
 	class SharedPtr
 	{
 	public:
-		using Traits = Internal::SharedPtrTraits<T>;
+		using Traits = Internal::PointerTraits<T>;
 
 		using ValueType = typename Traits::ValueType;
 		using PointerType = typename Traits::PointerType;
@@ -60,6 +26,9 @@ namespace Xuzumi
 
 		template<typename OtherT>
 		friend class SharedPtr;
+
+		template<typename OtherT>
+		friend class WeakPtr;
 
 		SharedPtr() = default;
 
@@ -281,7 +250,7 @@ namespace Xuzumi
 			>(pointer, deleter);	
 		}
 
-		Internal::StrongReferencer mReferencer;
+		Internal::Referencer mReferencer;
 		PointerType mResourcePointer = nullptr;
 	};
 

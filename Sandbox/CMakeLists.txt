@@ -1,7 +1,8 @@
 add_executable(
 	Xuzumi_Sandbox
 	"Src/main.cpp"
- "Src/App.cpp")
+	"Src/App.cpp"
+)
 
 set_target_properties(
 	Xuzumi_Sandbox
