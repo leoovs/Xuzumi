@@ -5,7 +5,10 @@ namespace Xuzumi::Internal
 	template<typename T>
 	struct PointerTraits
 	{
-		static_assert(!std::is_reference_v<T>);
+		static_assert(
+			!std::is_reference_v<T>,
+			"Xuzumi: pointer to a reference is not allowed"
+		);
 	
 		using ValueType = std::remove_extent_t<T>;
 		using PointerType = std::add_pointer_t<ValueType>;

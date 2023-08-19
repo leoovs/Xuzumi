@@ -10,7 +10,7 @@ namespace Xuzumi
 	public:
 		static_assert(
 			!std::is_reference_v<T>,
-			"ObserverPtr<T&> is not allowed"
+			"Xuzumi: ObserverPtr to a reference is not allowed"
 		);
 
 		using ValueType = T;
