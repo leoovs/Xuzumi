@@ -11,7 +11,7 @@
 #elif defined(_MSC_VER)
 #	define XZ_COMPILER_ID XZ_COMPILER_ID_MSVC
 #else
-#	error "Xuzumi: unknown compiler."
+#	error "Xuzumi: unknown compiler"
 #endif
 
 #define XZ_CURRENT_COMPILER_IS(compiler) XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler

@@ -43,7 +43,7 @@ namespace Xuzumi::Internal
 		return funcNameStart.substr(typeNameStart, typeNameEnd - typeNameStart);
 	}
 #else
-#	error "Unknown compiler."
+#	error "Xuzumi: unknown compiler"
 #endif
 }
 
