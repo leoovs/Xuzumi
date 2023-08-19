@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
+#include "Xuzumi/Memory/PointerBase.hpp"
 
 namespace Xuzumi
 {
@@ -8,14 +9,10 @@ namespace Xuzumi
 	class ObserverPtr
 	{
 	public:
-		static_assert(
-			!std::is_reference_v<T>,
-			"Xuzumi: ObserverPtr to a reference is not allowed"
-		);
+		using Traits = Internal::PointerTraits<T>;
 
-		using ValueType = T;
-		using ReferenceType = std::add_lvalue_reference_t<ValueType>;
-		using PointerType = std::add_pointer_t<ValueType>;
+		using ReferenceType = typename Traits::ReferencerType;
+		using PointerType = typename Traits::PointerType;
 
 		ObserverPtr() = default;
 		

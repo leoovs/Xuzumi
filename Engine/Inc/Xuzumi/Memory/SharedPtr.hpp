@@ -17,7 +17,6 @@ namespace Xuzumi
 	public:
 		using Traits = Internal::PointerTraits<T>;
 
-		using ValueType = typename Traits::ValueType;
 		using PointerType = typename Traits::PointerType;
 		using ReferenceType = typename Traits::ReferenceType;
 
