@@ -6,6 +6,7 @@ add_executable(
 	"Src/DelegateTests.cpp"
 	"Src/HandleGeneratorTests.cpp"
 	"Src/SharedPtrTests.cpp"
+	"Src/WeakPtrTests.cpp"
 )
 
 set_target_properties(
