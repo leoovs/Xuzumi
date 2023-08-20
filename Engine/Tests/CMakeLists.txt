@@ -13,6 +13,13 @@ add_executable(
 	"Src/TestMemory/TestControlBlock.cpp"
 	"Src/TestMemory/TestReferencer.cpp"
 	"Src/TestMemory/TestResourceDeleterGuard.cpp"
+
+	"Src/TestMessaging/TestEvent.cpp"
+	"Src/TestMessaging/TestEventBus.cpp"
+	"Src/TestMessaging/TestEventPublisher.cpp"
+	"Src/TestMessaging/TestEventSubscriber.cpp"
+
+	"Src/TestTypeMeta/TestTypeID.cpp"
 )
 
 set_target_properties(

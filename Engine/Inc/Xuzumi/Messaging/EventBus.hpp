@@ -42,36 +42,33 @@ namespace Xuzumi::Internal
 	public:
 		virtual ~IEventDispatcher() = default;
 
-		virtual void Reset() = 0;
+		virtual void FlushEvents() = 0;
 		virtual void Dispatch() = 0;
 		virtual void RemoveHandler(EventHandlerID handlerID) = 0;
+		virtual void RemoveAllHandlers() = 0;
 	};
 
 	template<typename EventT>
 	class EventDispatcher : public IEventDispatcher
 	{
 	public:
-		void Reset() override
+		void FlushEvents() override
 		{
-			mHandlerIDGenerator.Reset();
-			mHandlerQueue.clear();
+			mEventStack.clear();
 		}
-
+		
 		void Dispatch() override
 		{
-			while (!mEventStack.empty())
+			for (auto it = mEventStack.rbegin(); it != mEventStack.rend();)
 			{
-				const EventT& event = mEventStack.top();
-			
-				for (auto& handler : mHandlerQueue)
+				if (NotifyHandlers(*it))
 				{
-					if (handler && handler(event))
-					{
-						break;
-					}
+					it = std::make_reverse_iterator(
+						mEventStack.erase(std::next(it).base())
+					);
+					continue;
 				}
-
-				mEventStack.pop();
+				it++;
 			}
 		}
 
@@ -85,10 +82,16 @@ namespace Xuzumi::Internal
 			}
 		}
 	
+		void RemoveAllHandlers() override
+		{
+			mHandlerIDGenerator.Reset();
+			mHandlerQueue.clear();
+		}
+
 		template<typename... ArgsT>
 		void PushEvent(ArgsT&&... args)
 		{
-			mEventStack.emplace(std::forward<ArgsT>(args)...);
+			mEventStack.emplace_back(std::forward<ArgsT>(args)...);
 		}
 
 		EventHandlerID AddHandler(EventHandler<EventT> handler)
@@ -105,7 +108,19 @@ namespace Xuzumi::Internal
 		}
 
 	private:
-		std::stack<EventT> mEventStack;
+		bool NotifyHandlers(const EventT& event)
+		{
+			for (auto& handler : mHandlerQueue)
+			{
+				if (handler && handler(event))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		std::deque<EventT> mEventStack;
 		std::vector<EventHandler<EventT>> mHandlerQueue;
 		HandleGenerator mHandlerIDGenerator;
 	};
@@ -134,8 +149,10 @@ namespace Xuzumi
 
 
 		void Unsubscribe(EventSubscription subscription);
+		void UnsubscribeAll();
 
 		void Dispatch();
+		void FlushEvents();
 
 	private:
 		template<typename EventT>

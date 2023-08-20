@@ -26,18 +26,34 @@ namespace Xuzumi
 		TypeID eventTypeID = subscription.GetEventTypeID();
 		Internal::EventHandlerID handlerID = subscription.GetHandlerID();
 	
-		auto routerIt = mDispatchers.find(eventTypeID);
-		if (mDispatchers.end() != routerIt)
+		auto dispatcherIt = mDispatchers.find(eventTypeID);
+		if (mDispatchers.end() != dispatcherIt)
 		{
-			routerIt->second->RemoveHandler(handlerID);
+			dispatcherIt->second->RemoveHandler(handlerID);
 		}		
+	}
+
+	void EventBus::UnsubscribeAll()
+	{
+		for (auto& dispatcher : mDispatchers)
+		{
+			dispatcher.second->RemoveAllHandlers();
+		}
 	}
 
 	void EventBus::Dispatch()
 	{
-		for (auto& router : mDispatchers)
+		for (auto& dispatcher : mDispatchers)
 		{
-			router.second->Dispatch();
+			dispatcher.second->Dispatch();
+		}
+	}
+
+	void EventBus::FlushEvents()
+	{
+		for (auto& dispatcher : mDispatchers)
+		{
+			dispatcher.second->FlushEvents();
 		}
 	}
 }
