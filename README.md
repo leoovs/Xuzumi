@@ -15,8 +15,8 @@ The `master` branch will be updated as soon as those issues are resolved.
 
 The project heavily relies on __CMake__ as a cross-platform build tool.
 Start by obtaining its latest release.
-In order to manipulate the repository versions, install `git`.
-Building the project requires a properly configured C++ toolchain.
+In order to manipulate the repository versions, install __git__.
+Building the project requires a properly configured __C++ toolchain__.
 Three major compilers supported:
 
 - __GCC__
