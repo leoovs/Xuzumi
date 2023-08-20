@@ -2,15 +2,15 @@
 
 #include "Xuzumi/Core/Delegate.hpp"
 
-TEST_CASE("Xuzumi::Delegate")
+TEST_CASE("Xuzumi::Delegate<ReturnT(ArgsT...)>")
 {
-	SUBCASE("Empty delegate")
+	SUBCASE("Empty")
 	{
 		Xuzumi::Delegate<std::string(int)> iToStr;
 		CHECK_FALSE(bool(iToStr));
 	}
 
-	SUBCASE("Delegate assignment")
+	SUBCASE("Assignment")
 	{
 		Xuzumi::Delegate<int(float)> mul2i;
 		mul2i = [](float) -> int 
@@ -31,7 +31,7 @@ TEST_CASE("Xuzumi::Delegate")
 		CHECK(mul2i(0.1f) == 0);	
 	}
 
-	SUBCASE("Delegate argument passing")
+	SUBCASE("Argument passing")
 	{
 		struct Mock {} inst;
 	
@@ -44,7 +44,7 @@ TEST_CASE("Xuzumi::Delegate")
 		delegate(inst);
 	}
 
-	SUBCASE("Delegate argument copy")
+	SUBCASE("Argument copy")
 	{
 		static int sCopyCounter = 0;
 		static int sMoveCounter = 0;

@@ -21,7 +21,7 @@
 #include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
-#include "Xuzumi/Memory/SharedFactory.hpp"
+#include "Xuzumi/Memory/ResourceDeleterGuard.hpp"
 
 #include "Xuzumi/Messaging/Event.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"

@@ -2,45 +2,40 @@
 #include <thread>
 #include <memory>
 
-struct Entity
+struct Resource
 {
-	Entity()
+	Resource()
 	{
-		XZ_LOG(Info, "Created parent");
+		XZ_LOG(Info, "Created");
 	}
 
-	~Entity()
+	~Resource()
 	{
-		XZ_LOG(Info, "Destroyed parent");
+		XZ_LOG(Info, "Destroyed");
 	}
 };
 
-struct Person : Entity
+class Factory
 {
-	std::string Name;
-
-	Person(std::string_view name = std::string_view())
-		: Name(name)
+public:
+	Xuzumi::SharedPtr<Resource> Create()
 	{
-		XZ_LOG(Info, "Created child: %s", Name.data());
+		return Xuzumi::SharedPtr<Resource>(
+			new Resource(),
+			mGuard.MakeDangleProtectedDeleter<Resource>(
+				&Factory::Destroy
+			)	
+		);
 	}
 
-	~Person()
+private:
+	void Destroy(Resource* resource)
 	{
-		XZ_LOG(Info, "Destroyed child: %s", Name.data());
+		delete resource;
 	}
+
+	Xuzumi::Internal::ResourceDeleterGuard<Factory> mGuard = this;
 };
-
-void Observe(Xuzumi::WeakPtr<Entity> e)
-{
-	if (e.Expired())
-	{
-		std::cout << "Weak reference expired\n";
-		return;
-	}
-
-	std::cout << e.Lock().As<Person>()->Name << std::endl;
-}
 
 int main()
 {
@@ -60,17 +55,7 @@ int main()
 		}
 	);
 
-	Xuzumi::WeakPtr<Person> p;
-	std::cout << "WeakPtr is uninitialized\n";
-	Observe(p);
-
-	{
-		auto sp = Xuzumi::MakeShared<Person>("Lyosha");
-		p = sp;
-		std::cout << "WeakPtr initialized with SharedPtr\n";
-		Observe(p);
-	}
-
-	std::cout << "SharedPtr has been destructed\n";
-	Observe(p);
+	Xuzumi::SharedPtr<Factory> factory(new Factory());
+	Xuzumi::SharedPtr<Resource> res;
+	res = factory->Create();
 }

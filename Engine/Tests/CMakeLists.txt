@@ -1,12 +1,18 @@
 add_executable(
 	Xuzumi_Tests
 	"Src/main.cpp"
-	"Src/StringUtilsTests.cpp"
-	"Src/IsCompatibleTests.cpp"
-	"Src/DelegateTests.cpp"
-	"Src/HandleGeneratorTests.cpp"
-	"Src/SharedPtrTests.cpp"
-	"Src/WeakPtrTests.cpp"
+	"Src/TestCore/TestDelegate.cpp"
+	"Src/TestCore/TestStringUtils.cpp"
+	"Src/TestCore/TestTemplates/TestIsCompatible.cpp"
+
+	"Src/TestIDFramework/TestHandleGenerator.cpp"
+
+	"Src/TestMemory/TestSharedPtr.cpp"
+	"Src/TestMemory/TestWeakPtr.cpp"
+	"Src/TestMemory/TestObserverPtr.cpp"
+	"Src/TestMemory/TestControlBlock.cpp"
+	"Src/TestMemory/TestReferencer.cpp"
+	"Src/TestMemory/TestResourceDeleterGuard.cpp"
 )
 
 set_target_properties(

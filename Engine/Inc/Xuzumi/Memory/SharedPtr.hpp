@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Debug/Assertion.hpp"
+#include "Xuzumi/Debug/DebugSession.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
 #include "Xuzumi/Memory/Deleter.hpp"
 #include "Xuzumi/Memory/PointerBase.hpp"
