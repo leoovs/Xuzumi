@@ -13,7 +13,7 @@ The `master` branch will be updated as soon as those issues are resolved.
 ## Build and Run
 ### Prerequisites 
 
-The project heavily realies on __CMake__ as a cross-platform build tool.
+The project heavily relies on __CMake__ as a cross-platform build tool.
 Start by obtaining its latest release.
 In order to manipulate the repository versions, install `git`.
 Building the project requires a properly configured C++ toolchain.
