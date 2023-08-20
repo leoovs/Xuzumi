@@ -31,10 +31,12 @@ TEST_CASE("Xuzumi::Internal control blocks")
 
 		auto resource = new MockResource();
 
-		Xuzumi::Internal::IControlBlock* block = nullptr;
-		block = new Xuzumi::Internal::ReferencingControlBlock<
-			MockResource,
-			MockResourceDeleter
+		std::unique_ptr<Xuzumi::Internal::IControlBlock> block;
+		block = std::make_unique<
+			Xuzumi::Internal::ReferencingControlBlock<
+				MockResource,
+				MockResourceDeleter
+			>
 		>(resource, MockResourceDeleter());	
 	
 		CHECK(block->GetStrongRefs() == 1);
