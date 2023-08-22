@@ -55,6 +55,8 @@ int main()
 		}
 	);
 
+	XZ_LOG(Info, "Compiled with %s", Xuzumi::GetCompilerName().data());
+
 	Xuzumi::SharedPtr<Factory> factory(new Factory());
 	Xuzumi::SharedPtr<Resource> res;
 	res = factory->Create();

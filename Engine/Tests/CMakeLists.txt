@@ -4,6 +4,7 @@ add_executable(
 	"Src/TestCore/TestDelegate.cpp"
 	"Src/TestCore/TestStringUtils.cpp"
 	"Src/TestCore/TestTemplates/TestIsCompatible.cpp"
+	"Src/TestCore/TestCompiler.cpp"
 
 	"Src/TestIDFramework/TestHandleGenerator.cpp"
 
