@@ -17,24 +17,21 @@ namespace Xuzumi
 
 	void EventSubscriber::Unsubscribe()
 	{
-		if (!mBus)
+		if (mBus)
 		{
-			mSubscriptions.clear();
-			return;
-		}
-
-		for (EventSubscription& subscription : mSubscriptions)
-		{
-			mBus->Unsubscribe(subscription);
+			for (const EventSubscription& subscription : mSubscriptions)
+			{
+				mBus->Unsubscribe(subscription);
+			}
 		}
 
 		mSubscriptions.clear();
 		mBus = nullptr;
 	}
 
-	EventBus& EventSubscriber::GetBus() const
+	ObserverPtr<EventBus> EventSubscriber::GetBus() const
 	{
-		return *mBus;
+		return mBus;
 	}
 
 	void EventSubscriber::AddSubscription(EventSubscription subscription)

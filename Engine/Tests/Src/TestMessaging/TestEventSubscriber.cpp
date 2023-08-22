@@ -16,25 +16,27 @@ TEST_CASE("Xuzumi::EventSubscriber")
 			return true;
 		};
 
-		Xuzumi::EventBus bus;
-		bus.Publish<MockEvent>();
-		bus.Dispatch();
+		Xuzumi::ObserverPtr<Xuzumi::EventBus> bus(new Xuzumi::EventBus);
+		bus->Publish<MockEvent>();
+		bus->Dispatch();
 		CHECK(0 == handlerCounter);
-		bus.FlushEvents();
+		bus->FlushEvents();
 
 		{
 			Xuzumi::EventSubscriber sub;
 
-			sub.Subscribe(Xuzumi::ObserverPtr<Xuzumi::EventBus>(&bus))
+			sub.Subscribe(bus)
 				.Functor<MockEvent>(handler);
 
-			bus.Publish<MockEvent>();	
-			bus.Dispatch();
+			bus->Publish<MockEvent>();	
+			bus->Dispatch();
 			CHECK(1 == handlerCounter);
 		}
 
-		bus.Publish<MockEvent>();
-		bus.Dispatch();
+		bus->Publish<MockEvent>();
+		bus->Dispatch();
 		CHECK(1 == handlerCounter);
+
+		delete bus.Release();
 	}
 }

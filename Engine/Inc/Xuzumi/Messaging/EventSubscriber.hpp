@@ -3,6 +3,7 @@
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"
+#include "Xuzumi/Debug/DebugSession.hpp"
 
 namespace Xuzumi
 {
@@ -51,7 +52,7 @@ namespace Xuzumi
 		template<typename EventT>
 		EventSubscriber& Function(bool(*function)(const EventT&))
 		{
-			// TODO: check if bus is set.
+			XZ_ASSERT(mBus, "Could not subscribe function: EventBus instance not set");
 		
 			EventSubscription subscription = mBus->Subscribe(
 				Internal::EventHandler<EventT>(function)
@@ -65,6 +66,8 @@ namespace Xuzumi
 		template<typename EventT, typename FunctorT>
 		EventSubscriber& Functor(FunctorT functor)
 		{
+			XZ_ASSERT(mBus, "Could not subscribe functor: EventBus instance not set");
+
 			EventSubscription subscriptoin = mBus->Subscribe(
 				Internal::EventHandler<EventT>(functor)
 			);
@@ -79,13 +82,19 @@ namespace Xuzumi
 			ClassT* classInstance
 		)
 		{
+			XZ_ASSERT(
+				mBus,
+				"Could not begin method subscription:"
+				" EventBus instance not set"
+			);
+
 			return Internal::EventMethodSubscriptionForwarder(
 				*this,
 				classInstance
 			);
 		}
 
-		EventBus& GetBus() const;
+		ObserverPtr<EventBus> GetBus() const;
 
 		void AddSubscription(EventSubscription subscription);
 
