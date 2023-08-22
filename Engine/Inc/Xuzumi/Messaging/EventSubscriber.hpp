@@ -113,7 +113,7 @@ namespace Xuzumi::Internal
 		bool(ClassT::*method)(const EventT&)
 	)
 	{
-		EventSubscription subscription = mSubscriber->GetBus().Subscribe(
+		EventSubscription subscription = mSubscriber->GetBus()->Subscribe(
 			EventHandler<EventT>(
 				mClassInstance,
 				method
