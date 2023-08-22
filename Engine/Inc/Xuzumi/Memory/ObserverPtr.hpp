@@ -2,6 +2,7 @@
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/PointerBase.hpp"
+#include "Xuzumi/Debug/DebugSession.hpp"
 
 namespace Xuzumi
 {
@@ -60,13 +61,13 @@ namespace Xuzumi
 
 		ReferenceType operator*() const
 		{
-			// TODO: check if mWatchedObject is nullptr.
-
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
 			return *mWatchedObject;
 		}
 
 		PointerType operator->() const
 		{
+			XZ_ASSERT(*this, "Trying to dereference a nullptr");
 			return mWatchedObject;
 		}
 
