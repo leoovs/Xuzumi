@@ -25,7 +25,7 @@ TEST_CASE("Xuzumi::EventSubscriber")
 		{
 			Xuzumi::EventSubscriber sub;
 
-			sub.Subscribe(bus)
+			sub.Subscribe(Xuzumi::ObserverPtr<Xuzumi::EventBus>(&bus))
 				.Functor<MockEvent>(handler);
 
 			bus.Publish<MockEvent>();	
