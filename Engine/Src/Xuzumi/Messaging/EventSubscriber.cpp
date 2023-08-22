@@ -7,22 +7,12 @@ namespace Xuzumi
 		Unsubscribe();
 	}
 
-	EventSubscriber& EventSubscriber::Subscribe(EventBus& bus)
+	EventSubscriber& EventSubscriber::Subscribe(ObserverPtr<EventBus> bus)
 	{
 		Unsubscribe();
-		mBus.Reset(&bus);
+		mBus = bus;
 
 		return *this;
-	}
-
-	EventBus& EventSubscriber::GetBus() const
-	{
-		return *mBus;
-	}
-
-	void EventSubscriber::AddSubscription(EventSubscription subscription)
-	{
-		mSubscriptions.push_back(subscription);
 	}
 
 	void EventSubscriber::Unsubscribe()
@@ -40,5 +30,15 @@ namespace Xuzumi
 
 		mSubscriptions.clear();
 		mBus = nullptr;
+	}
+
+	EventBus& EventSubscriber::GetBus() const
+	{
+		return *mBus;
+	}
+
+	void EventSubscriber::AddSubscription(EventSubscription subscription)
+	{
+		mSubscriptions.push_back(subscription);
 	}
 }

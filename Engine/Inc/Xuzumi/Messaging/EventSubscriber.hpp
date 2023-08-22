@@ -45,7 +45,7 @@ namespace Xuzumi
 	public:
 		~EventSubscriber();
 
-		EventSubscriber& Subscribe(EventBus& bus);
+		EventSubscriber& Subscribe(ObserverPtr<EventBus> bus);
 		void Unsubscribe();
 
 		template<typename EventT>
