@@ -5,5 +5,5 @@
 namespace Xuzumi
 {
 	std::string FormatString(std::string_view format, ...);
-	std::string FormatStringV(std::string_view format, va_list args);
+	std::string FormatString(std::string_view format, va_list args);
 }

@@ -6,13 +6,13 @@ namespace Xuzumi
 	{
 		va_list args;
 		va_start(args, format);
-		std::string result = FormatStringV(format, args);
+		std::string result = FormatString(format, args);
 		va_end(args);
 
 		return result;
 	}
 
-	std::string FormatStringV(std::string_view format, va_list args)
+	std::string FormatString(std::string_view format, va_list args)
 	{
 		va_list argsForBufferSizeQuery;
 		va_copy(argsForBufferSizeQuery, args);

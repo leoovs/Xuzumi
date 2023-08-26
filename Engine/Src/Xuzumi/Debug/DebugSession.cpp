@@ -24,7 +24,7 @@ namespace Xuzumi
 	{
 		va_list args;
 		va_start(args, data);
-		data.Message = FormatStringV(data.Message, args);
+		data.Message = FormatString(data.Message, args);
 		va_end(args);
 
 		mLogger.Log(data);
@@ -48,7 +48,7 @@ namespace Xuzumi
 	{
 		va_list args;
 		va_start(args, data);
-		data.Message = FormatStringV(data.Message, args);
+		data.Message = FormatString(data.Message, args);
 		va_end(args);
 
 		mAssertionDispatcher.Raise(data);
