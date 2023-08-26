@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Core/Compiler.hpp"
+#include "Xuzumi/Core/CompilerInfo.hpp"
 #include "Xuzumi/Core/FuncName.hpp"
 
 namespace Xuzumi::Internal

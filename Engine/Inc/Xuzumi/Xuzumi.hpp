@@ -2,10 +2,10 @@
 
 #include "Xuzumi/Precompiled.hpp"
 
-#include "Xuzumi/Core/Compiler.hpp"
 #include "Xuzumi/Core/Delegate.hpp"
 #include "Xuzumi/Core/FuncName.hpp"
 #include "Xuzumi/Core/StringUtils.hpp"
+#include "Xuzumi/Core/CompilerInfo.hpp"
 #include "Xuzumi/Core/Templates/IsCompatible.hpp"
 
 #include "Xuzumi/Debug/Logging.hpp"

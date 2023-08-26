@@ -1,3 +1,9 @@
+/**
+ * @file Xuzumi/Core/Delegate.hpp
+ * 
+ * @brief Contains delegate implementation. 
+*/
+
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
@@ -99,6 +105,14 @@ namespace Xuzumi
 	template<typename>
 	class Delegate;
 
+	/**
+	 * @brief Implementation of delegate functionality.
+	 * 
+	 * Collects functions, functors, and methods in a single call interface.
+	 * 
+	 * @tparam ReturnT Type of the return value.
+	 * @tparam ArgsT List of argument types.
+	 */
 	template<typename ReturnT, typename... ArgsT>
 	class Delegate<ReturnT(ArgsT...)>
 	{
@@ -106,13 +120,42 @@ namespace Xuzumi
 		using Traits = Internal::DelegateTraits<ReturnT, ArgsT...>;
 
 	public:
+		/**
+		 * @def ReturnType
+		 * 
+		 * @brief Return value type alias. 
+		 */
 		using ReturnType = typename Traits::ReturnType;
+
+		/**
+		 * @def FunctionPtr
+		 * 
+		 * @brief Function pointer type alias. 
+		 */
 		using FunctionPtr = typename Traits::FunctionPtr;
+		
+		/**
+		 * @def MethodPtr<ClassT>
+		 * 
+		 * @brief Method pointer type alias.
+		 * 
+		 * @tparam ClassT Class instance type.
+		 */
 		template<typename ClassT>
 		using MethodPtr = typename Traits::template MethodPtr<ClassT>;
 
+		/**
+		 * @brief Default constructor.
+		 * 
+		 * Constructs empty delegate. 
+		 */
 		Delegate() = default;
 
+		/**
+		 * @brief Captures function pointer and constructs delegate.
+		 * 
+		 * @param function Function pointer.
+		 */
 		Delegate(FunctionPtr function)
 			: mCaller(
 				std::make_shared<
@@ -122,6 +165,16 @@ namespace Xuzumi
 		{
 		}
 
+		/**
+		 * @brief Captures class instance and method pointer and constructs
+		 * delegate.
+		 * 
+		 * Internally delegate stores a raw pointer to the class instance which may
+		 * become dangling. Delegate caller is responsible for pointer validation.
+		 * 
+		 * @param classInstance Pointer to the class instance.
+		 * @param method Method pointer.
+		*/
 		template<typename ClassT>
 		Delegate(ClassT* classInstance, MethodPtr<ClassT> method)
 			: mCaller(
@@ -132,6 +185,15 @@ namespace Xuzumi
 		{
 		}
 
+		/**
+		 * @brief Captures functor instance and constructs delegate.
+		 * 
+		 * Delegate stores its own copy of the functor.
+		 * 
+		 * @tparam FunctorT type of the functor.
+		 * 
+		 * @param functor Functor instance.
+		 */
 		template<typename FunctorT>
 		Delegate(FunctorT functor)
 			: mCaller(
@@ -142,16 +204,36 @@ namespace Xuzumi
 		{
 		}
 
+		/**
+		 * @brief Resets delegate so that it becomes empty.
+		 * 
+		 * Delegate that has been reset is the same as default-constructed delegate 
+		 * and does not hold raw pointer to a function, a class instance or a method
+		 * pointer.
+		 */
 		void Reset()
 		{
 			mCaller.reset();
 		}
 
+		/**
+		 * @brief Checks whether delegate references some callable object.
+		 * 
+		 * @retval true Delegate references some callable object.
+		 * @retval false Delegate is empty.
+		*/
 		explicit operator bool() const
 		{
 			return bool(mCaller);
 		}
 
+		/**
+		 * @brief Invokes an underlying captured callable.
+		 * 
+		 * @param args Parameters passed to the underlying callable.
+		 * 
+		 * @return Returns the same value as the underlying callable.
+		 */
 		ReturnType operator()(ArgsT... args) const
 		{
 			return mCaller->Call(std::forward<ArgsT>(args)...);

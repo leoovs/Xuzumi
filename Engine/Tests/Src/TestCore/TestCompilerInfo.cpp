@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "Xuzumi/Core/Compiler.hpp"
+#include "Xuzumi/Core/CompilerInfo.hpp"
 
 TEST_CASE("Xuzumi::GetCompilerName")
 {

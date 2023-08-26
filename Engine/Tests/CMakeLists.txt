@@ -3,8 +3,8 @@ add_executable(
 	"Src/main.cpp"
 	"Src/TestCore/TestDelegate.cpp"
 	"Src/TestCore/TestStringUtils.cpp"
+	"Src/TestCore/TestCompilerInfo.cpp"
 	"Src/TestCore/TestTemplates/TestIsCompatible.cpp"
-	"Src/TestCore/TestCompiler.cpp"
 
 	"Src/TestIDFramework/TestHandleGenerator.cpp"
 
