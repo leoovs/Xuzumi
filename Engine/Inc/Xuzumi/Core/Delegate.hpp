@@ -106,12 +106,14 @@ namespace Xuzumi
 	class Delegate;
 
 	/**
-	 * @brief Implementation of delegate functionality.
+	 * @brief Implements delegate functionality to combine functions, functors,
+	 * and methods into a unified call interface.
 	 * 
-	 * Collects functions, functors, and methods in a single call interface.
+	 * This class enables the consolidation of functions, functors, and methods
+	 * into a single interface for invocation.
 	 * 
-	 * @tparam ReturnT Type of the return value.
-	 * @tparam ArgsT List of argument types.
+	 * @tparam ReturnT The return value's data type.
+	 * @tparam ArgsT The types of the arguments.
 	 */
 	template<typename ReturnT, typename... ArgsT>
 	class Delegate<ReturnT(ArgsT...)>

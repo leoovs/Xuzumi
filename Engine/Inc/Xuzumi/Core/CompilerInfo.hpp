@@ -52,9 +52,9 @@
  * @brief Checks whether the specified @a compiler is used to compile Xuzumi.
  * 
  * @param compiler Name of the compiler, must be one of the following:
- * - GCC
- * - CLANG
- * - MSVC
+ * - `GCC`
+ * - `CLANG`
+ * - `MSVC`
  */
 #define XZ_CURRENT_COMPILER_IS(compiler) XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler
 

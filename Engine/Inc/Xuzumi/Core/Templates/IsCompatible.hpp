@@ -1,7 +1,7 @@
 /**
  * @file Xuzumi/Core/Templates/IsCompatible.hpp
  * 
- * @brief Defines a type trait to determine types compatiblity.
+ * @brief Defines a type trait to determine types compatibility.
  */
 
 #pragma once
@@ -30,8 +30,8 @@ namespace Xuzumi
 	 * Compatibility is defined in the context of `std::shared_ptr` conversion,
 	 * see https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr.
 	 * 
-	 * @tparam FirstT Type that has to be compatible with SecondT.
-	 * @tparam SecondT Type that FirstT has to be compatible with.
+	 * @tparam FirstT Type that has to be compatible with `SecondT`.
+	 * @tparam SecondT Type that `FirstT` has to be compatible with.
 	 */
 	template<typename FirstT, typename SecondT>
 	struct IsCompatible
