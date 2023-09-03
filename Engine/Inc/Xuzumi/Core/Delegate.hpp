@@ -173,7 +173,9 @@ namespace Xuzumi
 		 * 
 		 * Internally delegate stores a raw pointer to the class instance which may
 		 * become dangling. Delegate caller is responsible for pointer validation.
-		 * 
+		 *
+		 * @tparam ClassT Type of the @p classInstance. 
+		 *
 		 * @param classInstance Pointer to the class instance.
 		 * @param method Method pointer.
 		*/
