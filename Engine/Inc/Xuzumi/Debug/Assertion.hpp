@@ -163,11 +163,11 @@ namespace Xuzumi
 		 * @brief Contructs an `AssertionConfigurator` object that references an
 		 * `AssertionDispatcher` object.
 		 * 
-		 * Internally, the `AssertionDispatcher` object is referenced via a raw pointer.
-		 * For that reason, it should not be constructed directly by user, neither used
-		 * globally. Usage of this class's instances should be brought to as small
-		 * scope as possible. The most convenient way to access this class's
-		 * functionality is via the `DebugSession` class.
+		 * Internally, the `AssertionDispatcher` object is referenced via a raw
+		 * pointer. For that reason, it should not be constructed directly by user,
+		 * neither used globally. Usage of this class's instances should be brought
+		 * to as small scope as possible. The most convenient way to access this
+		 * class's functionality is via the `DebugSession` class.
 		 * 
 		 * @param configuredDispatcher A pointer to an `AssertionDispatcher` object
 		 * that is to be configured.
