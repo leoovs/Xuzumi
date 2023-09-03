@@ -123,21 +123,21 @@ namespace Xuzumi
 
 	public:
 		/**
-		 * @def ReturnType
+		 * @typedef ReturnType
 		 * 
 		 * @brief Return value type alias. 
 		 */
 		using ReturnType = typename Traits::ReturnType;
 
 		/**
-		 * @def FunctionPtr
+		 * @typedef FunctionPtr
 		 * 
 		 * @brief Function pointer type alias. 
 		 */
 		using FunctionPtr = typename Traits::FunctionPtr;
 		
 		/**
-		 * @def MethodPtr<ClassT>
+		 * @typedef MethodPtr<ClassT>
 		 * 
 		 * @brief Method pointer type alias.
 		 * 
