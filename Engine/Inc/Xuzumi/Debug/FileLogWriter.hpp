@@ -22,7 +22,9 @@ namespace Xuzumi
 	public:
 	 	/**
 		 * @brief Constructs a `FileLogWriter` object that allocates an output file
-		 * stream object. 
+		 * stream object.
+		 * 
+		 * @param fileName The name of the log output file.
 		 */
 		FileLogWriter(std::string_view fileName);
 		
