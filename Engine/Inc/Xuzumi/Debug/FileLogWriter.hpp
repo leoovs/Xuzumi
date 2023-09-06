@@ -27,7 +27,8 @@ namespace Xuzumi
 		FileLogWriter(std::string_view fileName);
 		
 		/**
-		 * @brief Destructs a `FileLogWriter` object and closes the output file stream object. 
+		 * @brief Destructs a `FileLogWriter` object and closes the output file
+		 * stream object. 
 		 */
 		~FileLogWriter() override = default;
 
