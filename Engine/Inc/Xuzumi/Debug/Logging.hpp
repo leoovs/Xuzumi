@@ -219,6 +219,8 @@ namespace Xuzumi
 		 * 
 		 * @param configuredLogger A pointer to the `Logger` object that is to be
 		 * configured.
+		 * 
+		 * @see Xuzumi::DebugSession::ConfigureLogger
 		*/
 		explicit LoggerConfigurator(ObserverPtr<Logger> configuredLogger);
 
