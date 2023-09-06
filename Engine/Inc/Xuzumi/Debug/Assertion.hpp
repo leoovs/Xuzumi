@@ -1,7 +1,7 @@
 /**
  * @file Xuzumi/Debug/Assertion.hpp
  * 
- * @brief Defines classes and structures related to assertion handling. 
+ * @brief Defines classes and structures related to assertion handling.
  */
 
 #pragma once
@@ -160,7 +160,7 @@ namespace Xuzumi
 	{
 	public:
 	 	/**
-		 * @brief Contructs an `AssertionConfigurator` object that references an
+		 * @brief Constructs an `AssertionConfigurator` object that references an
 		 * `AssertionDispatcher` object.
 		 * 
 		 * Internally, the `AssertionDispatcher` object is referenced via a raw
