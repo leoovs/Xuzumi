@@ -161,11 +161,11 @@ namespace Xuzumi
 	/**
 	 * @brief Directs the logging facility.
 	 * 
-	 * `Logger` is responcible dispatching logging data to a formatter and
+	 * `Logger` is responsible dispatching logging data to a formatter and
 	 * writers.
 	 * Typically, users should not access objects of this class directly. Logging
-	 * facility must be utilized via dedicated macros: `XZ_LOG` and others. If any
-	 * modification to the `Logger` is required, then the `LoggerConfigurator`
+	 * facility must be utilized via dedicated macros: `XZ_LOG` and others. If
+	 * any modification to the `Logger` is required, then the `LoggerConfigurator`
 	 * class should be used instead.
 	 * 
 	 * @see XZ_LOG
