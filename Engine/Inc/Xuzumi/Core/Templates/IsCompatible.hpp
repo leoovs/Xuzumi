@@ -27,7 +27,7 @@ namespace Xuzumi
 	/**
 	 * Type trait to check whether two types are compatible.
 	 * 
-	 * Compatibility is defined in the context of `std::shared_ptr` conversion,
+	 * This type trait implements the C++17 design of type compatibility,
 	 * see https://en.cppreference.com/w/cpp/memory/shared_ptr/shared_ptr.
 	 * 
 	 * @tparam FirstT Type that has to be compatible with `SecondT`.
@@ -55,6 +55,7 @@ namespace Xuzumi
 	 * The value is determined by Xuzumi::IsCompatible<FirstT, SecondT>::Value.
 	 * 
 	 * @see Xuzumi::IsCompatible<FirstT, SecondT>::Value
+	 * @see Xuzumi::IsCompatible
 	 */
 	template<typename FirstT, typename SecondT>
 	inline constexpr bool IsCompatibleV =
