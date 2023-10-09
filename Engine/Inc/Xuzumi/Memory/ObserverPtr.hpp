@@ -1,3 +1,9 @@
+/**
+ * @file Xuzumi/Memory/ObserverPtr.hpp
+ * 
+ * @brief Defines non-owning `ObserverPtr` pointer wrapper.
+ */
+
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
@@ -5,32 +11,72 @@
 
 namespace Xuzumi
 {
+	/**
+	 * @brief Non-owning observer pointer utility type that acts as a wrapper
+	 * around a raw pointer and provides a slightly more explicit interface for
+	 * pointer manipulations.
+	 */
 	template<typename T>
 	class ObserverPtr
 	{
 	public:
+		// TODO: make this private.
 		using Traits = Internal::PointerTraits<T>;
 
+		/**
+		 * @typedef ReferenceType
+		 * 
+		 * @brief Type alias for a resource reference.
+		 */
 		using ReferenceType = typename Traits::ReferenceType;
+
+		/**
+		 * @typedef PointerType
+		 * 
+		 * @brief Type alias for a pointer to a resource.
+		 */
 		using PointerType = typename Traits::PointerType;
 
+		/**
+		 * @brief Constructs an `ObserverPtr` object that holds `nullptr`.
+		 */
 		ObserverPtr() = default;
 		
+		/**
+		 * @brief Constructs an `ObserverPtr` object that holds `nullptr` with
+		 * explicit `nullptr` parameter.
+		 */
 		ObserverPtr(std::nullptr_t)
 			: ObserverPtr()
 		{
 		}
 
-		template<typename OtherT>
+		/**
+		 * @brief Copy-constructs an `ObserverPtr` type from other pointer of
+		 * different type.
+		 * 
+		 * Constructor participates in the overload resolution only if the`OtherT`
+		 * type is compatible with the `T` type (to be implemented).
+		 * 
+		 * @see Xuzumi::IsCompatible
+		 */
+		template<typename OtherT> // TODO: apply IsCompatibleV type trait here.
 		ObserverPtr(const ObserverPtr<OtherT>& other)
 			: mWatchedObject(other.Get())
 		{
 		}
 
+		/**
+		 * @brief Constructs an `ObserverPtr` object that stores specified pointer.
+		 * 
+		 * @param watchedObject A pointer to an object to store.
+		 */
 		explicit ObserverPtr(PointerType watchedObject)
 			: mWatchedObject(watchedObject)
 		{
 		}
+
+		// TODO: make the following constructors and operators implicitly declared.
 
 		ObserverPtr(const ObserverPtr& other) = default;
 		ObserverPtr(ObserverPtr&& other) noexcept = default;
@@ -38,31 +84,64 @@ namespace Xuzumi
 		ObserverPtr& operator=(const ObserverPtr& other) = default;
 		ObserverPtr& operator=(ObserverPtr&& other) noexcept = default;
 
+		/**
+		 * @brief Stores `nullptr` and returns the previously held pointer.
+		 * 
+		 * @return A previously held pointer.
+		 */
 		PointerType Release()
 		{
 			return std::exchange(mWatchedObject, nullptr);
 		}
-		
+
+		/**
+		 * @brief Sets a new pointer.
+		 * 
+		 * @param watchedObject A new pointer to store.
+		 */
 		void Reset(PointerType watchedObject = nullptr)
 		{
 			mWatchedObject = watchedObject;
 		}
 
+		/**
+		 * @brief Retrieves the held pointer.
+		 *
+		 * @return The held pointer.
+		 */
 		PointerType Get() const
 		{
 			return mWatchedObject;
 		}
 
+		/**
+		 * @brief Checks whether an `ObserverPtr` object holds a non-null pointer.
+		 * 
+		 * @retval true The pointer is not `nullptr`.
+		 * @retval false The pointer is `nullptr`.
+		 */
 		explicit operator bool() const
 		{
 			return bool(mWatchedObject);
 		}
 
+		/**
+		 * @brief Pointer dereference operator.
+		 *
+		 * Dereferences the underlying pointer.
+		 *
+		 * @return Reference to the object that underlying pointer points to.
+		 */
 		ReferenceType operator*() const
 		{
 			return *mWatchedObject;
 		}
 
+		/**
+		 * @brief Pointer member access operator.
+		 * 
+		 * @return The underlying pointer.
+		 */
 		PointerType operator->() const
 		{
 			return mWatchedObject;

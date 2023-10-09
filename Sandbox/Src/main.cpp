@@ -34,6 +34,7 @@ private:
 		delete resource;
 	}
 
+	// TODO: maybe rename to `ResourceExpirationGuard`
 	Xuzumi::Internal::ResourceDeleterGuard<Factory> mGuard = this;
 };
 
