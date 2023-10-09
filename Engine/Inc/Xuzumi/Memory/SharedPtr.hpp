@@ -468,7 +468,7 @@ namespace Xuzumi
 		/**
 		 * @brief Checks whether the `*this` holds an object of the specified type.
 		 * 
-		 * @param OtherT The type to check against.
+		 * @tparam OtherT The type to check against.
 		 * 
 		 * @retval true The @p OtherT and the managed object type match.
 		 * @retval false The @p OtherT and the managed object type mismatch.
