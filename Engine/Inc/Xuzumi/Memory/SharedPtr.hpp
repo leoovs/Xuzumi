@@ -445,7 +445,7 @@ namespace Xuzumi
 		 * way performing additional runtime type check.
 		 * 
 		 * A new instance of the `SharedPtr<OtherT>` points to the same object in
-		 * memory and shared the ownership.
+		 * memory and shares the ownership.
 		 * 
 		 * @tparam OtherT The type of the object to convert to.
 		 * 
