@@ -313,7 +313,8 @@ namespace Xuzumi
 		 * @brief Explicit termination of the ownership.
 		 * 
 		 * The `*this` stops sharing the ownership of the managed object and becomes
-		 * empty. The object itself may or may no be destroyed. 
+		 * empty. If `*this` is the only strong reference, the managed object is
+		 * destroyed.
 		 */
 		void Reset()
 		{
@@ -324,7 +325,8 @@ namespace Xuzumi
 		 * @brief Explicit termination of the ownership.
 		 * 
 		 * The `*this` stops sharing the ownership of the managed object and becomes 
-		 * empty. The object itself may or may no be destroyed.
+		 * empty. If `*this` is the only strong reference, the managed object is
+		 * destroyed.
 		 * 
 		 * @param _unnamed_ `nullptr`
 		 */
