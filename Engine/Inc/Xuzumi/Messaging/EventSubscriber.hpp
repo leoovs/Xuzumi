@@ -1,3 +1,9 @@
+/**
+ * @file Xuzumi/Messaging/EventSubscriber.hpp 
+ * 
+ * @brief Defines the `EventSubscriber` helper type.
+ */
+
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
@@ -41,14 +47,44 @@ namespace Xuzumi::Internal
 
 namespace Xuzumi
 {
+	/**
+	 * @brief Builder for managing multiple event subscriptions.
+	 */
 	class EventSubscriber
 	{
 	public:
+		/**
+		 * @brief Destructor.
+		 * 
+		 * Internally calls `Unsubscribe`.
+		 */
 		~EventSubscriber();
 
+		/**
+		 * @brief Associate `*this` with @p bus.
+		 * 
+		 * @param bus An event bus.
+		 *
+		 * @return The `*this` reference.
+		 */
 		EventSubscriber& Subscribe(ObserverPtr<EventBus> bus);
+
+		/**
+		 * @brief Unsubscribes from all subscriptions and dissociates with the
+		 * current event bus.
+		 */
 		void Unsubscribe();
 
+		/**
+		 * @brief Add a function as @p EventT handler.
+		 * 
+		 * In debug mode, raises an assertion failure if no event bus is associated
+		 * with `*this`.
+		 *
+		 * @tparam EventT The type of the event to handle.
+		 *
+		 * @param function The function pointer.
+		 */
 		template<typename EventT>
 		EventSubscriber& Function(bool(*function)(const EventT&))
 		{
@@ -63,6 +99,17 @@ namespace Xuzumi
 			return *this;
 		}
 
+		/**
+		 * @brief Add a functor as @p EventT handler.
+
+		 * In debug mode, raises an assertion failure if no event bus is associated
+		 * with `*this`.
+		 *
+		 * @tparam EventT The type of the event to handle.
+		 * @tparam FunctorT The type of the functor.
+		 * 
+		 * @param functor The event handler.
+		 */
 		template<typename EventT, typename FunctorT>
 		EventSubscriber& Functor(FunctorT functor)
 		{
@@ -77,6 +124,22 @@ namespace Xuzumi
 			return *this;
 		}
 
+		/**
+		 * @brief Yields subscription to an internal entity that supports method
+		 * subscription.
+		 *
+		 * In debug mode, raises an assertion failure if no event bus is associated
+		 * with `*this`.
+
+		 * Internal entity has the following methods:
+		 * - `Method<EventT>()` - Adds method as an @p EventT handler.
+		 * - `EndThis()` - Yields back the method subscription.
+		 * 
+		 * @tparam ClassT The type of the class whose method pointers will be used.
+		 *
+		 * @param classInstance A pointer to an instance of the @p ClassT that will
+		 * be passed to a method, when an event occurres.
+		 */
 		template<typename ClassT>
 		Internal::EventMethodSubscriptionForwarder<ClassT> BeginThis(
 			ClassT* classInstance
@@ -94,8 +157,18 @@ namespace Xuzumi
 			);
 		}
 
+		/**
+		 * @brief Retrieves the associated event bus.
+		 *
+		 * @return A pointer to the associated event bus.
+		 */
 		ObserverPtr<EventBus> GetBus() const;
 
+		/**
+		 * @brief Add custom subscription handle.
+		 *
+		 * @param subscription Custom subscription handle. 
+		 */
 		void AddSubscription(EventSubscription subscription);
 
 	private:

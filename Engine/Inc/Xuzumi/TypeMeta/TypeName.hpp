@@ -49,12 +49,30 @@ namespace Xuzumi::Internal
 
 namespace Xuzumi
 {
+	/**
+	 * @brief Retrieves a human-readable string containing the name of the
+	 * @p ClassT type. 
+	 * 
+	 * @tparam ClassT The type which name is to be retrieved.
+	 *
+	 * @return An `std::string` instance containing the name of the type.
+	 */
 	template<typename ClassT>
 	std::string GetTypeName()
 	{
 		return std::string(Internal::GetStaticTypeName<ClassT>());	
 	}
 
+	/**
+	 * @brief Retrieves a human-readable string containing the name of the
+	 * @p classInstance type. 
+	 * 
+	 * @tparam ClassT The type of the @p classInstance.
+	 * 
+	 * @param classInstance A reference to an object of the @p ClassT type.
+	 * 
+	 * @return An `std::string` instance containing the name of the type.
+	 */
 	template<typename ClassT>
 	std::string GetTypeName(const ClassT& classInstance)
 	{
