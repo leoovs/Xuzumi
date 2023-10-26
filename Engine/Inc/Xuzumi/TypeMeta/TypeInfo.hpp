@@ -15,6 +15,8 @@ namespace Xuzumi
 	 */
 	struct TypeInfo
 	{
+		// TODO: replace public fields with getters.
+
 		/**
 		 * @brief A type identifier.
 		 */
@@ -45,13 +47,18 @@ namespace Xuzumi
 		template<typename T>
 		static TypeInfo Get()
 		{
-			return
-			{
-				GetTypeID<T>(),
-				GetTypeName<T>(),
-				SizeOfV<T>,
-				AlignOfV<T>
-			};
+			// TODO: add type constraints for the `T` type.
+			TypeInfo instance;
+			instance.ID = GetTypeID<T>();
+			instance.Name = GetTypeName<T>();
+			instance.Size = SizeOfV<T>;
+			instance.Alignment = AlignOfV<T>;
+			instance.mDestructor = [](void* object)
+				{
+					reinterpret_cast<T*>(object)->~T();
+				};
+
+			return instance;
 		}
 
 		/**
@@ -61,6 +68,8 @@ namespace Xuzumi
 		 * `*this`.
 		 */
 		std::string ToString() const;
+
+		void Destruct(void* object) const;
 
 		/**
 		 * @brief Checks whether `*this` references a valid type.
@@ -85,5 +94,8 @@ namespace Xuzumi
 		 * @retval false @p other refers to the same type as `*this`.
 		 */
 		bool operator!=(const TypeInfo& other) const;
+
+	private:
+		void(*mDestructor)(void* object) = nullptr;
 	};	
 }

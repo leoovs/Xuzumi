@@ -19,6 +19,14 @@ namespace Xuzumi
 			+ " }";
 	}
 
+	void TypeInfo::Destruct(void* object) const
+	{
+		if (mDestructor && nullptr != object)
+		{
+			mDestructor(object);
+		}
+	}
+
 	TypeInfo::operator bool() const
 	{
 		return kInvalidTypeID != ID;

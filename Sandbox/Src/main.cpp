@@ -56,10 +56,12 @@ int main()
 	);
 
 	XZ_LOG(Info, "Compiled with %s", Xuzumi::GetCompilerName().data());
-	XZ_LOG(Info, "%s", Xuzumi::TypeInfo::Get<int[5]>().ToString().data());
+	std::cout << Xuzumi::TypeInfo::Get<Resource>().ToString() << std::endl;
 
-	Xuzumi::SharedPtr<Factory> factory(new Factory());
-	Xuzumi::SharedPtr<Resource> res;
-	res = factory->Create();
-	factory.Reset();
+	Xuzumi::PoolAllocatorSpecification allocSpec;
+	allocSpec.BlockSize = 10;
+
+	auto allocator = Xuzumi::MakeShared<Xuzumi::PoolAllocator>(allocSpec);
+	auto res = allocator->AllocateShared<Resource>();
+	allocator.Reset();
 }

@@ -23,6 +23,7 @@
 #include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
+#include "Xuzumi/Memory/PoolAllocator.hpp"
 #include "Xuzumi/Memory/FactoryExpirationGuard.hpp"
 
 #include "Xuzumi/Messaging/Event.hpp"

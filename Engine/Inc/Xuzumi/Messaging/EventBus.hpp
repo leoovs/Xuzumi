@@ -80,7 +80,6 @@ namespace Xuzumi
 
 namespace Xuzumi::Internal
 {
-
 	class IEventDispatcher
 	{
 	public:
