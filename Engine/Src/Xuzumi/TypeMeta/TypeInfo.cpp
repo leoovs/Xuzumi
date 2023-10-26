@@ -10,9 +10,13 @@ namespace Xuzumi
 			>
 		>();
 
+		// TODO: replace with some sort of string builder.
 		return typeInfoStructName + "{ "
 			+ "ID = " + std::to_string(ID) + ", "
-			+ "Name = '" + Name + "' }"; 
+			+ "Name = '" + Name + "', "
+			+ "Size = " + std::to_string(Size) + ", "
+			+ "Alignment = " + std::to_string(Alignment)
+			+ " }";
 	}
 
 	TypeInfo::operator bool() const

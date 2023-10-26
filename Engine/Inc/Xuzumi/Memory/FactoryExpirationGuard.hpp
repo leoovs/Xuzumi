@@ -7,7 +7,7 @@
 namespace Xuzumi::Internal
 {
 	template<typename FactoryT>
-	class ResourceDeleterGuard
+	class FactoryExpirationGuard
 	{
 	public:
 		static_assert(
@@ -20,13 +20,13 @@ namespace Xuzumi::Internal
 			!std::is_reference_v<ResourceT> && !std::is_array_v<ResourceT>
 		>;
 
-		ResourceDeleterGuard(FactoryT* factory)
+		FactoryExpirationGuard(FactoryT* factory)
 			: mFactory(factory, [](FactoryT*) {})
 			, mFactoryWeakRef(mFactory)
 		{
 		}
 
-		ResourceDeleterGuard(const ResourceDeleterGuard& other) = delete;
+		FactoryExpirationGuard(const FactoryExpirationGuard& other) = delete;
 
 		template<
 			typename ResourceT,

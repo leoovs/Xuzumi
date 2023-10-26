@@ -8,6 +8,7 @@
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/PointerBase.hpp"
+#include "Xuzumi/Core/Templates/IsCompatible.hpp"
 
 namespace Xuzumi
 {
@@ -19,10 +20,10 @@ namespace Xuzumi
 	template<typename T>
 	class ObserverPtr
 	{
-	public:
-		// TODO: make this private.
+	private:
 		using Traits = Internal::PointerTraits<T>;
 
+	public:
 		/**
 		 * @typedef ReferenceType
 		 * 
@@ -60,7 +61,10 @@ namespace Xuzumi
 		 * 
 		 * @see Xuzumi::IsCompatible
 		 */
-		template<typename OtherT> // TODO: apply IsCompatibleV type trait here.
+		template<
+			typename OtherT,
+			typename = std::enable_if_t<IsCompatibleV<OtherT, T>>
+		>
 		ObserverPtr(const ObserverPtr<OtherT>& other)
 			: mWatchedObject(other.Get())
 		{
@@ -75,8 +79,6 @@ namespace Xuzumi
 			: mWatchedObject(watchedObject)
 		{
 		}
-
-		// TODO: make the following constructors and operators implicitly declared.
 
 		ObserverPtr(const ObserverPtr& other) = default;
 		ObserverPtr(ObserverPtr&& other) noexcept = default;

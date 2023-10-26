@@ -7,6 +7,8 @@
 #include "Xuzumi/Core/StringUtils.hpp"
 #include "Xuzumi/Core/CompilerInfo.hpp"
 #include "Xuzumi/Core/Templates/IsCompatible.hpp"
+#include "Xuzumi/Core/Templates/SizeOf.hpp"
+#include "Xuzumi/Core/Templates/AlignOf.hpp"
 
 #include "Xuzumi/Debug/Logging.hpp"
 #include "Xuzumi/Debug/Assertion.hpp"
@@ -21,7 +23,7 @@
 #include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
-#include "Xuzumi/Memory/ResourceDeleterGuard.hpp"
+#include "Xuzumi/Memory/FactoryExpirationGuard.hpp"
 
 #include "Xuzumi/Messaging/Event.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"

@@ -1,6 +1,6 @@
 #include <doctest/doctest.h>
 
-#include "Xuzumi/Memory/ResourceDeleterGuard.hpp"
+#include "Xuzumi/Memory/FactoryExpirationGuard.hpp"
 
 TEST_CASE("Xuzumi::Internal::ResourceDeleterGuard")
 {
@@ -40,7 +40,7 @@ TEST_CASE("Xuzumi::Internal::ResourceDeleterGuard")
 				delete res;
 			}
 
-			Xuzumi::Internal::ResourceDeleterGuard<MockFactory> mDangleGuard = this;
+			Xuzumi::Internal::FactoryExpirationGuard<MockFactory> mDangleGuard = this;
 		};
 
 		auto factory = new MockFactory();

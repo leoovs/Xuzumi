@@ -91,7 +91,7 @@ namespace Xuzumi
 			XZ_ASSERT(mBus, "Could not subscribe function: EventBus instance not set");
 		
 			EventSubscription subscription = mBus->Subscribe(
-				Internal::EventHandler<EventT>(function)
+				EventHandler<EventT>(function)
 			);
 
 			AddSubscription(subscription);
@@ -116,7 +116,7 @@ namespace Xuzumi
 			XZ_ASSERT(mBus, "Could not subscribe functor: EventBus instance not set");
 
 			EventSubscription subscriptoin = mBus->Subscribe(
-				Internal::EventHandler<EventT>(functor)
+				EventHandler<EventT>(functor)
 			);
 
 			AddSubscription(subscriptoin);

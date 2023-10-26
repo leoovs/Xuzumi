@@ -8,9 +8,9 @@ TEST_CASE("Xuzumi::Event<DerivedT>")
 	{
 		struct MockEvent : public Xuzumi::Event<MockEvent> {};
 
-		std::unique_ptr<Xuzumi::EventBase> event;
+		std::unique_ptr<Xuzumi::IEvent> event;
 		event = std::make_unique<MockEvent>();
 
-		CHECK(event->GetTypeID() == Xuzumi::GetTypeID<MockEvent>());
+		CHECK(event->GetTypeInfo() == Xuzumi::TypeInfo::Get<MockEvent>());
 	}
 }

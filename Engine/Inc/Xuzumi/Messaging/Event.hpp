@@ -6,13 +6,10 @@
 
 #pragma once
 
-#include "Xuzumi/TypeMeta/TypeID.hpp"
-#include "Xuzumi/TypeMeta/TypeName.hpp"
+#include "Xuzumi/TypeMeta/TypeInfo.hpp"
 
 namespace Xuzumi
 { 
-	// TODO: rename to IEvent; replace type introspection methods with TypeInfo.
-
 	/**
 	 * @brief Event interface. 
 	 *
@@ -21,16 +18,20 @@ namespace Xuzumi
 	 * 
 	 * @see Xuzumi::Event
 	 */
-	class EventBase
+	class IEvent
 	{
 	public:
 		/**
 		 * @brief Virtual destructor enforces valid RAII. 
 		 */
-		virtual ~EventBase() = default;
+		virtual ~IEvent() = default;
 
-		virtual TypeID GetTypeID() const = 0;
-		virtual std::string GetTypeName() const = 0;
+		/**
+		 * @brief Retrieves `*this` type information.
+		 *
+		 * @return A `TypeInfo` instance containing valid type information.
+		 */
+		virtual TypeInfo GetTypeInfo() const = 0;
 	};
 
 	/**
@@ -42,17 +43,17 @@ namespace Xuzumi
 	 * @tparam DerivedT The derived event type.
 	 */
 	template<typename DerivedT>
-	class Event : public EventBase
+	class Event : public IEvent
 	{
 	public:
-		TypeID GetTypeID() const override
+		/**
+		 * @brief Retrieves @p DerivedT type information.
+		 *
+		 * @return A `TypeInfo` instance containing valid type information.
+		 */
+		TypeInfo GetTypeInfo() const override
 		{
-			return Xuzumi::GetTypeID<DerivedT>();
-		}
-
-		std::string GetTypeName() const override
-		{
-			return Xuzumi::GetTypeName<DerivedT>();
+			return TypeInfo::Get<DerivedT>();
 		}
 	};
 }

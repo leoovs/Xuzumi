@@ -2,11 +2,11 @@
 
 #include "Xuzumi/TypeMeta/TypeID.hpp"
 #include "Xuzumi/TypeMeta/TypeName.hpp"
+#include "Xuzumi/Core/Templates/SizeOf.hpp"
+#include "Xuzumi/Core/Templates/AlignOf.hpp"
 
 namespace Xuzumi
 {
-	// TODO: maybe add SizeOf and AlignOf fields.
-
 	/**
 	 * @brief Type used to capture useful type characteristics including the type
 	 * identifier.
@@ -23,7 +23,17 @@ namespace Xuzumi
 		/**
 		 * @brief A type name.
 		 */
-		std::string Name;	
+		std::string Name;
+
+		/**
+		 * @brief The size of the type.
+		 */
+		std::size_t Size = SizeOfV<void>;
+
+		/**
+		 * @brief The alignment of the type.
+		 */
+		std::size_t Alignment = AlignOfV<void>;
 
 		/**
 		 * @brief Retrieves `TypeInfo` instance for @p T.
@@ -38,7 +48,9 @@ namespace Xuzumi
 			return
 			{
 				GetTypeID<T>(),
-				GetTypeName<T>()
+				GetTypeName<T>(),
+				SizeOfV<T>,
+				AlignOfV<T>
 			};
 		}
 

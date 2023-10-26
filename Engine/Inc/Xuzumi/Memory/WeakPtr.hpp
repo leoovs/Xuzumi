@@ -25,18 +25,19 @@ namespace Xuzumi
 	template<typename T>
 	class WeakPtr
 	{
-	public:
-		using Traits = Internal::PointerTraits<T>; // TODO: make this private.j
+	private:
+		using Traits = Internal::PointerTraits<T>;
 
+		template<typename OtherT>
+		friend class WeakPtr;
+
+	public:
 		/**
 		 * @typedef PointerType
 		 * 
 		 * @brief Type alias for a resource pointer type.
 		 */
 		using PointerType = typename Traits::PointerType;
-
-		template<typename OtherT>
-		friend class WeakPtr;
 
 		/**
 		 * @brief Default constructor.

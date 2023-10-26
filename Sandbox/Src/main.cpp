@@ -34,8 +34,7 @@ private:
 		delete resource;
 	}
 
-	// TODO: maybe rename to `FactoryExpirationGuard`
-	Xuzumi::Internal::ResourceDeleterGuard<Factory> mGuard = this;
+	Xuzumi::Internal::FactoryExpirationGuard<Factory> mGuard = this;
 };
 
 int main()
@@ -57,8 +56,10 @@ int main()
 	);
 
 	XZ_LOG(Info, "Compiled with %s", Xuzumi::GetCompilerName().data());
+	XZ_LOG(Info, "%s", Xuzumi::TypeInfo::Get<int[5]>().ToString().data());
 
 	Xuzumi::SharedPtr<Factory> factory(new Factory());
 	Xuzumi::SharedPtr<Resource> res;
 	res = factory->Create();
+	factory.Reset();
 }

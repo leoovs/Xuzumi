@@ -31,9 +31,19 @@ namespace Xuzumi
 	template<typename T>
 	class SharedPtr
 	{
-	public:
-		using Traits = Internal::PointerTraits<T>; // TODO: make this private.
+	private:
+		using Traits = Internal::PointerTraits<T>;
 
+		template<typename OtherT>
+		using OtherType = typename Traits::template OtherType<OtherT>;
+
+		template<typename OtherT>
+		friend class SharedPtr;
+
+		template<typename OtherT>
+		friend class WeakPtr;
+
+	public:
 		/**
 		 * @typedef PointerType
 		 * 
@@ -47,15 +57,6 @@ namespace Xuzumi
 		 * @brief Type alias for a resource reference type.
 		 */
 		using ReferenceType = typename Traits::ReferenceType;
-
-		template<typename OtherT>
-		using OtherType = typename Traits::template OtherType<OtherT>; // TODO: make this private.
-
-		template<typename OtherT>
-		friend class SharedPtr; // TODO: make this private.
-
-		template<typename OtherT>
-		friend class WeakPtr; // TODO: make this private.
 
 		/**
 		 * @brief Default constructor.
@@ -458,8 +459,6 @@ namespace Xuzumi
 		template<typename OtherT>
 		SharedPtr<OtherT> As() const
 		{
-			// TODO: consider checking whether OtherT is a base class of the managed
-			// object type.
 			if (Holds<OtherT>())
 			{
 				return AsUnsafe<OtherT>();

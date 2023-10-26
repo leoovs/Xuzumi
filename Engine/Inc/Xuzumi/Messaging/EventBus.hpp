@@ -22,6 +22,16 @@ namespace Xuzumi
 	}
 
 	/**
+	 * @typedef EventHandler
+	 * 
+	 * @brief A type alias for delegate representing an event handler.
+	 *
+	 * @tparam EventT The type of the event to handle
+	 */
+	template<typename EventT>
+	using EventHandler = Delegate<bool(const EventT&)>;
+
+	/**
 	 * @brief An event subscription handle.
 	 *
 	 * Holds an event subscription data that binds specified delegate and internal
@@ -70,8 +80,6 @@ namespace Xuzumi
 
 namespace Xuzumi::Internal
 {
-	template<typename EventT>
-	using EventHandler = Delegate<bool(const EventT&)>;
 
 	class IEventDispatcher
 	{
@@ -197,8 +205,8 @@ namespace Xuzumi
 		 * 
 		 * @return An instance of `EventSubscription`.
 		 */
-		template<typename EventT> // TODO: make EventHandler<EventT> part of public API.
-		EventSubscription Subscribe(Internal::EventHandler<EventT> handler)
+		template<typename EventT>
+		EventSubscription Subscribe(EventHandler<EventT> handler)
 		{
 			TypeID eventTypeID = GetTypeID<EventT>();
 			Internal::EventHandlerID handlerID = 
