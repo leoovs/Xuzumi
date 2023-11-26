@@ -1,17 +1,15 @@
 #include <Xuzumi/Xuzumi.hpp>
-#include <thread>
-#include <memory>
 
-struct Resource
+struct alignas(1024) Resource
 {
 	Resource()
 	{
-		XZ_LOG(Info, "Created");
+		XZ_LOG(Info, "Created: %p", this);
 	}
 
 	~Resource()
 	{
-		XZ_LOG(Info, "Destroyed");
+		XZ_LOG(Info, "Destroyed: %p", this);
 	}
 };
 
@@ -22,9 +20,7 @@ public:
 	{
 		return Xuzumi::SharedPtr<Resource>(
 			new Resource(),
-			mGuard.MakeDangleProtectedDeleter<Resource>(
-				&Factory::Destroy
-			)	
+			mGuard.MakeDangleProtectedDeleter(&Factory::Destroy)	
 		);
 	}
 
@@ -55,13 +51,10 @@ int main()
 		}
 	);
 
-	XZ_LOG(Info, "Compiled with %s", Xuzumi::GetCompilerName().data());
-	std::cout << Xuzumi::TypeInfo::Get<Resource>().ToString() << std::endl;
+	Xuzumi::PoolAllocator<Resource> resourceAllocator(3);
 
-	Xuzumi::PoolAllocatorSpecification allocSpec;
-	allocSpec.BlockSize = 10;
+	resourceAllocator.Deallocate(nullptr);
 
-	auto allocator = Xuzumi::MakeShared<Xuzumi::PoolAllocator>(allocSpec);
-	auto res = allocator->AllocateShared<Resource>();
-	allocator.Reset();
+	auto address = reinterpret_cast<Resource*>(0x55);
+	resourceAllocator.Deallocate(address);
 }

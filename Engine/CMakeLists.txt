@@ -20,7 +20,7 @@ add_library(
 	"Src/Xuzumi/Debug/ConsoleLogWriter.cpp"
 	"Src/Xuzumi/Debug/TimedLogFormatter.cpp"
 	"Src/Xuzumi/Debug/Assertion.cpp"
- "Src/Xuzumi/Memory/PoolAllocator.cpp")
+ )
 
 target_include_directories(
 	Xuzumi_Engine

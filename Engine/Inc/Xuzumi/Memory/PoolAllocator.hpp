@@ -1,195 +1,126 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/TypeMeta/TypeID.hpp"
-#include "Xuzumi/TypeMeta/TypeInfo.hpp"
+#include "Xuzumi/Debug/Assertion.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/FactoryExpirationGuard.hpp"
-
-namespace Xuzumi
-{
-	struct PoolAllocatorSpecification
-	{
-		std::size_t BlockSize = 10;
-	};
-}
+#include "Xuzumi/Core/Templates/TypeStorage.hpp"
 
 namespace Xuzumi::Internal
 {
-	struct MemoryChunk
-	{
-		TypeID ResourceTypeID = kInvalidTypeID;
-		std::size_t ParentBlockIndex = 0;
-		void* ResourceMemory = nullptr;
-	};
-
-	class MemoryBlock
-	{
-	public:
-		MemoryBlock(
-			const PoolAllocatorSpecification& spec,
-			TypeInfo resourceTypeInfo
-		);
-
-		MemoryChunk* AcquireChunk();
-		void DisposeChunk(MemoryChunk* chunk);
-
-		bool IsExhausted() const;
-
-	private:
-		using ChunkVectorStack = std::vector<MemoryChunk*>;
-
-		void AllocateMemory();
-
-		PoolAllocatorSpecification mSpec;
-		TypeInfo mResourceTypeInfo;
-
-		std::shared_ptr<void> mMemory;
-
-		ChunkVectorStack mAvailableChunks;
-	};
-
-	class MemoryPool
-	{
-	public:
-		MemoryPool(
-			const PoolAllocatorSpecification& spec,
-			TypeInfo resourceTypeInfo
-		);
-
-		MemoryChunk* AcquireChunk();
-		void DisposeChunk(MemoryChunk* chunk);
-
-	private:
-		MemoryBlock* GetActiveBlock();
-
-		PoolAllocatorSpecification mSpec;
-		TypeInfo mResourceTypeInfo;
-
-		std::vector<MemoryBlock> mBlocks;
-		std::deque<MemoryBlock*> mReplenishedBlocks;
-	};
-
 	template<typename ResourceT>
-	inline constexpr bool CanBePoolAllocatorResource
-		= !std::is_reference_v<ResourceT>;
-
-	class IObjectPool
+	struct ResourcePoolChunk
 	{
-	public:
-		virtual ~IObjectPool() = default;
+		inline static constexpr std::ptrdiff_t kInvalidChunkIndex = -1;
 
-		virtual void Deallocate(void* resource) = 0;
-	};
-
-	template<
-		typename ResourceT,
-		typename = std::enable_if_t<CanBePoolAllocatorResource<ResourceT>>
-	>
-	class ObjectPool : public IObjectPool
-	{
-	public:
-		using ResourcePointer = ResourceT*;
-
-		ObjectPool(const PoolAllocatorSpecification& spec)
-			: mSpec(spec)
-			, mMemory(spec, TypeInfo::Get<ResourceT>())
-		{
-		}
-
-		template<typename... ArgsT>
-		ResourcePointer Allocate(ArgsT&&... args)
-		{
-			MemoryChunk* chunk = mMemory.AcquireChunk();
-
-			return new (chunk->ResourceMemory) ResourceT
-			{
-				std::forward<ArgsT>(args)...
-			};
-		}
-
-		void Deallocate(void* resource)
-		{
-			auto chunk = reinterpret_cast<MemoryChunk*>(resource) - 1;
-			TypeInfo::Get<ResourceT>().Destruct(chunk->ResourceMemory);
-			mMemory.DisposeChunk(chunk);
-		}
-
-	private:
-		PoolAllocatorSpecification mSpec;
-		MemoryPool mMemory;
+		TypeStorage<ResourceT> Resource;
+		std::ptrdiff_t NextChunk = kInvalidChunkIndex;
 	};
 }
 
 namespace Xuzumi
 {
+	template<typename ResourceT>
 	class PoolAllocator
 	{
 	public:
-		PoolAllocator(const PoolAllocatorSpecification& spec = {});
+		static_assert(
+			!std::is_reference_v<ResourceT>,
+			"Xuzumi: reference type is not allowed here"
+		);
+		static_assert(
+			!std::is_array_v<ResourceT>,
+			"Xuzumi: array type is not allowed here"
+		);
 
-		template<
-			typename ResourceT,
-			typename = std::enable_if_t<
-				Internal::CanBePoolAllocatorResource<ResourceT>
-				&& !std::is_array_v<ResourceT>
-			>,
-			typename... ArgsT
-		>
-		ResourceT* Allocate(ArgsT&&... args)
+		using ResourceType = ResourceT;
+		using PointerType = std::add_pointer_t<ResourceType>;
+
+	private:
+		using Chunk = Internal::ResourcePoolChunk<ResourceType>;
+
+	public:
+		PoolAllocator(std::size_t size)
+			: mChunks(size)
+			, mChunksInUse(size)
+			, mFreeChunkIndex(Chunk::kInvalidChunkIndex)
+			, mPoolExpirationGuard(this)
 		{
-			return GetPool<ResourceT>()->Allocate(std::forward<ArgsT>(args)...);
+			SetupFreeList();
 		}
 
-		template<
-			typename ResourceT,
-			typename = std::enable_if_t<
-				Internal::CanBePoolAllocatorResource<ResourceT>
-				&& !std::is_array_v<ResourceT>
-			>,
-			typename... ArgsT
-		>
-		SharedPtr<ResourceT> AllocateShared(ArgsT&&... args)
+		template<typename... ArgsT>
+		PointerType Allocate(ArgsT&&... args)
 		{
-			return SharedPtr<ResourceT>(
-				Allocate<ResourceT>(std::forward<ArgsT>(args)...),
-				mExpirationGuard.MakeDangleProtectedDeleter(
-					&PoolAllocator::DeallocateShared<ResourceT>
+			XZ_ASSERT(!IsExhausted(), "Trying to allocate from an exhausted pool");
+
+			mChunksInUse[mFreeChunkIndex] = true;
+
+			Chunk& chunk = mChunks[mFreeChunkIndex];
+			mFreeChunkIndex = chunk.NextChunk;
+
+			return chunk.Resource.Construct(std::forward<ArgsT>(args)...);
+		}
+
+		template<typename... ArgsT>
+		SharedPtr<ResourceType> AllocateShared(ArgsT&&... args)
+		{
+			return SharedPtr<ResourceType>(
+				Allocate(std::forward<ArgsT>(args)...),
+				mPoolExpirationGuard.MakeDangleProtectedDeleter(
+					&PoolAllocator::Deallocate
 				)
 			);
 		}
 
-		void Deallocate(void* resource);
-
-	private:
-		template<typename ResourceT>
-		void DeallocateShared(ResourceT* resource)
+		void Deallocate(PointerType resource)
 		{
-			Deallocate(resource);
-		}
-
-		template<typename ResourceT>
-		std::shared_ptr<Internal::ObjectPool<ResourceT>> GetPool()
-		{
-			TypeID resourceTypeID = GetTypeID<ResourceT>();
-
-			auto poolIt = mPools.find(resourceTypeID);
-			if (mPools.end() == poolIt)
+			if (nullptr == resource)
 			{
-				auto pool = std::make_shared<Internal::ObjectPool<ResourceT>>(mSpec);
-				mPools[resourceTypeID] = pool;
-
-				return pool;
+				XZ_LOG(Warning, "Trying to deallocate a nullptr");
+				return;
 			}
 
-			return std::static_pointer_cast<
-				Internal::ObjectPool<ResourceT>
-			>(poolIt->second);
+			auto chunk = reinterpret_cast<Chunk*>(resource);
+			std::ptrdiff_t chunkIndex = chunk - &mChunks.front();
+
+			XZ_ASSERT(
+				chunkIndex >= 0 && chunkIndex < mChunks.size(),
+				"Not a pool chunk"
+			);
+			XZ_ASSERT(
+				mChunksInUse[chunkIndex],
+				"Trying to deallocate the memory that is not currently acquired"
+			);
+
+			mChunks[chunkIndex].NextChunk = mFreeChunkIndex;
+			mFreeChunkIndex = chunkIndex;
+
+			mChunksInUse[chunkIndex] = false;
+		
+			chunk->Resource.Destruct();
 		}
 
-		Internal::FactoryExpirationGuard<PoolAllocator> mExpirationGuard;
+		bool IsExhausted() const
+		{
+			return Chunk::kInvalidChunkIndex == mFreeChunkIndex;
+		}
 
-		PoolAllocatorSpecification mSpec;
-		std::unordered_map<TypeID, std::shared_ptr<Internal::IObjectPool>> mPools;
+	private:
+		void SetupFreeList()
+		{
+			std::ptrdiff_t iChunk = mFreeChunkIndex = 0;
+
+			for (; iChunk < mChunks.size() - 1; iChunk++)
+			{
+				mChunks[iChunk].NextChunk = iChunk + 1;
+			}
+		}
+
+		std::vector<Chunk> mChunks;
+		std::vector<bool> mChunksInUse;
+		std::ptrdiff_t mFreeChunkIndex = Chunk::kInvalidChunkIndex;
+
+		Internal::FactoryExpirationGuard<PoolAllocator> mPoolExpirationGuard;
 	};
 }
