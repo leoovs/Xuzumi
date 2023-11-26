@@ -51,11 +51,12 @@ namespace Xuzumi
 			TypeInfo instance;
 			instance.ID = GetTypeID<T>();
 			instance.Name = GetTypeName<T>();
+
+			// TODO: maybe remove the following :thinking:
 			instance.Size = SizeOfV<T>;
 			instance.Alignment = AlignOfV<T>;
 			instance.mDestructor = [](void* object)
 				{
-					reinterpret_cast<T*>(object)->~T();
 				};
 
 			return instance;
