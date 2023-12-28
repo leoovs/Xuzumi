@@ -20,6 +20,9 @@ add_library(
 	"src/Xuzumi/Debug/ConsoleLogWriter.cpp"
 	"src/Xuzumi/Debug/TimedLogFormatter.cpp"
 	"src/Xuzumi/Debug/Assertion.cpp"
+	
+	"src/Xuzumi/Platform/PlatformService.cpp"
+	"src/Xuzumi/Platform.Win32/PlatformServiceWin32.cpp"
  )
 
 target_include_directories(

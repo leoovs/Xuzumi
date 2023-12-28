@@ -50,11 +50,4 @@ int main()
 			configurator.SetLoggerAsHandler();
 		}
 	);
-
-	Xuzumi::PoolAllocator<Resource> resourceAllocator(3);
-
-	resourceAllocator.Deallocate(nullptr);
-
-	auto address = reinterpret_cast<Resource*>(0x55);
-	resourceAllocator.Deallocate(address);
 }
