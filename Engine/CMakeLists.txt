@@ -1,33 +1,33 @@
 add_library(
 	Xuzumi_Engine
 	STATIC
-	"Src/Xuzumi/Core/StringUtils.cpp"
+	"src/Xuzumi/Core/StringUtils.cpp"
 
-	"Src/Xuzumi/TypeMeta/TypeID.cpp"
-	"Src/Xuzumi/TypeMeta/TypeInfo.cpp"
+	"src/Xuzumi/TypeMeta/TypeID.cpp"
+	"src/Xuzumi/TypeMeta/TypeInfo.cpp"
 
-	"Src/Xuzumi/Messaging/EventBus.cpp"
-	"Src/Xuzumi/Messaging/EventPublisher.cpp"
-	"Src/Xuzumi/Messaging/EventSubscriber.cpp"
+	"src/Xuzumi/Messaging/EventBus.cpp"
+	"src/Xuzumi/Messaging/EventPublisher.cpp"
+	"src/Xuzumi/Messaging/EventSubscriber.cpp"
 
-	"Src/Xuzumi/IDFramework/HandleGenerator.cpp"
+	"src/Xuzumi/IDFramework/HandleGenerator.cpp"
 
-	"Src/Xuzumi/Memory/Referencer.cpp"
+	"src/Xuzumi/Memory/Referencer.cpp"
 	
- 	"Src/Xuzumi/Debug/DebugSession.cpp"
-	"Src/Xuzumi/Debug/Logging.cpp"
-	"Src/Xuzumi/Debug/FileLogWriter.cpp"
-	"Src/Xuzumi/Debug/ConsoleLogWriter.cpp"
-	"Src/Xuzumi/Debug/TimedLogFormatter.cpp"
-	"Src/Xuzumi/Debug/Assertion.cpp"
+ 	"src/Xuzumi/Debug/DebugSession.cpp"
+	"src/Xuzumi/Debug/Logging.cpp"
+	"src/Xuzumi/Debug/FileLogWriter.cpp"
+	"src/Xuzumi/Debug/ConsoleLogWriter.cpp"
+	"src/Xuzumi/Debug/TimedLogFormatter.cpp"
+	"src/Xuzumi/Debug/Assertion.cpp"
  )
 
 target_include_directories(
 	Xuzumi_Engine
 	PUBLIC
-	"Inc"
+	"include"
 	PRIVATE
-	"Src"
+	"src"
 )
 
 set_target_properties(
@@ -40,5 +40,5 @@ set_target_properties(
 target_precompile_headers(
 	Xuzumi_Engine
 	PRIVATE
-	"Inc/Xuzumi/Precompiled.hpp"
+	"include/Xuzumi/Precompiled.hpp"
 )
