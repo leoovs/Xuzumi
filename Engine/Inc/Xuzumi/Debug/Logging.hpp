@@ -50,7 +50,7 @@ namespace Xuzumi
 		std::uint32_t LineNumber = -1;
 
 		/**
-		 * @brief A descriprive log message.
+		 * @brief A descriptive log message.
 		 * 
 		 * Ideally, provides context information and task execution status. 
 		 */
@@ -62,9 +62,9 @@ namespace Xuzumi
 		std::string ScopeName;
 	
 		/**
-		 * @brief Default contructor.
+		 * @brief Default constructor.
 		 * 
-		 * Contructs a `LogData` object that contains meaningless logging metadata.
+		 * Constructs a `LogData` object that contains meaningless logging metadata.
 		 */
 		LogData() = default;
 

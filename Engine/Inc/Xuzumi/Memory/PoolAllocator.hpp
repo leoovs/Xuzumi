@@ -20,6 +20,14 @@ namespace Xuzumi::Internal
 
 namespace Xuzumi
 {
+	/**
+	 * @brief Implements a memory allocator based on memory-pools.
+	 * 
+	 * Applies an efficient allocation strategy when allocating many objects of
+	 * the same type.
+	 * 
+	 * @tparam ResourceT A type of the memory resource to allocate.
+	 */
 	template<typename ResourceT>
 	class PoolAllocator
 	{
@@ -33,13 +41,25 @@ namespace Xuzumi
 			"Xuzumi: array type is not allowed here"
 		);
 
+		/**
+		 * @brief The type of the memory resource.
+		 */
 		using ResourceType = ResourceT;
+
+		/**
+		 * @brief The type of the pointer to the memory resource. 
+		 */
 		using PointerType = std::add_pointer_t<ResourceType>;
 
 	private:
 		using Chunk = Internal::ResourcePoolChunk<ResourceType>;
 
 	public:
+		/**
+		 * @brief Constructs a pool that can fit @p size memory resources.
+		 * 
+		 * @param size The amount of memory resources pool can allocate.
+		 */
 		PoolAllocator(std::size_t size)
 			: mChunks(size)
 			, mChunksInUse(size)
@@ -49,6 +69,19 @@ namespace Xuzumi
 			SetupFreeList();
 		}
 
+		/**
+		 * @brief Allocate a memory resource from a pool.
+		 * 
+		 * Allocates and constructs a memory resource. The allocated resource must
+		 * be freed with the `Deallocate` method.
+		 * 
+		 * @tparam ArgsT Types of the arguments that are passed to the memory
+		 * resource constructor.
+		 * 
+		 * @param args The arguments passed to the memory resource constructor.
+		 * 
+		 * @return A raw pointer to the memory resource.
+		 */
 		template<typename... ArgsT>
 		PointerType Allocate(ArgsT&&... args)
 		{
@@ -62,6 +95,21 @@ namespace Xuzumi
 			return chunk.Resource.Construct(std::forward<ArgsT>(args)...);
 		}
 
+		/**
+		 * @brief Allocate a memory resource from a pool and wrap it into
+		 * `SharedPtr`. 
+		 * 
+		 * Internally calls `Allocate` and wraps the resulting pointer into the
+		 * `SharedPtr`. Therefore, the `Deallocate` method is called automatically
+		 * when the smart pointer reference count reaches zero.
+		 * 
+		 * @tparam ArgsT Types of the arguments that are passed to the memory
+		 * resource constructor.
+		 * 
+		 * @param args The arguments passed to the memory resource constructor.
+		 * 
+		 * @return A smart pointer `SharedPtr<ResourceType>` to the memory resource.
+		 */
 		template<typename... ArgsT>
 		SharedPtr<ResourceType> AllocateShared(ArgsT&&... args)
 		{
@@ -73,6 +121,15 @@ namespace Xuzumi
 			);
 		}
 
+		/**
+		 * @brief Destructs and deallocates the memory resource.
+		 * 
+		 * Calls the destructor of the memory resource and marks its memory as free
+		 * by adding it to a free-list. The freed memory may be reused later when 
+		 * another allocation occurs.
+		 * 
+		 * @param resource A raw pointer to the memory resource.
+		 */
 		void Deallocate(PointerType resource)
 		{
 			if (nullptr == resource)
@@ -101,6 +158,14 @@ namespace Xuzumi
 			chunk->Resource.Destruct();
 		}
 
+		/**
+		 * @brief Check whether the `*this` is out of memory.
+		 * 
+		 * @retval true There is not memory left in the `*this` to allocate more
+		 * memory resources.
+		 * @retval false The `*this` can allocate more memory resources from its
+		 * pool.
+		 */
 		bool IsExhausted() const
 		{
 			return Chunk::kInvalidChunkIndex == mFreeChunkIndex;

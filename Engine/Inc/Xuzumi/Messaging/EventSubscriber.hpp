@@ -115,11 +115,11 @@ namespace Xuzumi
 		{
 			XZ_ASSERT(mBus, "Could not subscribe functor: EventBus instance not set");
 
-			EventSubscription subscriptoin = mBus->Subscribe(
+			EventSubscription subscription = mBus->Subscribe(
 				EventHandler<EventT>(functor)
 			);
 
-			AddSubscription(subscriptoin);
+			AddSubscription(subscription);
 
 			return *this;
 		}
@@ -138,12 +138,11 @@ namespace Xuzumi
 		 * @tparam ClassT The type of the class whose method pointers will be used.
 		 *
 		 * @param classInstance A pointer to an instance of the @p ClassT that will
-		 * be passed to a method, when an event occurres.
+		 * be passed to a method, when an event occurs.
 		 */
 		template<typename ClassT>
-		Internal::EventMethodSubscriptionForwarder<ClassT> BeginThis(
-			ClassT* classInstance
-		)
+		Internal::EventMethodSubscriptionForwarder<ClassT>
+		BeginThis(ClassT* classInstance)
 		{
 			XZ_ASSERT(
 				mBus,
