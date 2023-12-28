@@ -56,7 +56,8 @@
  * - `CLANG`
  * - `MSVC`
  */
-#define XZ_CURRENT_COMPILER_IS(compiler) XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler
+#define XZ_CURRENT_COMPILER_IS(compiler) \
+	(XZ_COMPILER_ID == XZ_COMPILER_ID_##compiler)
 
 namespace Xuzumi
 {
