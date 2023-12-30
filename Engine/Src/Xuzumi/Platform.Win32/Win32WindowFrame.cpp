@@ -10,8 +10,10 @@
 namespace Xuzumi::Internal
 {
 	Win32WindowFrame::Win32WindowFrame(
-		const WindowFrameSpecification& specification, HWND nativeWindow,
-		ObserverPtr<Win32WindowClass> parent)
+		const WindowFrameSpecification& specification,
+		HWND nativeWindow,
+		ObserverPtr<Win32WindowClass> parent
+	)
 		: mSpecification(specification)
 		, mNativeWindow(nativeWindow)
 		, mParent(parent)
@@ -41,28 +43,35 @@ namespace Xuzumi::Internal
 		mSpecification.Width = width;
 		mSpecification.Height = height;
 
-		SetWindowPos(mNativeWindow, nullptr, 0, 0, static_cast<int>(width),
-			static_cast<int>(height), SWP_NOMOVE | SWP_NOZORDER);
+		SetWindowPos(
+			mNativeWindow,
+			nullptr,
+			0,
+			0,
+			static_cast<int>(width),
+			static_cast<int>(height),
+			SWP_NOMOVE | SWP_NOZORDER
+		);
 	}
 	
 	void Win32WindowFrame::AllowResizing(bool resizable)
 	{
 		mSpecification.Resizable = resizable;
 	
-		auto nativeStyle = static_cast<DWORD>(GetWindowLongPtrA(mNativeWindow,
-			GWL_STYLE));
+		auto nativeStyle = static_cast<DWORD>(
+			GetWindowLongPtrA(mNativeWindow, GWL_STYLE)
+		);
+		DWORD nativeResizable = WS_SIZEBOX | WS_MAXIMIZEBOX;
 	
-		if (!resizable)
-		{
-			nativeStyle &= ~(WS_SIZEBOX | WS_MAXIMIZEBOX);
-		}
-		else
-		{
-			nativeStyle |= WS_SIZEBOX | WS_MAXIMIZEBOX;
-		}
+		resizable
+			? nativeStyle |= nativeResizable
+			: nativeStyle &= ~nativeResizable;
 	
-		SetWindowLongPtrA(mNativeWindow, GWL_STYLE, static_cast<LONG_PTR>(
-			nativeStyle));
+		SetWindowLongPtrA(
+			mNativeWindow,
+			GWL_STYLE,
+			static_cast<LONG_PTR>( nativeStyle)
+		);
 	}
 
 	void Win32WindowFrame::Show(bool visible)
@@ -71,8 +80,11 @@ namespace Xuzumi::Internal
 		ShowWindow(mNativeWindow, visible ? SW_SHOW : SW_HIDE);
 	}
 
-	LRESULT Win32WindowFrame::OnWindowProcedure(UINT msg, WPARAM wParam,
-		LPARAM lParam)
+	LRESULT Win32WindowFrame::OnWindowProcedure(
+		UINT msg,
+		WPARAM wParam,
+		LPARAM lParam
+	)
 	{
 		if (WM_CLOSE == msg)
 		{

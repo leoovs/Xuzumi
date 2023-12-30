@@ -21,7 +21,8 @@ namespace Xuzumi::Internal
 	}
 
 	SharedPtr<WindowFrame> Win32PlatformService::CreateWindowFrame(
-		const WindowFrameSpecification& specification)
+		const WindowFrameSpecification& specification
+	)
 	{
 		return mWindowClass.CreateFrameFromSpecification(specification);
 	}

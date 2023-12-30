@@ -166,7 +166,8 @@ namespace Xuzumi::Internal
 	void Win32WindowClass::Unregister()
 	{
 		auto unregistered = static_cast<bool>(
-			UnregisterClassA(kClassName.data(), mExecutableHandle));
+			UnregisterClassA(kClassName.data(), mExecutableHandle)
+		);
 	
 		if (!unregistered)
 		{

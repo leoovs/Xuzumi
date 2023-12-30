@@ -12,7 +12,8 @@ namespace Xuzumi::Internal
 		void PollEvents() override;
 	
 		SharedPtr<WindowFrame> CreateWindowFrame(
-			const WindowFrameSpecification& specification) override;
+			const WindowFrameSpecification& specification
+		) override;
 
 	private:
 		Win32WindowClass mWindowClass;
