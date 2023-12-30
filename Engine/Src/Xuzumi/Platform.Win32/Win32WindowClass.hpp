@@ -48,12 +48,10 @@ namespace Xuzumi::Internal
 		void Register();
 		void Unregister();
 
-		static constexpr std::size_t kFramePoolSize = 10;
+		static constexpr std::size_t kMaxWindowFrames = 20;
 		static constexpr std::string_view kClassName = "Xuzumi.Win32WindowFrame";
-		static constexpr std::string_view kFramePropName = "Frame";
-		static constexpr std::string_view kThisPropName = "This";
 
-		PoolAllocator<Win32WindowFrame> mFramePool{ kFramePoolSize };
+		PoolAllocator<Win32WindowFrame> mFramePool{ kMaxWindowFrames };
 		HINSTANCE mExecutableHandle = nullptr;
 		EventPublisher mPlatformEventPublisher;
 	};
