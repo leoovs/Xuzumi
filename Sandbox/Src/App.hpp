@@ -5,9 +5,19 @@
 class App
 {
 public:
-	App(Xuzumi::ObserverPtr<Xuzumi::EventBus> events);
+	App();
+
+	void Run();
+	void Update();
+	void Quit();
 
 private:
-	Xuzumi::ObserverPtr<Xuzumi::EventBus> mEvents;
+	bool OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event);
+	bool OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event);
+
+	bool mRunning = false;
+	Xuzumi::SharedPtr<Xuzumi::PlatformService> mPlatform;
+	Xuzumi::SharedPtr<Xuzumi::WindowFrame> mFrame;
+	Xuzumi::EventBus mEvents;
 	Xuzumi::EventSubscriber mEventSubscriber;
 };

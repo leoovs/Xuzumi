@@ -22,7 +22,10 @@ add_library(
 	"src/Xuzumi/Debug/Assertion.cpp"
 	
 	"src/Xuzumi/Platform/PlatformService.cpp"
-	"src/Xuzumi/Platform.Win32/PlatformServiceWin32.cpp"
+	"src/Xuzumi/Platform.Win32/Win32Debug.cpp"
+	"src/Xuzumi/Platform.Win32/Win32PlatformService.cpp"
+	"src/Xuzumi/Platform.Win32/Win32WindowFrame.cpp"
+	"src/Xuzumi/Platform.Win32/Win32WindowClass.cpp"
  )
 
 target_include_directories(

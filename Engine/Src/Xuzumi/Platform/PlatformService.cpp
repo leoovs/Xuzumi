@@ -4,13 +4,13 @@
 
 #if XZ_PLATFORM_IS(WIN32)
 
-#include "Xuzumi/Platform.Win32/PlatformServiceWin32.hpp"
+#include "Xuzumi/Platform.Win32/Win32PlatformService.hpp"
 
 namespace Xuzumi
 {
 	SharedPtr<PlatformService> CreatePlatformService()
 	{
-		return CreatePlatformServiceWin32();
+		return Internal::CreatePlatformServiceWin32();
 	}
 }
 

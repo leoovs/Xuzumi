@@ -31,6 +31,7 @@
 #include "Xuzumi/Messaging/EventPublisher.hpp"
 #include "Xuzumi/Messaging/EventSubscriber.hpp"
 
+#include "Xuzumi/Platform/PlatformEvents.hpp"
 #include "Xuzumi/Platform/PlatformService.hpp"
 
 #include "Xuzumi/TypeMeta/TypeID.hpp"

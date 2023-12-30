@@ -2,15 +2,62 @@
 
 #include "Entity.hpp"
 
-App::App(Xuzumi::ObserverPtr<Xuzumi::EventBus> events)
-	: mEvents(events)
+App::App()
 {
-	mEventSubscriber.Subscribe(mEvents);
+	auto events = Xuzumi::ObserverPtr<Xuzumi::EventBus>(&mEvents);
+
+	mEventSubscriber.Subscribe(events);
 
 	mEventSubscriber
 		.BeginThis(this)
-		// Add methods here...
+			.Method(&App::OnFrameClose)
+			.Method(&App::OnFrameResize)
 		.EndThis();
 
-	XZ_LOG(Debug, "Nothing here...");
+	mPlatform = Xuzumi::CreatePlatformService();
+	mPlatform->Connect(events);
+
+	Xuzumi::WindowFrameSpecification frameSpec;
+	frameSpec.Caption = "Hello world";
+	frameSpec.Resizable = true;
+	frameSpec.Visible = false;
+
+	mFrame = mPlatform->CreateWindowFrame(frameSpec);
+	mFrame->Show();
+}
+
+void App::Run()
+{
+	mRunning = true;
+	while (mRunning)
+	{
+		Update();
+	}
+}
+
+void App::Update()
+{
+	mPlatform->PollEvents();
+	mEvents.Dispatch();
+}
+
+void App::Quit()
+{
+	mRunning = false;
+}
+
+bool App::OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event)
+{
+	if (mFrame.Get() == event.ClosedFrame.Get())
+	{
+		Quit();
+	}
+
+	return true;
+}
+
+bool App::OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event)
+{
+	XZ_LOG(Info, "New size: %u, %u", event.Width, event.Height);
+	return true;
 }

@@ -1,37 +1,6 @@
 #include <Xuzumi/Xuzumi.hpp>
 
-struct alignas(1024) Resource
-{
-	Resource()
-	{
-		XZ_LOG(Info, "Created: %p", this);
-	}
-
-	~Resource()
-	{
-		XZ_LOG(Info, "Destroyed: %p", this);
-	}
-};
-
-class Factory
-{
-public:
-	Xuzumi::SharedPtr<Resource> Create()
-	{
-		return Xuzumi::SharedPtr<Resource>(
-			new Resource(),
-			mGuard.MakeDangleProtectedDeleter(&Factory::Destroy)	
-		);
-	}
-
-private:
-	void Destroy(Resource* resource)
-	{
-		delete resource;
-	}
-
-	Xuzumi::Internal::FactoryExpirationGuard<Factory> mGuard = this;
-};
+#include "App.hpp"
 
 int main()
 {
@@ -50,4 +19,6 @@ int main()
 			configurator.SetLoggerAsHandler();
 		}
 	);
+
+	App().Run();
 }
