@@ -69,6 +69,11 @@ namespace Xuzumi
 
 	std::size_t Utf8CharView::DecodeCurrentSize() const
 	{
+		if (nullptr == mCurrentCharacter)
+		{
+			return Internal::Utf8Facts::kInvalidCharacterSize;
+		}
+
 		for (std::size_t charSize = 1;
 			charSize <= Internal::Utf8Facts::kMaxCharacterSize; charSize++)
 		{
