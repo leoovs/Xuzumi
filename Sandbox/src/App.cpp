@@ -25,6 +25,10 @@ App::App()
 	frameSpec.Visible = true;
 
 	mFrame = mPlatform->CreateWindowFrame(frameSpec);
+
+	XZ_LOG(Info, "%s", mPlatform.GetResourceTypeInfo().Name.data());
+	XZ_LOG(Info, "%s", mFrame.GetResourceTypeInfo().Name.data());
+	XZ_LOG(Info, "%s", mPlatform->GetInputDevice().GetResourceTypeInfo().Name.data());
 }
 
 void App::Run()
