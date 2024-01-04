@@ -5,8 +5,11 @@
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 
 #include "Xuzumi/Debug/DebugSession.hpp"
+#include "Xuzumi/Input/InputEvents.hpp"
+#include "Xuzumi/Input.Win32/Win32InputEvents.hpp"
 #include "Xuzumi/Platform/PlatformEvents.hpp"
 #include "Xuzumi/Platform.Win32/Win32Debug.hpp"
+#include "Xuzumi/Platform.Win32/Win32PlatformService.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -104,6 +107,28 @@ namespace Xuzumi::Internal
 			resizedFrame,
 			width,
 			height
+		);
+	}
+
+	void Win32WindowClass::NotifyWin32KeyDown(
+		WPARAM messageWParam,
+		LPARAM messageLParam
+	)
+	{
+		mPlatformEventPublisher.Publish<Win32KeyDownEvent>(
+			messageWParam,
+			messageLParam
+		);
+	}
+
+	void Win32WindowClass::NotifyWin32KeyUp(
+		WPARAM messageWParam,
+		LPARAM messageLParam
+	)
+	{
+		mPlatformEventPublisher.Publish<Win32KeyUpEvent>(
+			messageWParam,
+			messageLParam
 		);
 	}
 

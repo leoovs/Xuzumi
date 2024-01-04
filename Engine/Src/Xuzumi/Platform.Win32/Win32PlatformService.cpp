@@ -9,6 +9,7 @@ namespace Xuzumi::Internal
 	void Win32PlatformService::Connect(ObserverPtr<EventBus> events)
 	{
 		mWindowClass.Connect(events);
+		mInputDevice->Connect(events);
 	}
 
 	void Win32PlatformService::PollEvents()
@@ -25,6 +26,11 @@ namespace Xuzumi::Internal
 	)
 	{
 		return mWindowClass.CreateFrameFromSpecification(specification);
+	}
+
+	SharedPtr<InputDevice> Win32PlatformService::GetInputDevice() const
+	{
+		return mInputDevice;
 	}
 
 	SharedPtr<Win32PlatformService> CreatePlatformServiceWin32()

@@ -28,6 +28,8 @@ namespace Xuzumi::Internal
 			std::uint32_t width,
 			std::uint32_t height
 		);
+		void NotifyWin32KeyDown(WPARAM messageWParam, LPARAM messageLParam);
+		void NotifyWin32KeyUp(WPARAM messageWParam, LPARAM messageLParam);
 
 	private:
 		static LRESULT CALLBACK WindowProcedure(

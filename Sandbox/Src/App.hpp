@@ -14,6 +14,8 @@ public:
 private:
 	bool OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event);
 	bool OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event);
+	bool OnKeyDown(const Xuzumi::KeyDownEvent& event);
+	bool OnKeyUp(const Xuzumi::KeyUpEvent& event);
 
 	bool mRunning = false;
 	Xuzumi::SharedPtr<Xuzumi::PlatformService> mPlatform;

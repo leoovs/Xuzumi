@@ -21,6 +21,9 @@ add_library(
 	"src/Xuzumi/Debug/TimedLogFormatter.cpp"
 	"src/Xuzumi/Debug/Assertion.cpp"
 	
+	"src/Xuzumi/Input.Win32/Win32KeyMapping.cpp"
+	"src/Xuzumi/Input.Win32/Win32InputDevice.cpp"
+	
 	"src/Xuzumi/Platform/PlatformService.cpp"
 	"src/Xuzumi/Platform.Win32/Win32Debug.cpp"
 	"src/Xuzumi/Platform.Win32/Win32PlatformService.cpp"

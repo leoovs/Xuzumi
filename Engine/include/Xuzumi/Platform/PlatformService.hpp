@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
+#include "Xuzumi/Input/InputDevice.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"
@@ -19,6 +20,8 @@ namespace Xuzumi
 		virtual SharedPtr<WindowFrame> CreateWindowFrame(
 			const WindowFrameSpecification& specification
 		) = 0;
+	
+		virtual SharedPtr<InputDevice> GetInputDevice() const = 0;
 	};
 
 	SharedPtr<PlatformService> CreatePlatformService();

@@ -12,6 +12,8 @@ App::App()
 		.BeginThis(this)
 			.Method(&App::OnFrameClose)
 			.Method(&App::OnFrameResize)
+			.Method(&App::OnKeyDown)
+			.Method(&App::OnKeyUp)
 		.EndThis();
 
 	mPlatform = Xuzumi::CreatePlatformService();
@@ -20,10 +22,9 @@ App::App()
 	Xuzumi::WindowFrameSpecification frameSpec;
 	frameSpec.Caption = "Hello world";
 	frameSpec.Resizable = true;
-	frameSpec.Visible = false;
+	frameSpec.Visible = true;
 
 	mFrame = mPlatform->CreateWindowFrame(frameSpec);
-	mFrame->Show();
 }
 
 void App::Run()
@@ -59,5 +60,21 @@ bool App::OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event)
 bool App::OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event)
 {
 	XZ_LOG(Info, "New size: %u, %u", event.Width, event.Height);
+	return true;
+}
+
+bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
+{
+	auto inputDevice = mPlatform->GetInputDevice();
+
+	XZ_LOG(Info, "Key down: %d", event.KeyDown);
+	
+	return true;
+}
+
+bool App::OnKeyUp(const Xuzumi::KeyUpEvent& event)
+{
+	XZ_LOG(Info, "Key up: %d", event.KeyUp);
+
 	return true;
 }

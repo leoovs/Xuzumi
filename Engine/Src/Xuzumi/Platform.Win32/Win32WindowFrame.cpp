@@ -116,6 +116,30 @@ namespace Xuzumi::Internal
 
 			return 0;
 		}
+		else if (WM_KEYDOWN == msg)
+		{
+			mParent->NotifyWin32KeyDown(wParam, lParam);
+
+			return 0;
+		}
+		else if (WM_KEYUP == msg)
+		{
+			mParent->NotifyWin32KeyUp(wParam, lParam);
+
+			return 0;
+		}
+		else if (WM_SYSKEYDOWN == msg)
+		{
+			mParent->NotifyWin32KeyDown(wParam, lParam);
+
+			return 0;
+		}
+		else if (WM_SYSKEYUP == msg)
+		{
+			mParent->NotifyWin32KeyUp(wParam, lParam);
+
+			return 0;
+		}
 
 		return DefWindowProcA(mNativeWindow, msg, wParam, lParam);
 	}

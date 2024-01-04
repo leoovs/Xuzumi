@@ -20,6 +20,10 @@
 #include "Xuzumi/IDFramework/IDBase.hpp"
 #include "Xuzumi/IDFramework/HandleGenerator.hpp"
 
+#include "Xuzumi/Input/InputDevice.hpp"
+#include "Xuzumi/Input/KeyboardKey.hpp"
+#include "Xuzumi/Input/InputEvents.hpp"
+
 #include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
