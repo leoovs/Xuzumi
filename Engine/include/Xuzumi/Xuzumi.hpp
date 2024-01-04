@@ -10,6 +10,8 @@
 #include "Xuzumi/Core/Templates/SizeOf.hpp"
 #include "Xuzumi/Core/Templates/AlignOf.hpp"
 
+#include "Xuzumi/String/Utf8CharView.hpp"
+
 #include "Xuzumi/Debug/Logging.hpp"
 #include "Xuzumi/Debug/Assertion.hpp"
 #include "Xuzumi/Debug/DebugSession.hpp"

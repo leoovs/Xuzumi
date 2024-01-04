@@ -2,6 +2,8 @@ add_library(
 	Xuzumi_Engine
 	STATIC
 	"src/Xuzumi/Core/StringUtils.cpp"
+	
+	"src/Xuzumi/String/Utf8CharView.cpp"
 
 	"src/Xuzumi/TypeMeta/TypeID.cpp"
 	"src/Xuzumi/TypeMeta/TypeInfo.cpp"
