@@ -40,7 +40,7 @@ namespace Xuzumi::Internal
 		HWND nativeWindow = CreateWindowExA(
 			0,
 			kClassName.data(),
-			specification.Caption.data(),
+			"",
 			nativeStyle,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
@@ -71,6 +71,8 @@ namespace Xuzumi::Internal
 			ObserverPtr<Win32WindowFrame>(frame.Get()),
 			nativeWindow
 		);
+
+		frame->SetCaption(specification.Caption);
 
 		return frame;
 	}

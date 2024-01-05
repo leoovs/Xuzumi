@@ -20,7 +20,7 @@ App::App()
 	mPlatform->Connect(events);
 
 	Xuzumi::WindowFrameSpecification frameSpec;
-	frameSpec.Caption = "Hello world";
+	frameSpec.Caption = u8"Caption | Заголовок";
 	frameSpec.Resizable = true;
 	frameSpec.Visible = true;
 

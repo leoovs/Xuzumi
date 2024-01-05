@@ -5,6 +5,7 @@
 #include "Xuzumi/Platform.Win32/Win32WindowFrame.hpp"
 
 #include "Xuzumi/Debug/DebugSession.hpp"
+#include "Xuzumi/String/UtfEncoding.hpp"
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 
 namespace Xuzumi::Internal
@@ -34,8 +35,17 @@ namespace Xuzumi::Internal
 	{
 		mSpecification.Caption = caption;
 
-		// TODO: convert UTF-8 string to UTF-16 and use `SetWindowTextW` function.
-		SetWindowTextA(mNativeWindow, caption.data());
+		Utf8TextReader captionReader(caption.data());
+		std::u16string utf16Caption;
+		EncodeUtf16(
+			captionReader,
+			std::inserter(utf16Caption, utf16Caption.begin())
+		);
+	
+		SetWindowTextW(
+			mNativeWindow,
+			reinterpret_cast<LPCWSTR>(utf16Caption.data())
+		);
 	}
 	
 	void Win32WindowFrame::SetSize(std::uint32_t width, std::uint32_t height)
