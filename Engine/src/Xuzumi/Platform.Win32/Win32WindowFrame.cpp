@@ -36,16 +36,12 @@ namespace Xuzumi::Internal
 		mSpecification.Caption = caption;
 
 		Utf8TextReader captionReader(caption.data());
-		std::u16string utf16Caption;
-		EncodeUtf16(
-			captionReader,
-			std::inserter(utf16Caption, utf16Caption.begin())
-		);
+		std::u16string u16Caption;
+		EncodeUtf16(captionReader, std::inserter(u16Caption, u16Caption.begin()));
 	
-		SetWindowTextW(
-			mNativeWindow,
-			reinterpret_cast<LPCWSTR>(utf16Caption.data())
-		);
+		// FIXME: Windows expects UTF-16 *LE*, while our UTF-16 endianness depends
+		// on the target machine endianness entirely. Do we need to care?
+		SetWindowTextW(mNativeWindow, reinterpret_cast<LPCWSTR>(u16Caption.data()));
 	}
 	
 	void Win32WindowFrame::SetSize(std::uint32_t width, std::uint32_t height)
