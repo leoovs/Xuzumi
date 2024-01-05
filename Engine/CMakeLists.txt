@@ -3,7 +3,10 @@ add_library(
 	STATIC
 	"src/Xuzumi/Core/StringUtils.cpp"
 	
+	"src/Xuzumi/String/UtfEncoding.cpp"
 	"src/Xuzumi/String/Utf8CharView.cpp"
+	"src/Xuzumi/String/Utf16CharView.cpp"
+	"src/Xuzumi/String/UtfTextReader.cpp"
 
 	"src/Xuzumi/TypeMeta/TypeID.cpp"
 	"src/Xuzumi/TypeMeta/TypeInfo.cpp"
