@@ -57,6 +57,13 @@ target_precompile_headers(
 	Xuzumi_Engine
 	PRIVATE
 	"include/Xuzumi/Precompiled.hpp"
+	
+	# Maybe replace with custom header file that includes
+	# what's needed based on the platform. Something like
+	#                                       'src/Xuzumi/PrecompiledInternal.hpp'
+
+	# Windows SDK related.
+	$<${WIN32}:"Windows.h"> # Watch out for `min` & `max` macros.
 )
 
 set_utf8_as_source_charset(Xuzumi_Engine)
