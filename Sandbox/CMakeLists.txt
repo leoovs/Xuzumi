@@ -1,3 +1,5 @@
+include(TranslationCharset)
+
 add_executable(
 	Xuzumi_Sandbox
 	"src/main.cpp"
@@ -16,3 +18,6 @@ target_link_libraries(
 	PRIVATE
 	Xuzumi_Engine
 )
+
+set_utf8_as_source_charset(Xuzumi_Sandbox)
+set_utf8_as_execution_charset(Xuzumi_Sandbox)

@@ -1,3 +1,5 @@
+include(TranslationCharset)
+
 add_library(
 	Xuzumi_Engine
 	STATIC
@@ -56,3 +58,5 @@ target_precompile_headers(
 	PRIVATE
 	"include/Xuzumi/Precompiled.hpp"
 )
+
+set_utf8_as_source_charset(Xuzumi_Engine)
