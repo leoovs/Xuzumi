@@ -17,7 +17,8 @@ namespace Xuzumi::Internal
 			0xF8
 		};
 
-		static constexpr std::array<std::size_t, kMaxCodeUnits> kBitsInLeaderByte
+		static constexpr std::array<std::size_t, kMaxCodeUnits>
+		kLeaderByteEncodedBitCount
 		{
 			7,
 			5,
@@ -45,5 +46,7 @@ namespace Xuzumi::Internal
 		static constexpr std::uint8_t kContinuationByteMask = 0xC0;
 		static constexpr std::uint8_t kContinuationByteSignature = 0x80;
 		static constexpr std::size_t kContinuationByteEncodedBitCount = 6;
+	
+		static std::size_t PickCodeUnitAmount(char32_t codePoint);
 	};
 }
