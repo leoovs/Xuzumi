@@ -157,7 +157,7 @@ namespace Xuzumi::Internal
 
 			if (IS_SURROGATE_PAIR(highBits, lowBits))
 			{
-				// NOTE: untested, might fail in the future.
+				// REVIEW: untested, might fail in the future.
 				decodeBuffer[0] = static_cast<char16_t>(highBits);				
 				decodeBuffer[1] = static_cast<char16_t>(lowBits);
 			}
