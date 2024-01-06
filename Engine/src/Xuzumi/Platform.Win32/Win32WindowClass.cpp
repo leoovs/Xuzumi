@@ -37,10 +37,10 @@ namespace Xuzumi::Internal
 			nativeStyle |= WS_VISIBLE;
 		}
 
-		HWND nativeWindow = CreateWindowExA(
+		HWND nativeWindow = CreateWindowExW(
 			0,
 			kClassName.data(),
-			"",
+			L"",
 			nativeStyle,
 			CW_USEDEFAULT,
 			CW_USEDEFAULT,
@@ -134,6 +134,11 @@ namespace Xuzumi::Internal
 		);
 	}
 
+	void Win32WindowClass::NotifyCharacterInput(char32_t unicodeCodePoint)
+	{
+		mPlatformEventPublisher.Publish<CharacterInputEvent>(unicodeCodePoint);
+	}
+
 	LRESULT CALLBACK Win32WindowClass::WindowProcedure(
 		HWND hWnd,
 		UINT msg,
@@ -158,7 +163,7 @@ namespace Xuzumi::Internal
 		HWND nativeWindow
 	)
 	{
-		SetWindowLongPtrA(
+		SetWindowLongPtrW(
 			nativeWindow,
 			GWLP_USERDATA,
 			reinterpret_cast<LONG_PTR>(frame.Get())
@@ -170,7 +175,7 @@ namespace Xuzumi::Internal
 		HWND nativeWindow
 	)
 	{
-		LONG_PTR userdata = GetWindowLongPtrA(nativeWindow, GWLP_USERDATA);
+		LONG_PTR userdata = GetWindowLongPtrW(nativeWindow, GWLP_USERDATA);
 	
 		return ObserverPtr<Win32WindowFrame>(
 			reinterpret_cast<Win32WindowFrame*>(userdata)
@@ -179,12 +184,13 @@ namespace Xuzumi::Internal
 	
 	void Win32WindowClass::Register()
 	{
-		WNDCLASSA nativeSpecification = {};
+		WNDCLASSEXW nativeSpecification = {};
+		nativeSpecification.cbSize = sizeof(nativeSpecification);
 		nativeSpecification.lpfnWndProc = WindowProcedure;
 		nativeSpecification.lpszClassName = kClassName.data();
 		nativeSpecification.hInstance = mExecutableHandle;
-	
-		ATOM result = RegisterClassA(&nativeSpecification);
+
+		ATOM result = RegisterClassExW(&nativeSpecification);
 		XZ_ASSERT(0 != result, "Could not register Win32 Window Class");	
 
 		XZ_LOG(Info, "Win32 Window Class Registered");
@@ -193,7 +199,7 @@ namespace Xuzumi::Internal
 	void Win32WindowClass::Unregister()
 	{
 		auto unregistered = static_cast<bool>(
-			UnregisterClassA(kClassName.data(), mExecutableHandle)
+			UnregisterClassW(kClassName.data(), mExecutableHandle)
 		);
 	
 		if (!unregistered)

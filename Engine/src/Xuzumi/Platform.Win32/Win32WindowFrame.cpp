@@ -5,7 +5,7 @@
 #include "Xuzumi/Platform.Win32/Win32WindowFrame.hpp"
 
 #include "Xuzumi/Debug/DebugSession.hpp"
-#include "Xuzumi/String/UtfEncoding.hpp"
+#include "Xuzumi/String/StringEncoding.hpp"
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 
 namespace Xuzumi::Internal
@@ -37,7 +37,9 @@ namespace Xuzumi::Internal
 
 		Utf8TextReader captionReader(caption.data());
 		std::u16string u16Caption;
-		EncodeUtf16(captionReader, std::inserter(u16Caption, u16Caption.begin()));
+	
+		StringEncoder(ObserverPtr<UtfTextReader>(&captionReader))
+			.EncodeUtf16(std::inserter(u16Caption, u16Caption.begin()));
 	
 		// FIXME: Windows expects UTF-16 *LE*, while our UTF-16 endianness depends
 		// on the target machine endianness entirely. Do we need to care?
@@ -146,8 +148,32 @@ namespace Xuzumi::Internal
 
 			return 0;
 		}
+		else if (WM_CHAR == msg)
+		{
+			char16_t decodeBuffer[3]{};
 
-		return DefWindowProcA(mNativeWindow, msg, wParam, lParam);
+			WORD lowBits = LOWORD(msg);
+			WORD highBits = HIWORD(msg);	
+
+			if (IS_SURROGATE_PAIR(highBits, lowBits))
+			{
+				// NOTE: untested, might fail in the future.
+				decodeBuffer[0] = static_cast<char16_t>(highBits);				
+				decodeBuffer[1] = static_cast<char16_t>(lowBits);
+			}
+			else
+			{
+				decodeBuffer[0] = static_cast<char16_t>(wParam);
+				decodeBuffer[1] = u'\0';
+			}
+
+			char32_t codePoint = Utf16CharView(decodeBuffer).DecodeCodePoint();
+			mParent->NotifyCharacterInput(codePoint);
+
+			return 0;
+		}
+
+		return DefWindowProcW(mNativeWindow, msg, wParam, lParam);
 	}
 }
 

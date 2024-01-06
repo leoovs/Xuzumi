@@ -14,10 +14,10 @@ namespace Xuzumi::Internal
 
 	void Win32PlatformService::PollEvents()
 	{
-		for (MSG msg = {}; PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE);)
+		for (MSG msg = {}; PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE);)
 		{
 			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
+			DispatchMessageW(&msg);
 		}
 	}
 

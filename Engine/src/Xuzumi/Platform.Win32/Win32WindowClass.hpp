@@ -30,6 +30,7 @@ namespace Xuzumi::Internal
 		);
 		void NotifyWin32KeyDown(WPARAM messageWParam, LPARAM messageLParam);
 		void NotifyWin32KeyUp(WPARAM messageWParam, LPARAM messageLParam);
+		void NotifyCharacterInput(char32_t unicodeCodePoint);
 
 	private:
 		static LRESULT CALLBACK WindowProcedure(
@@ -51,10 +52,10 @@ namespace Xuzumi::Internal
 		void Unregister();
 
 		static constexpr std::size_t kMaxWindowFrames = 20;
-		static constexpr std::string_view kClassName = "Xuzumi.Win32WindowFrame";
+		static constexpr std::wstring_view kClassName = L"Xuzumi.Win32WindowFrame";
 
 		PoolAllocator<Win32WindowFrame> mFramePool{ kMaxWindowFrames };
-		HINSTANCE mExecutableHandle = nullptr;
+		HINSTANCE mExecutableHandle = GetModuleHandleW(nullptr);
 		EventPublisher mPlatformEventPublisher;
 	};
 }

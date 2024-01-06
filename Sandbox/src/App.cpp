@@ -14,6 +14,7 @@ App::App()
 			.Method(&App::OnFrameResize)
 			.Method(&App::OnKeyDown)
 			.Method(&App::OnKeyUp)
+			.Method(&App::OnChar)
 		.EndThis();
 
 	mPlatform = Xuzumi::CreatePlatformService();
@@ -69,6 +70,11 @@ bool App::OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event)
 
 bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 {
+	if (event.KeyDown == Xuzumi::KeyboardKey::Escape)
+	{
+		mFrame->SetCaption("");
+	}
+
 	auto inputDevice = mPlatform->GetInputDevice();
 
 	XZ_LOG(Info, "Key down: %d", event.KeyDown);
@@ -79,6 +85,22 @@ bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 bool App::OnKeyUp(const Xuzumi::KeyUpEvent& event)
 {
 	XZ_LOG(Info, "Key up: %d", event.KeyUp);
+
+	return true;
+}
+
+bool App::OnChar(const Xuzumi::CharacterInputEvent& event)
+{
+	XZ_LOG(Info, "Char: %d (0x%x)", event.UnicodeCodePoint, event.UnicodeCodePoint);
+
+	char32_t text[]{ event.UnicodeCodePoint, U'\0' };
+	Xuzumi::Utf32TextReader reader(text);
+
+	std::string ch;
+	Xuzumi::StringEncoder(Xuzumi::ObserverPtr<Xuzumi::UtfTextReader>(&reader))
+		.EncodeUtf8(std::inserter(ch, ch.begin()));
+
+	mFrame->SetCaption(mFrame->GetSpecification().Caption + ch);
 
 	return true;
 }
