@@ -10,11 +10,11 @@
 #include "Xuzumi/Core/Templates/SizeOf.hpp"
 #include "Xuzumi/Core/Templates/AlignOf.hpp"
 
-#include "Xuzumi/String/UtfEncoding.hpp"
 #include "Xuzumi/String/UnicodeFacts.hpp"
 #include "Xuzumi/String/Utf8CharView.hpp"
 #include "Xuzumi/String/Utf16CharView.hpp"
 #include "Xuzumi/String/UtfTextReader.hpp"
+#include "Xuzumi/String/StringEncoding.hpp"
 
 #include "Xuzumi/Debug/Logging.hpp"
 #include "Xuzumi/Debug/Assertion.hpp"
