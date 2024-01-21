@@ -1,7 +1,20 @@
+/**
+ * @file Xuzumi/Input/KeyboardKey.hpp
+ *
+ * @brief Defines the `KeyboardKey` enumeration, representing the keyboard keys
+ * in the engine.
+ */
+
 #pragma once
 
 namespace Xuzumi
 {
+	/**
+	 * @brief Enumeration of common keyboard keys.
+	 *
+	 * This enumeration defines a set of keys that are commonly found on modern
+	 * keyboards.
+	 */
 	enum class KeyboardKey
 	{
 		Unknown,

@@ -4,13 +4,13 @@ add_library(
 	Xuzumi_Engine
 	STATIC
 	"src/Xuzumi/Core/StringUtils.cpp"
-	
+
 	"src/Xuzumi/String/Utf8Facts.cpp"
 	"src/Xuzumi/String/UnicodeFacts.cpp"
 	"src/Xuzumi/String/Utf8CharView.cpp"
 	"src/Xuzumi/String/Utf16CharView.cpp"
 	"src/Xuzumi/String/UtfTextReader.cpp"
-	"src/Xuzumi/String/StringEncoding.cpp"
+	"src/Xuzumi/String/StringEncoder.cpp"
 
 	"src/Xuzumi/TypeMeta/TypeID.cpp"
 	"src/Xuzumi/TypeMeta/TypeInfo.cpp"
@@ -22,17 +22,17 @@ add_library(
 	"src/Xuzumi/IDFramework/HandleGenerator.cpp"
 
 	"src/Xuzumi/Memory/Referencer.cpp"
-	
+
  	"src/Xuzumi/Debug/DebugSession.cpp"
 	"src/Xuzumi/Debug/Logging.cpp"
 	"src/Xuzumi/Debug/FileLogWriter.cpp"
 	"src/Xuzumi/Debug/ConsoleLogWriter.cpp"
 	"src/Xuzumi/Debug/TimedLogFormatter.cpp"
 	"src/Xuzumi/Debug/Assertion.cpp"
-	
+
 	"src/Xuzumi/Input.Win32/Win32KeyMapping.cpp"
 	"src/Xuzumi/Input.Win32/Win32InputDevice.cpp"
-	
+
 	"src/Xuzumi/Platform/PlatformService.cpp"
 	"src/Xuzumi/Platform.Win32/Win32Debug.cpp"
 	"src/Xuzumi/Platform.Win32/Win32PlatformService.cpp"
@@ -59,7 +59,7 @@ target_precompile_headers(
 	Xuzumi_Engine
 	PRIVATE
 	"include/Xuzumi/Precompiled.hpp"
-	
+
 	# Maybe replace with custom header file that includes
 	# what's needed based on the platform. Something like
 	#                                       'src/Xuzumi/PrecompiledInternal.hpp'

@@ -1,7 +1,5 @@
 #include "App.hpp"
 
-#include "Entity.hpp"
-
 App::App()
 {
 	auto events = Xuzumi::ObserverPtr<Xuzumi::EventBus>(&mEvents);
@@ -78,7 +76,7 @@ bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 	auto inputDevice = mPlatform->GetInputDevice();
 
 	XZ_LOG(Info, "Key down: %d", event.KeyDown);
-	
+
 	return true;
 }
 
@@ -104,3 +102,4 @@ bool App::OnChar(const Xuzumi::CharacterInputEvent& event)
 
 	return true;
 }
+

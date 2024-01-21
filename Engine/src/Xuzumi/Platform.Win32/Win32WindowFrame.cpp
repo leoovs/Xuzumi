@@ -5,7 +5,7 @@
 #include "Xuzumi/Platform.Win32/Win32WindowFrame.hpp"
 
 #include "Xuzumi/Debug/DebugSession.hpp"
-#include "Xuzumi/String/StringEncoding.hpp"
+#include "Xuzumi/String/StringEncoder.hpp"
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 
 namespace Xuzumi::Internal
@@ -37,15 +37,15 @@ namespace Xuzumi::Internal
 
 		Utf8TextReader captionReader(caption.data());
 		std::u16string u16Caption;
-	
+
 		StringEncoder(ObserverPtr<UtfTextReader>(&captionReader))
 			.EncodeUtf16(std::inserter(u16Caption, u16Caption.begin()));
-	
+
 		// FIXME: Windows expects UTF-16 *LE*, while our UTF-16 endianness depends
 		// on the target machine endianness entirely. Do we need to care?
 		SetWindowTextW(mNativeWindow, reinterpret_cast<LPCWSTR>(u16Caption.data()));
 	}
-	
+
 	void Win32WindowFrame::SetSize(std::uint32_t width, std::uint32_t height)
 	{
 		mSpecification.Width = width;
@@ -61,20 +61,20 @@ namespace Xuzumi::Internal
 			SWP_NOMOVE | SWP_NOZORDER
 		);
 	}
-	
+
 	void Win32WindowFrame::AllowResizing(bool resizable)
 	{
 		mSpecification.Resizable = resizable;
-	
+
 		auto nativeStyle = static_cast<DWORD>(
 			GetWindowLongPtrA(mNativeWindow, GWL_STYLE)
 		);
 		DWORD nativeResizable = WS_SIZEBOX | WS_MAXIMIZEBOX;
-	
+
 		resizable
 			? nativeStyle |= nativeResizable
 			: nativeStyle &= ~nativeResizable;
-	
+
 		SetWindowLongPtrA(
 			mNativeWindow,
 			GWL_STYLE,
@@ -103,7 +103,7 @@ namespace Xuzumi::Internal
 		{
 			std::uint32_t width = LOWORD(lParam);
 			std::uint32_t height = HIWORD(lParam);
-			
+
 			mSpecification.Width = width;
 			mSpecification.Height = height;
 
@@ -153,12 +153,12 @@ namespace Xuzumi::Internal
 			char16_t decodeBuffer[3]{};
 
 			WORD lowBits = LOWORD(msg);
-			WORD highBits = HIWORD(msg);	
+			WORD highBits = HIWORD(msg);
 
 			if (IS_SURROGATE_PAIR(highBits, lowBits))
 			{
 				// REVIEW: untested, might fail in the future.
-				decodeBuffer[0] = static_cast<char16_t>(highBits);				
+				decodeBuffer[0] = static_cast<char16_t>(highBits);
 				decodeBuffer[1] = static_cast<char16_t>(lowBits);
 			}
 			else

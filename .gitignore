@@ -1,4 +1,7 @@
 **/.vs/**
 **/.vscode/**
+**/.cache/**
 **/build/**
 **/out/**
+
+.bash_history

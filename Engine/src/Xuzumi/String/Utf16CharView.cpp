@@ -45,7 +45,7 @@ namespace Xuzumi
 
 	bool Utf16CharView::IsTerminator() const
 	{
-		return nullptr != mCurrentCharacter 
+		return nullptr != mCurrentCharacter
 			&& 0 == *mCurrentCharacter;
 	}
 
@@ -101,7 +101,7 @@ namespace Xuzumi
 			}
 		}
 
-		// Code unit numerically equal to the corresponding code point.
+		// Code unit is numerically equal to the corresponding code point.
 		return 1;
 	}
 

@@ -9,14 +9,13 @@
 #include "Xuzumi/Input.Win32/Win32InputEvents.hpp"
 #include "Xuzumi/Platform/PlatformEvents.hpp"
 #include "Xuzumi/Platform.Win32/Win32Debug.hpp"
-#include "Xuzumi/Platform.Win32/Win32PlatformService.hpp"
 
 namespace Xuzumi::Internal
 {
 	Win32WindowClass::Win32WindowClass()
 	{
 		Register();
-	}	
+	}
 
 	Win32WindowClass::~Win32WindowClass()
 	{
@@ -51,7 +50,7 @@ namespace Xuzumi::Internal
 			mExecutableHandle,
 			nullptr
 		);
-	
+
 		if (nullptr == nativeWindow)
 		{
 			Win32ErrorInfo err = GetLastError();
@@ -60,13 +59,13 @@ namespace Xuzumi::Internal
 
 			return nullptr;
 		}
-	
+
 		SharedPtr<Win32WindowFrame> frame = mFramePool.AllocateShared(
 			specification,
 			nativeWindow,
 			ObserverPtr<Win32WindowClass>(this)
 		);
-	
+
 		StoreFrameAsNativeWindowUserData(
 			ObserverPtr<Win32WindowFrame>(frame.Get()),
 			nativeWindow
@@ -80,7 +79,7 @@ namespace Xuzumi::Internal
 	void Win32WindowClass::DestroyNativeWindow(HWND nativeWindow)
 	{
 		bool destroyed = DestroyWindow(nativeWindow);
-	
+
 		if (!destroyed)
 		{
 			XZ_LOG(Error, "Could not destroy native Win32 window");
@@ -156,7 +155,7 @@ namespace Xuzumi::Internal
 		}
 
 		return frame->OnWindowProcedure(msg, wParam, lParam);
-	}	
+	}
 
 	void Win32WindowClass::StoreFrameAsNativeWindowUserData(
 		ObserverPtr<Win32WindowFrame> frame,
@@ -176,12 +175,12 @@ namespace Xuzumi::Internal
 	)
 	{
 		LONG_PTR userdata = GetWindowLongPtrW(nativeWindow, GWLP_USERDATA);
-	
+
 		return ObserverPtr<Win32WindowFrame>(
 			reinterpret_cast<Win32WindowFrame*>(userdata)
 		);
 	}
-	
+
 	void Win32WindowClass::Register()
 	{
 		WNDCLASSEXW nativeSpecification = {};
@@ -191,7 +190,7 @@ namespace Xuzumi::Internal
 		nativeSpecification.hInstance = mExecutableHandle;
 
 		ATOM result = RegisterClassExW(&nativeSpecification);
-		XZ_ASSERT(0 != result, "Could not register Win32 Window Class");	
+		XZ_ASSERT(0 != result, "Could not register Win32 Window Class");
 
 		XZ_LOG(Info, "Win32 Window Class Registered");
 	}
@@ -201,7 +200,7 @@ namespace Xuzumi::Internal
 		auto unregistered = static_cast<bool>(
 			UnregisterClassW(kClassName.data(), mExecutableHandle)
 		);
-	
+
 		if (!unregistered)
 		{
 			XZ_LOG(Warning, "Could not unregister Win32 Window Class");

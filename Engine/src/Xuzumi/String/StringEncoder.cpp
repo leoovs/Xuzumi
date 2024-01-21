@@ -1,4 +1,4 @@
-#include "Xuzumi/String/StringEncoding.hpp"
+#include "Xuzumi/String/StringEncoder.hpp"
 
 #include "Xuzumi/String/Utf8Facts.hpp"
 #include "Xuzumi/String/Utf16Facts.hpp"
