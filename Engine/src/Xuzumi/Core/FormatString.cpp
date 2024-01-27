@@ -1,4 +1,4 @@
-#include "Xuzumi/Core/StringUtils.hpp"
+#include "Xuzumi/Core/FormatString.hpp"
 
 namespace Xuzumi
 {

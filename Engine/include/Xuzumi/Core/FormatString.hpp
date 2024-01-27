@@ -1,7 +1,7 @@
 /**
- * @file Xuzumi/Core/StringUtils.hpp
+ * @file Xuzumi/Core/FormatString.hpp
  *
- * @brief This file provides utility functions for formatting strings.
+ * @brief This file provides functions for formatting an std::string.
  */
 
 #pragma once

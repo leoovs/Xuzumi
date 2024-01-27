@@ -3,7 +3,7 @@ include(TranslationCharset)
 add_library(
 	Xuzumi_Engine
 	STATIC
-	"src/Xuzumi/Core/StringUtils.cpp"
+	"src/Xuzumi/Core/FormatString.cpp"
 
 	"src/Xuzumi/String/Utf8Facts.cpp"
 	"src/Xuzumi/String/UnicodeFacts.cpp"
