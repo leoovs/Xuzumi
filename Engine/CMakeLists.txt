@@ -5,6 +5,14 @@ add_library(
 	STATIC
 	"src/Xuzumi/Core/FormatString.cpp"
 
+	"src/Xuzumi/Instrumentation/InstrumentationSession.cpp"
+	"src/Xuzumi/Instrumentation/Logger.cpp"
+	"src/Xuzumi/Instrumentation/LoggerSink.cpp"
+	"src/Xuzumi/Instrumentation/LogEmitter.cpp"
+	"src/Xuzumi/Instrumentation/LogFormatter.cpp"
+	"src/Xuzumi/Instrumentation/LogRecordBuilder.cpp"
+	"src/Xuzumi/Instrumentation/LoggerSinkBuilder.cpp"
+
 	"src/Xuzumi/String/Utf8Facts.cpp"
 	"src/Xuzumi/String/UnicodeFacts.cpp"
 	"src/Xuzumi/String/Utf8CharView.cpp"
