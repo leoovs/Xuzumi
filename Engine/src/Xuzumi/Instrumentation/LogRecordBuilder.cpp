@@ -10,21 +10,21 @@ namespace Xuzumi
 		return *this;
 	}
 
-	LogRecordBuilder& LogRecordBuilder::AtSource(std::string_view fileName)
+	LogRecordBuilder& LogRecordBuilder::AtFile(std::string_view fileName)
 	{
 		mProduct.FileName = fileName;
-		return *this;
-	}
-
-	LogRecordBuilder& LogRecordBuilder::AtFunc(std::string_view scopeName)
-	{
-		mProduct.FuncName = scopeName;
 		return *this;
 	}
 
 	LogRecordBuilder& LogRecordBuilder::AtLine(std::int32_t lineNumber)
 	{
 		mProduct.LineNumber = lineNumber;
+		return *this;
+	}
+
+	LogRecordBuilder& LogRecordBuilder::AtFunc(std::string_view scopeName)
+	{
+		mProduct.FuncName = scopeName;
 		return *this;
 	}
 

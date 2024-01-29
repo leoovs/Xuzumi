@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <cstdarg>
@@ -19,12 +20,12 @@
 #include <initializer_list>
 
 #include <mutex>
-#include <shared_mutex>
 #include <thread>
 #include <utility>
 #include <atomic>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include <type_traits>
 #include <filesystem>
 

@@ -2,9 +2,9 @@
 
 namespace Xuzumi
 {
-		LoggerSink LoggerSinkBuilder::Finish()
-		{
-			return LoggerSink(std::move(mSinkEmitter), std::move(mSinkFormatter));
-		}
+	LoggerSink LoggerSinkBuilder::Finish()
+	{
+		return LoggerSink(std::move(mSinkEmitter), std::move(mSinkFormatter));
+	}
 }
 

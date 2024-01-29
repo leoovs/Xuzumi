@@ -6,7 +6,7 @@
 #define XZ_INTERNAL_MAKE_LOG_RECORD(level, format, ...) \
 	(::Xuzumi::LogRecordBuilder() \
 		.Level(::Xuzumi::LogLevel::level) \
-		.AtSource(__FILE__) \
+		.AtFile(__FILE__) \
 		.AtFunc(XZ_FUNCNAME) \
 		.AtLine(__LINE__) \
 		.Now() \
@@ -19,7 +19,7 @@ namespace Xuzumi
 	{
 	public:
 		LogRecordBuilder& Level(LogLevel level);
-		LogRecordBuilder& AtSource(std::string_view fileName);
+		LogRecordBuilder& AtFile(std::string_view fileName);
 		LogRecordBuilder& AtFunc(std::string_view scopeName);
 		LogRecordBuilder& AtLine(std::int32_t lineNumber);
 		LogRecordBuilder& Now();
