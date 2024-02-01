@@ -1,5 +1,8 @@
 #include "Xuzumi/Instrumentation/InstrumentationSession.hpp"
 
+#include "Xuzumi/Instrumentation/InstrumentationProfile.hpp"
+#include "Xuzumi/Instrumentation/LoggerMacros.hpp"
+
 namespace Xuzumi
 {
 	void InstrumentationSession::Shutdown()
@@ -9,32 +12,38 @@ namespace Xuzumi
 
 	InstrumentationSession& InstrumentationSession::Get()
 	{
-		if (sInstance)
+		if (nullptr == sInstance)
 		{
-			// TODO: call `Init` with default profile and emit a warning.
+			Init<DefaultInstrumentationProfile>();
+			XZ_LOG(
+				XZ_CORE_LOGGER,
+				Warn,
+				"Trying to access uninitialized `InstrumentationSession`."
+				" The runtime have fallen back to the `DefaultInstrumentationProfile`"
+			);
 		}
 
 		return *sInstance;
 	}
 
-	const Logger& InstrumentationSession::GetAppLogger() const
-	{
-		return mAppLogger;
-	}
-
 	const Logger& InstrumentationSession::GetCoreLogger() const
 	{
-		return mCoreLogger;
+		return mProfile->GetCoreLogger();
 	}
 
-	const AssertService& InstrumentationSession::GetAppAssertService() const
+	const Logger& InstrumentationSession::GetAppLogger() const
 	{
-		return mAppAssertService;
+		return mProfile->GetAppLogger();
 	}
 
 	const AssertService& InstrumentationSession::GetCoreAssertService() const
 	{
-		return mCoreAssertService;
+		return mProfile->GetCoreAssertService();
+	}
+
+	const AssertService& InstrumentationSession::GetAppAssertService() const
+	{
+		return mProfile->GetAppAssertService();
 	}
 
 	void InstrumentationSession::Init(
@@ -42,7 +51,6 @@ namespace Xuzumi
 	)
 	{
 		sInstance.reset(new InstrumentationSession(std::move(profile)));
-		sInstance->QueryProfile();
 	}
 
 	std::unique_ptr<InstrumentationSession> InstrumentationSession::sInstance;
@@ -52,13 +60,5 @@ namespace Xuzumi
 	)
 		: mProfile(std::move(profile))
 	{}
-
-	void InstrumentationSession::QueryProfile()
-	{
-		mCoreLogger = mProfile->CreateCoreLogger();
-		mAppLogger = mProfile->CreateAppLogger();
-		mCoreAssertService = mProfile->CreateCoreAssertHandler();
-		mAppAssertService = mProfile->CreateAppAssertHandler();
-	}
 }
 

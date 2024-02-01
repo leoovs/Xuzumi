@@ -8,6 +8,7 @@ add_library(
 	"src/Xuzumi/Instrumentation/AssertService.cpp"
 	"src/Xuzumi/Instrumentation/AssertRecordBuilder.cpp"
 	"src/Xuzumi/Instrumentation/InstrumentationSession.cpp"
+	"src/Xuzumi/Instrumentation/InstrumentationProfile.cpp"
 	"src/Xuzumi/Instrumentation/Logger.cpp"
 	"src/Xuzumi/Instrumentation/LoggerSink.cpp"
 	"src/Xuzumi/Instrumentation/LogEmitter.cpp"
