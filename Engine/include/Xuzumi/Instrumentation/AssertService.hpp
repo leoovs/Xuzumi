@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Instrumentation/AssertRecord.hpp"
 #include "Xuzumi/Instrumentation/Logger.hpp"
+#include "Xuzumi/Instrumentation/AssertRecord.hpp"
 
 namespace Xuzumi
 {
@@ -18,7 +18,7 @@ namespace Xuzumi
 
 		AssertService(const AssertService& other);
 
-		AssertService(AssertHandler handler);
+		explicit AssertService(AssertHandler handler);
 
 		AssertService& operator=(const AssertService& other);
 

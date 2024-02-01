@@ -1,5 +1,7 @@
 #include "Xuzumi/Instrumentation/AssertService.hpp"
 
+#include "Xuzumi/Instrumentation/LogRecordBuilder.hpp"
+
 namespace Xuzumi
 {
 	AssertHandler AssertService::CreateDefaultHandler()
@@ -28,6 +30,7 @@ namespace Xuzumi
 					)
 					.Finish()
 			);
+			std::abort();
 		};
 	}
 
