@@ -37,6 +37,7 @@
 #include "Xuzumi/Instrumentation/LoggerMacros.hpp"
 #include "Xuzumi/Instrumentation/LoggerSink.hpp"
 #include "Xuzumi/Instrumentation/LoggerSinkBuilder.hpp"
+#include "Xuzumi/Instrumentation/Unreachable.hpp"
 
 #include "Xuzumi/Memory/WeakPtr.hpp"
 #include "Xuzumi/Memory/SharedPtr.hpp"
