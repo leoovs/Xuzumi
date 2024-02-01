@@ -17,15 +17,11 @@ namespace Xuzumi
 	class ConsoleLogEmitter : public LogEmitter
 	{
 	public:
-		ConsoleLogEmitter();
 		~ConsoleLogEmitter() override = default;
 
 		std::unique_ptr<LogEmitter> Clone() const override;
 
 		void Emit(std::string_view log) override;
-
-	private:
-		std::shared_ptr<std::mutex> mCoutMutex;
 	};
 
 	class FileLogEmitter : public LogEmitter

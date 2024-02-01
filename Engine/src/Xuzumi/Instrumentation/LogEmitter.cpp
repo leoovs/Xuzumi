@@ -2,9 +2,11 @@
 
 namespace Xuzumi
 {
-	ConsoleLogEmitter::ConsoleLogEmitter()
-		: mCoutMutex(std::make_shared<std::mutex>())
-	{}
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//
+	// ConsoleLogEmitter
+	//
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 	std::unique_ptr<LogEmitter> ConsoleLogEmitter::Clone() const
 	{
@@ -13,9 +15,14 @@ namespace Xuzumi
 
 	void ConsoleLogEmitter::Emit(std::string_view log)
 	{
-		std::scoped_lock coutLock(*mCoutMutex);
 		std::cout << log << '\n';
 	}
+
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	//
+	// FileLogEmitter
+	//
+	//+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 	std::unique_ptr<LogEmitter> FileLogEmitter::Clone() const
 	{
