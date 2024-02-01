@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Xuzumi/Instrumentation/LoggerSink.hpp"
-#include "Xuzumi/Instrumentation/LogRecordBuilder.hpp"
 
 namespace Xuzumi
 {
@@ -9,7 +8,7 @@ namespace Xuzumi
 	{
 	public:
 		Logger() = default;
-		Logger(std::vector<LoggerSink> sinks);
+		explicit Logger(std::vector<LoggerSink> sinks);
 
 		void Log(const LogRecord& record) const;
 

@@ -1,8 +1,5 @@
 #include "Xuzumi/Instrumentation/Logger.hpp"
 
-#include "Xuzumi/Instrumentation/LogEmitter.hpp"
-#include "Xuzumi/Instrumentation/LoggerSinkBuilder.hpp"
-
 namespace Xuzumi
 {
 	Logger::Logger(std::vector<LoggerSink> sinks)
