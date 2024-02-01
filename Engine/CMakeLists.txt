@@ -34,13 +34,6 @@ add_library(
 
 	"src/Xuzumi/Memory/Referencer.cpp"
 
- 	"src/Xuzumi/Debug/DebugSession.cpp"
-	"src/Xuzumi/Debug/Logging.cpp"
-	"src/Xuzumi/Debug/FileLogWriter.cpp"
-	"src/Xuzumi/Debug/ConsoleLogWriter.cpp"
-	"src/Xuzumi/Debug/TimedLogFormatter.cpp"
-	"src/Xuzumi/Debug/Assertion.cpp"
-
 	"src/Xuzumi/Input.Win32/Win32KeyMapping.cpp"
 	"src/Xuzumi/Input.Win32/Win32InputDevice.cpp"
 

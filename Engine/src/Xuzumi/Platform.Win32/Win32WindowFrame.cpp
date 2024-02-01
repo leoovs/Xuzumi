@@ -4,7 +4,6 @@
 
 #include "Xuzumi/Platform.Win32/Win32WindowFrame.hpp"
 
-#include "Xuzumi/Debug/DebugSession.hpp"
 #include "Xuzumi/String/StringEncoder.hpp"
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 

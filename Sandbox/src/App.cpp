@@ -25,9 +25,9 @@ App::App()
 
 	mFrame = mPlatform->CreateWindowFrame(frameSpec);
 
-	XZ_LOG(Info, "%s", mPlatform.GetResourceTypeInfo().Name.data());
-	XZ_LOG(Info, "%s", mFrame.GetResourceTypeInfo().Name.data());
-	XZ_LOG(Info, "%s", mPlatform->GetInputDevice().GetResourceTypeInfo().Name.data());
+	XZ_LOG(XZ_APP_LOGGER, Info, "%s", mPlatform.GetResourceTypeInfo().Name.data());
+	XZ_LOG(XZ_APP_LOGGER, Info, "%s", mFrame.GetResourceTypeInfo().Name.data());
+	XZ_LOG(XZ_APP_LOGGER, Info, "%s", mPlatform->GetInputDevice().GetResourceTypeInfo().Name.data());
 }
 
 void App::Run()
@@ -62,7 +62,7 @@ bool App::OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event)
 
 bool App::OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event)
 {
-	XZ_LOG(Info, "New size: %u, %u", event.Width, event.Height);
+	XZ_LOG(XZ_APP_LOGGER, Info, "New size: %u, %u", event.Width, event.Height);
 	return true;
 }
 
@@ -75,21 +75,21 @@ bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 
 	auto inputDevice = mPlatform->GetInputDevice();
 
-	XZ_LOG(Info, "Key down: %d", event.KeyDown);
+	XZ_LOG(XZ_APP_LOGGER, Info, "Key down: %d", event.KeyDown);
 
 	return true;
 }
 
 bool App::OnKeyUp(const Xuzumi::KeyUpEvent& event)
 {
-	XZ_LOG(Info, "Key up: %d", event.KeyUp);
+	XZ_LOG(XZ_APP_LOGGER, Info, "Key up: %d", event.KeyUp);
 
 	return true;
 }
 
 bool App::OnChar(const Xuzumi::CharacterInputEvent& event)
 {
-	XZ_LOG(Info, "Char: %d (0x%x)", event.UnicodeCodePoint, event.UnicodeCodePoint);
+	XZ_LOG(XZ_APP_LOGGER, Info, "Char: %d (0x%x)", event.UnicodeCodePoint, event.UnicodeCodePoint);
 
 	char32_t text[]{ event.UnicodeCodePoint, U'\0' };
 	Xuzumi::Utf32TextReader reader(text);

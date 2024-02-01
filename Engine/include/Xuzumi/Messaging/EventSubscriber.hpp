@@ -1,6 +1,6 @@
 /**
- * @file Xuzumi/Messaging/EventSubscriber.hpp 
- * 
+ * @file Xuzumi/Messaging/EventSubscriber.hpp
+ *
  * @brief Defines the `EventSubscriber` helper type.
  */
 
@@ -9,7 +9,7 @@
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/Memory/ObserverPtr.hpp"
 #include "Xuzumi/Messaging/EventBus.hpp"
-#include "Xuzumi/Debug/DebugSession.hpp"
+#include "Xuzumi/Instrumentation/AssertMacros.hpp"
 
 namespace Xuzumi
 {
@@ -55,14 +55,14 @@ namespace Xuzumi
 	public:
 		/**
 		 * @brief Destructor.
-		 * 
+		 *
 		 * Internally calls `Unsubscribe`.
 		 */
 		~EventSubscriber();
 
 		/**
 		 * @brief Associate `*this` with @p bus.
-		 * 
+		 *
 		 * @param bus An event bus.
 		 *
 		 * @return The `*this` reference.
@@ -77,7 +77,7 @@ namespace Xuzumi
 
 		/**
 		 * @brief Add a function as @p EventT handler.
-		 * 
+		 *
 		 * In debug mode, raises an assertion failure if no event bus is associated
 		 * with `*this`.
 		 *
@@ -88,8 +88,11 @@ namespace Xuzumi
 		template<typename EventT>
 		EventSubscriber& Function(bool(*function)(const EventT&))
 		{
-			XZ_ASSERT(mBus, "Could not subscribe function: EventBus instance not set");
-		
+			XZ_ASSERT(
+				XZ_CORE_ASSERT,
+				mBus,
+				"Could not subscribe function: EventBus instance not set");
+
 			EventSubscription subscription = mBus->Subscribe(
 				EventHandler<EventT>(function)
 			);
@@ -107,13 +110,17 @@ namespace Xuzumi
 		 *
 		 * @tparam EventT The type of the event to handle.
 		 * @tparam FunctorT The type of the functor.
-		 * 
+		 *
 		 * @param functor The event handler.
 		 */
 		template<typename EventT, typename FunctorT>
 		EventSubscriber& Functor(FunctorT functor)
 		{
-			XZ_ASSERT(mBus, "Could not subscribe functor: EventBus instance not set");
+			XZ_ASSERT(
+				XZ_CORE_ASSERT,
+				mBus,
+				"Could not subscribe functor: EventBus instance not set"
+			);
 
 			EventSubscription subscription = mBus->Subscribe(
 				EventHandler<EventT>(functor)
@@ -134,7 +141,7 @@ namespace Xuzumi
 		 * Internal entity has the following methods:
 		 * - `Method<EventT>()` - Adds method as an @p EventT handler.
 		 * - `EndThis()` - Yields back the method subscription.
-		 * 
+		 *
 		 * @tparam ClassT The type of the class whose method pointers will be used.
 		 *
 		 * @param classInstance A pointer to an instance of the @p ClassT that will
@@ -145,6 +152,7 @@ namespace Xuzumi
 		BeginThis(ClassT* classInstance)
 		{
 			XZ_ASSERT(
+				XZ_CORE_ASSERT,
 				mBus,
 				"Could not begin method subscription:"
 				" EventBus instance not set"
@@ -166,7 +174,7 @@ namespace Xuzumi
 		/**
 		 * @brief Add custom subscription handle.
 		 *
-		 * @param subscription Custom subscription handle. 
+		 * @param subscription Custom subscription handle.
 		 */
 		void AddSubscription(EventSubscription subscription);
 

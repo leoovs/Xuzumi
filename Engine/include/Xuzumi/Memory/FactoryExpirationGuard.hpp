@@ -2,7 +2,7 @@
 
 #include "Xuzumi/Precompiled.hpp"
 #include "Xuzumi/TypeMeta/TypeName.hpp"
-#include "Xuzumi/Debug/DebugSession.hpp"
+#include "Xuzumi/Instrumentation/LoggerMacros.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -31,7 +31,7 @@ namespace Xuzumi::Internal
 		template<
 			typename ResourceT,
 			typename CallableT,
-			typename = ResourceRequirement<ResourceT> 
+			typename = ResourceRequirement<ResourceT>
 		>
 		auto MakeDangleProtectedDeleter(CallableT callable)
 		{
@@ -40,6 +40,7 @@ namespace Xuzumi::Internal
 				if (factory.expired())
 				{
 					XZ_LOG(
+						XZ_CORE_LOGGER,
 						Error,
 						"Could not free '%s' instance at memory location 0x%p: "
 						"parent '%s' instance has been destroyed before the deallocation "
@@ -51,13 +52,13 @@ namespace Xuzumi::Internal
 					return;
 				}
 
-				callable(res);	
-			};	
+				callable(res);
+			};
 		}
 
 		template<
 			typename ResourceT,
-			typename = ResourceRequirement<ResourceT> 
+			typename = ResourceRequirement<ResourceT>
 		>
 		auto MakeDangleProtectedDeleter(void(FactoryT::*method)(ResourceT*))
 		{
@@ -65,7 +66,7 @@ namespace Xuzumi::Internal
 				[method, factory = mFactory.get()](ResourceT* res)
 				{
 					(factory->*method)(res);
-				}	
+				}
 			);
 		}
 

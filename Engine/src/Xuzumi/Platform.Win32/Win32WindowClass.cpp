@@ -4,11 +4,12 @@
 
 #include "Xuzumi/Platform.Win32/Win32WindowClass.hpp"
 
-#include "Xuzumi/Debug/DebugSession.hpp"
 #include "Xuzumi/Input/InputEvents.hpp"
 #include "Xuzumi/Input.Win32/Win32InputEvents.hpp"
 #include "Xuzumi/Platform/PlatformEvents.hpp"
 #include "Xuzumi/Platform.Win32/Win32Debug.hpp"
+#include "Xuzumi/Instrumentation/AssertMacros.hpp"
+#include "Xuzumi/Instrumentation/LoggerMacros.hpp"
 
 namespace Xuzumi::Internal
 {
@@ -55,7 +56,12 @@ namespace Xuzumi::Internal
 		{
 			Win32ErrorInfo err = GetLastError();
 
-			XZ_LOG(Error, "Could not create Win32 Window: %s", err.ToCString());
+			XZ_LOG(
+				XZ_CORE_LOGGER,
+				Error,
+				"Could not create Win32 Window: %s",
+				err.ToCString()
+			);
 
 			return nullptr;
 		}
@@ -82,7 +88,7 @@ namespace Xuzumi::Internal
 
 		if (!destroyed)
 		{
-			XZ_LOG(Error, "Could not destroy native Win32 window");
+			XZ_LOG(XZ_CORE_LOGGER, Error, "Could not destroy native Win32 window");
 		}
 	}
 
@@ -190,9 +196,13 @@ namespace Xuzumi::Internal
 		nativeSpecification.hInstance = mExecutableHandle;
 
 		ATOM result = RegisterClassExW(&nativeSpecification);
-		XZ_ASSERT(0 != result, "Could not register Win32 Window Class");
+		XZ_ASSERT(
+			XZ_CORE_ASSERT,
+			0 != result,
+			"Could not register Win32 Window Class"
+		);
 
-		XZ_LOG(Info, "Win32 Window Class Registered");
+		XZ_LOG(XZ_CORE_LOGGER, Info, "Win32 Window Class Registered");
 	}
 
 	void Win32WindowClass::Unregister()
@@ -203,11 +213,11 @@ namespace Xuzumi::Internal
 
 		if (!unregistered)
 		{
-			XZ_LOG(Warning, "Could not unregister Win32 Window Class");
+			XZ_LOG(XZ_CORE_LOGGER, Warn, "Could not unregister Win32 Window Class");
 			return;
 		}
 
-		XZ_LOG(Info, "Win32 Window Class unregistered");
+		XZ_LOG(XZ_CORE_LOGGER, Info, "Win32 Window Class unregistered");
 	}
 }
 

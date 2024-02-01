@@ -1,19 +1,19 @@
 /**
  * @file Xuzumi/Memory/SharedPtr.hpp
- * 
+ *
  * @brief Defines the owning `SharedPtr` smart pointer.
  */
 
 #pragma once
 
 #include "Xuzumi/Precompiled.hpp"
-#include "Xuzumi/Debug/DebugSession.hpp"
 #include "Xuzumi/TypeMeta/TypeInfo.hpp"
 #include "Xuzumi/Memory/Deleter.hpp"
+#include "Xuzumi/Memory/Referencer.hpp"
 #include "Xuzumi/Memory/PointerBase.hpp"
 #include "Xuzumi/Memory/ControlBlock.hpp"
-#include "Xuzumi/Memory/Referencer.hpp"
 #include "Xuzumi/Core/Templates/IsCompatible.hpp"
+#include "Xuzumi/Instrumentation/AssertMacros.hpp"
 
 namespace Xuzumi
 {
@@ -46,7 +46,7 @@ namespace Xuzumi
 	public:
 		/**
 		 * @typedef PointerType
-		 * 
+		 *
 		 * @brief Type alias for a resource pointer type.
 		 */
 		using PointerType = typename Traits::PointerType;
@@ -60,13 +60,13 @@ namespace Xuzumi
 
 		/**
 		 * @brief Default constructor.
-		 * 
+		 *
 		 * Constructs an empty `SharedPtr` with no managed object
 		 */
 		SharedPtr() = default;
 
 		/**
-		 * @brief Constructs an empty `SharedPtr` with explicit `nullptr` parameter. 
+		 * @brief Constructs an empty `SharedPtr` with explicit `nullptr` parameter.
 		 */
 		SharedPtr(std::nullptr_t)
 			: SharedPtr()
@@ -79,11 +79,11 @@ namespace Xuzumi
 		 *
 		 * This constructor participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The type of the managed object.
 		 *
 		 * @param pointer The pointer to the managed object.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -99,18 +99,18 @@ namespace Xuzumi
 		/**
 		 * @brief Constructs a `SharedPtr` with @p pointer as the pointer to the
 		 * managed object and @p deleter as the custom deleter.
-		 * 
+		 *
 		 * Custom deleter is required to implement the `operator()(OtherT*)`
 		 * operator.
 		 * This constructor participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The type of the managed object.
 		 * @tparam DeleterT The type of the custom deleter.
-		 * 
+		 *
 		 * @param pointer The pointer to the managed object.
 		 * @param deleter The custom deleter.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -127,10 +127,10 @@ namespace Xuzumi
 		/**
 		 * @brief Copy-constructs a `SharedPtr` which shares ownership of the object
 		 * managed by @p other.
-		 * 
+		 *
 		 * If @p other does not manage an object, `*this` does not manage an object
 		 * either.
-		 * 
+		 *
 		 * @param other A `SharedPtr` object.
 		 */
 		SharedPtr(const SharedPtr& other)
@@ -142,15 +142,15 @@ namespace Xuzumi
 		/**
 		 * @brief Copy-constructs a `SharedPtr` that shares ownership of the object
 		 * managed by @p other.
-		 * 
+		 *
 		 * If @p other manages no object, `*this` manages no object either.
 		 * This constructor participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
 		 *
 		 * @tparam OtherT The formal type of the object managed by @p other.
-		 * 
+		 *
 		 * @param other A `SharedPtr` object.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -166,7 +166,7 @@ namespace Xuzumi
 
 		/**
 		 * @brief Move-constructs a `SharedPtr` from @p other.
-		 * 
+		 *
 		 * After the construction `*this` contains a copy of the pointer from @p
 		 * other and a copy of the pointer to the state of @p other. If @p other is
 		 * empty, the stored pointer is `nullptr`.
@@ -181,15 +181,15 @@ namespace Xuzumi
 
 		/**
 		 * @brief Move-constructs a `SharedPtr` from @p other.
-		 * 
+		 *
 		 * After the construction `*this` contains a copy of the pointer from @p
 		 * other and a copy of the pointer to the state of @p other. If @p other is
 		 * empty, the stored pointer is `nullptr`.
 		 * This constructor participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The formal type of the object managed by @p other.
-		 * 
+		 *
 		 * @param other The `SharedPtr` object to be moved into `*this`.
 		 *
 		 * @see Xuzumi::IsCompatible
@@ -207,12 +207,12 @@ namespace Xuzumi
 
 		/**
 		 * @brief Copy-assigns the `SharedPtr`.
-		 * 
+		 *
 		 * Replaces the managed object with one managed by @p other and shares
 		 * the ownership. Self-assignment is valid and does nothing.
-		 * 
+		 *
 		 * @param other The `SharedPtr` object to share the ownership with.
-		 * 
+		 *
 		 * @return `*this`.
 		 */
 		SharedPtr& operator=(const SharedPtr& other)
@@ -230,7 +230,7 @@ namespace Xuzumi
 
 		/**
 		 * @brief Copy-assigns the `SharedPtr`.
-		 * 
+		 *
 		 * Replaces the managed object with one managed by @p other and shares
 		 * the ownership.
 		 * This copy-assignment operator participates in overload resolution only if
@@ -239,9 +239,9 @@ namespace Xuzumi
 		 * @tparam OtherT The formal type of the object managed by @p other.
 		 *
 		 * @param other The `SharedPtr` object to share the ownership with.
-		 * 
+		 *
 		 * @return `*this`.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -259,13 +259,13 @@ namespace Xuzumi
 
 		/**
 		 * @brief Move-assigns the `SharedPtr`.
-		 * 
+		 *
 		 * After the assignment `*this` manages the same object that the @p other
 		 * has, the @p other becomes empty. Self assignment is valid and does
 		 * nothing.
-		 * 
+		 *
 		 * @param other The `SharedPtr` object to take the ownership from.
-		 * 
+		 *
 		 * @return `*this`.
 		 */
 		SharedPtr& operator=(SharedPtr&& other) noexcept
@@ -283,18 +283,18 @@ namespace Xuzumi
 
 		/**
 		 * @brief Move-assigns the `SharedPtr`.
-		 * 
-		 * After the assignment `*this` manages the same object that the @p other 
+		 *
+		 * After the assignment `*this` manages the same object that the @p other
 		 * has, the @p other becomes empty.
 		 * This move-assignment operator participates in overload resolution only if
 		 * @p OtherT is compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The formal type of the object managed by @p other.
-		 * 
+		 *
 		 * @param other The `SharedPtr` object to take the ownership from.
-		 * 
+		 *
 		 * @return `*this`.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -312,23 +312,23 @@ namespace Xuzumi
 
 		/**
 		 * @brief Explicit termination of the ownership.
-		 * 
+		 *
 		 * The `*this` stops sharing the ownership of the managed object and becomes
 		 * empty. If `*this` is the only strong reference, the managed object is
 		 * destroyed.
 		 */
 		void Reset()
 		{
-			mReferencer.Reset();	
+			mReferencer.Reset();
 		}
 
 		/**
 		 * @brief Explicit termination of the ownership.
-		 * 
-		 * The `*this` stops sharing the ownership of the managed object and becomes 
+		 *
+		 * The `*this` stops sharing the ownership of the managed object and becomes
 		 * empty. If `*this` is the only strong reference, the managed object is
 		 * destroyed.
-		 * 
+		 *
 		 * @param _unnamed_ `nullptr`
 		 */
 		void Reset(std::nullptr_t)
@@ -338,15 +338,15 @@ namespace Xuzumi
 
 		/**
 		 * @brief Replaces the managed object.
-		 * 
+		 *
 		 * Replaces the managed object with an object pointed by @p pointer.
 		 * This method participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The formal type of the object pointed by @p pointer.
-		 * 
+		 *
 		 * @param pointer The pointer to the object to be managed by `*this`.
-		 * 
+		 *
 		 * @see Xuzumi::IsCompatible
 		 * @see Xuzumi::IsCompatibleV
 		 */
@@ -361,17 +361,17 @@ namespace Xuzumi
 
 		/**
 		 * @brief Replaces the managed object.
-		 * 
+		 *
 		 * Replaces the managed object with an object pointed by @p pointer and
-		 * applies a custom @p deleter. 
+		 * applies a custom @p deleter.
 		 * This method participates in overload resolution only if @p OtherT is
 		 * compatible with @p T.
-		 * 
+		 *
 		 * @tparam OtherT The formal type of the object pointed by @p pointer.
-		 * @tparam DeleterT The type of the @p deleter.	
-		 * 
+		 * @tparam DeleterT The type of the @p deleter.
+		 *
 		 * @param pointer The pointer to the object to be managed by `*this`.
-		 * @param deleter The custom deleter. 
+		 * @param deleter The custom deleter.
 		 */
 		template<
 			typename OtherT,
@@ -384,8 +384,8 @@ namespace Xuzumi
 		}
 
 		/**
-		 * @brief Exchanges the contents of `*this` and @p other. 
-		 * 
+		 * @brief Exchanges the contents of `*this` and @p other.
+		 *
 		 * @param other The `SharedPtr` to exchange contents with.
 		 */
 		void Swap(SharedPtr& other)
@@ -395,8 +395,8 @@ namespace Xuzumi
 		}
 
 		/**
-		 * @brief Returns the stored pointer. 
-		 * 
+		 * @brief Returns the stored pointer.
+		 *
 		 * @return The stored pointer.
 		 */
 		PointerType Get() const
@@ -406,7 +406,7 @@ namespace Xuzumi
 
 		/**
 		 * @brief Returns the managed object type information.
-		 * 
+		 *
 		 * @return The managed object type information.
 		 */
 		TypeInfo GetResourceTypeInfo() const
@@ -417,17 +417,17 @@ namespace Xuzumi
 		/**
 		 * @brief Reinterprets the `SharedPtr<T>` to `SharedPtr<OtherT>` without
 		 * any additional runtime type check.
-		 * 
+		 *
 		 * A new instance of the `SharedPtr<OtherT>` points to the same object in
 		 * memory and shares the ownership.
 		 * Since no type checking is performed, it is basically a plain
 		 * `reinterpret_cast`. Accessing such object might lead to an undefined
 		 * behavior. Consider using a type-safe analogue `As`.
-		 * 
+		 *
 		 * @tparam OtherT The type of the object to cast to.
-		 * 
+		 *
 		 * @return An instance of `SharedPtr<OtherT>`.
-		 * 
+		 *
 		 * @see SharedPtr::As
 		 */
 		template<typename OtherT>
@@ -446,12 +446,12 @@ namespace Xuzumi
 		/**
 		 * @brief Converts the `SharedPtr<T>` to `SharedPtr<OtherT>` in a type-safe
 		 * way performing additional runtime type check.
-		 * 
+		 *
 		 * A new instance of the `SharedPtr<OtherT>` points to the same object in
 		 * memory and shares the ownership.
-		 * 
+		 *
 		 * @tparam OtherT The type of the object to convert to.
-		 * 
+		 *
 		 * @retval SharedPtr<OtherT> Conversion is successful and type-safe.
 		 * @retval nullptr Conversion is not type-safe and
 		 * therefore cannot be performed.
@@ -468,9 +468,9 @@ namespace Xuzumi
 
 		/**
 		 * @brief Checks whether the `*this` holds an object of the specified type.
-		 * 
+		 *
 		 * @tparam OtherT The type to check against.
-		 * 
+		 *
 		 * @retval true The @p OtherT and the managed object type match.
 		 * @retval false The @p OtherT and the managed object type mismatch.
 		 */
@@ -482,50 +482,50 @@ namespace Xuzumi
 
 		/**
 		 * @brief Dereferences the stored pointer.
-		 * 
+		 *
 		 * In debug mode, the runtime performs and assertion to see whether the
 		 * `*this` is empty.
-		 *  
+		 *
 		 * @return A reference to the managed object.
 		 */
 		ReferenceType operator*() const
 		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			XZ_ASSERT(XZ_CORE_ASSERT, *this, "Trying to dereference a nullptr");
 			return *Get();
 		}
 
 		/**
 		 * @brief Dereferences the stored pointer.
-		 * 
+		 *
 		 * In debug mode, the runtime performs an assertion to ensure that the
 		 * `*this` is not empty.
-		 * 
+		 *
 		 * @return A pointer to the managed object.
 		 */
 		PointerType operator->() const
 		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			XZ_ASSERT(XZ_CORE_ASSERT, *this, "Trying to dereference a nullptr");
 			return Get();
 		}
 
 		/**
 		 * @brief Index to the array pointed to by the stored pointer.
-		 * 
+		 *
 		 * In debug mode, the runtime performs an assertion to ensure that the
-		 * `*this` is not empty. 
-		 * 
+		 * `*this` is not empty.
+		 *
 		 * @param index The array index.
-		 * 
+		 *
 		 * @return A reference to the `index`-th element in the array.
 		 */
 		ReferenceType operator[](std::ptrdiff_t index) const
 		{
-			XZ_ASSERT(*this, "Trying to dereference a nullptr");
+			XZ_ASSERT(XZ_CORE_ASSERT, *this, "Trying to dereference a nullptr");
 			return Get()[index];
 		}
-		
+
 		/**
-		 * @brief Retrieve the number of different `SharedPtr` instances that share 
+		 * @brief Retrieve the number of different `SharedPtr` instances that share
 		 * the ownership.
 		 *
 		 * @return The number of different `SharedPtr` instances managing the
@@ -538,9 +538,9 @@ namespace Xuzumi
 
 		/**
 		 * @brief Checks if the `*this` is not empty.
-		 * 
+		 *
 		 * @retval true The stored pointer is not `nullptr`.
-		 * @retval false The stored pointer is `nullptr`. The `*this` is empty. 
+		 * @retval false The stored pointer is `nullptr`. The `*this` is empty.
 		 */
 		explicit operator bool() const
 		{
@@ -554,7 +554,7 @@ namespace Xuzumi
 			mResourcePointer = pointer;
 			mReferencer.Bind<
 				Internal::ReferencingControlBlock<OtherType<OtherT>, DeleterT>
-			>(pointer, deleter);	
+			>(pointer, deleter);
 		}
 
 		Internal::Referencer mReferencer;
@@ -566,12 +566,12 @@ namespace Xuzumi
 	 *
 	 * The object is constructed as if by the expression
 	 * `new T{ std::forward<ArgsT>(args)... }`
-	 * 
+	 *
 	 * @tparam T The type of the object to be constructed.
-	 * 
+	 *
 	 * @param args The list of arguments with which an instance of @p T will be
 	 * constructed
-	 * 
+	 *
 	 * @return The `SharedPtr` instance managing the constructed object of type
 	 * @p T.
 	 */
@@ -588,14 +588,14 @@ namespace Xuzumi
 	/**
 	 * @brief Constructs an array of objects of type @p T and wraps it into
 	 * `SharedPtr`.
-	 * 
+	 *
 	 * The objects in the array are value-initialized, i.e. by the `new T[size]{}`
 	 * expression.
 	 *
 	 * @tparam T The array type.
-	 * 
+	 *
 	 * @param size The amount of objects in the array.
-	 * 
+	 *
 	 * @return The `SharedPtr` instance managing the constructed array of objects.
 	 */
 	template<typename T>
