@@ -1,5 +1,4 @@
 #include "Xuzumi/Instrumentation/PerformanceRecordStream.hpp"
-#include <iomanip>
 
 namespace Xuzumi
 {
