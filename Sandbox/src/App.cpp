@@ -2,6 +2,8 @@
 
 App::App()
 {
+	XZ_PROFILE_FUNCTION();
+
 	auto events = Xuzumi::ObserverPtr<Xuzumi::EventBus>(&mEvents);
 
 	mEventSubscriber.Subscribe(events);
@@ -41,17 +43,27 @@ void App::Run()
 
 void App::Update()
 {
-	mPlatform->PollEvents();
-	mEvents.Dispatch();
+	XZ_PROFILE_FUNCTION();
+
+	{ XZ_PROFILE_BLOCK("App: Poll platform events");
+		mPlatform->PollEvents();
+	}
+	{ XZ_PROFILE_BLOCK("App: Dispatch all events");
+		mEvents.Dispatch();
+	}
 }
 
 void App::Quit()
 {
+	XZ_PROFILE_FUNCTION();
+
 	mRunning = false;
 }
 
 bool App::OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event)
 {
+	XZ_PROFILE_FUNCTION();
+
 	if (mFrame.Get() == event.ClosedFrame.Get())
 	{
 		Quit();
@@ -62,12 +74,16 @@ bool App::OnFrameClose(const Xuzumi::WindowFrameClosedEvent& event)
 
 bool App::OnFrameResize(const Xuzumi::WindowFrameResizedEvent& event)
 {
+	XZ_PROFILE_FUNCTION();
+
 	XZ_LOG(XZ_APP_LOGGER, Info, "New size: %u, %u", event.Width, event.Height);
 	return true;
 }
 
 bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 {
+	XZ_PROFILE_FUNCTION();
+
 	if (event.KeyDown == Xuzumi::KeyboardKey::Escape)
 	{
 		mFrame->SetCaption("");
@@ -82,6 +98,8 @@ bool App::OnKeyDown(const Xuzumi::KeyDownEvent& event)
 
 bool App::OnKeyUp(const Xuzumi::KeyUpEvent& event)
 {
+	XZ_PROFILE_FUNCTION();
+
 	XZ_LOG(XZ_APP_LOGGER, Info, "Key up: %d", event.KeyUp);
 
 	return true;
@@ -89,6 +107,8 @@ bool App::OnKeyUp(const Xuzumi::KeyUpEvent& event)
 
 bool App::OnChar(const Xuzumi::CharacterInputEvent& event)
 {
+	XZ_PROFILE_FUNCTION();
+
 	XZ_LOG(XZ_APP_LOGGER, Info, "Char: %d (0x%x)", event.UnicodeCodePoint, event.UnicodeCodePoint);
 
 	char32_t text[]{ event.UnicodeCodePoint, U'\0' };

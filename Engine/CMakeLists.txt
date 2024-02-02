@@ -15,6 +15,10 @@ add_library(
 	"src/Xuzumi/Instrumentation/LogFormatter.cpp"
 	"src/Xuzumi/Instrumentation/LogRecordBuilder.cpp"
 	"src/Xuzumi/Instrumentation/LoggerSinkBuilder.cpp"
+	"src/Xuzumi/Instrumentation/PerformanceCapture.cpp"
+	"src/Xuzumi/Instrumentation/PerformanceClock.cpp"
+	"src/Xuzumi/Instrumentation/PerformanceProfiler.cpp"
+	"src/Xuzumi/Instrumentation/PerformanceRecordStream.cpp"
 
 	"src/Xuzumi/String/Utf8Facts.cpp"
 	"src/Xuzumi/String/UnicodeFacts.cpp"

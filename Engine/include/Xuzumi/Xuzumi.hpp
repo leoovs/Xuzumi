@@ -37,6 +37,11 @@
 #include "Xuzumi/Instrumentation/LoggerMacros.hpp"
 #include "Xuzumi/Instrumentation/LoggerSink.hpp"
 #include "Xuzumi/Instrumentation/LoggerSinkBuilder.hpp"
+#include "Xuzumi/Instrumentation/PerformanceCapture.hpp"
+#include "Xuzumi/Instrumentation/PerformanceMacros.hpp"
+#include "Xuzumi/Instrumentation/PerformanceProfiler.hpp"
+#include "Xuzumi/Instrumentation/PerformanceRecord.hpp"
+#include "Xuzumi/Instrumentation/PerformanceRecordStream.hpp"
 #include "Xuzumi/Instrumentation/Unreachable.hpp"
 
 #include "Xuzumi/Memory/WeakPtr.hpp"

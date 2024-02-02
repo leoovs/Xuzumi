@@ -28,6 +28,8 @@ namespace Xuzumi
 		const AssertService& GetCoreAssertService() const;
 		const AssertService& GetAppAssertService() const;
 
+		const PerformanceProfiler& GetPerformanceProfiler() const;
+
 	private:
 		static void Init(std::unique_ptr<InstrumentationProfile> profile);
 

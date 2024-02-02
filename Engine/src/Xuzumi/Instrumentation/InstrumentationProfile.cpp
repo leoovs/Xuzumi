@@ -23,5 +23,11 @@ namespace Xuzumi
 	{
 		return mAppAssertService;
 	}
+
+	const PerformanceProfiler&
+	DefaultInstrumentationProfile::GetPerformanceProfiler() const
+	{
+		return mPerformanceProfiler;
+	}
 }
 

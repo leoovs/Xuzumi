@@ -46,6 +46,12 @@ namespace Xuzumi
 		return mProfile->GetAppAssertService();
 	}
 
+	const PerformanceProfiler&
+	InstrumentationSession::GetPerformanceProfiler() const
+	{
+		return mProfile->GetPerformanceProfiler();
+	}
+
 	void InstrumentationSession::Init(
 		std::unique_ptr<InstrumentationProfile> profile
 	)
